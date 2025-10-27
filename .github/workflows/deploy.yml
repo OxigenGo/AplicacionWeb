@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repository (needed for GitHub Actions info)
+      # 1️⃣ Checkout this repository (needed for GitHub context)
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Setup SSH agent
-      - name: Setup SSH
+      # 2️⃣ Setup SSH agent with deploy key
+      - name: Setup SSH agent
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.EC2_DEPLOY_KEY }}
@@ -27,16 +27,16 @@ jobs:
           EC2_USER: ${{ secrets.EC2_USER }}
           APP_DIR: ${{ secrets.APP_DIR }}
         run: |
-          ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << EOF
-          APP_DIR=${{ secrets.APP_DIR }}
+          ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
+          APP_DIR=${APP_DIR}
           echo "Deploying FastAPI app..."
 
-          mkdir -p \$APP_DIR
-          cd \$APP_DIR
+          mkdir -p "$APP_DIR"
+          cd "$APP_DIR"
 
           # Clone repo if not present, otherwise force pull latest
           if [ ! -d ".git" ]; then
-            git clone git@github.com:username/repo.git
+            git clone git@github.com:RusosVascosYValencianos/AplicacionWeb.git .
           else
             git fetch origin master
             git reset --hard origin/master
