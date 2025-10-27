@@ -36,12 +36,16 @@ jobs:
           mkdir -p "$APP_DIR"
           cd "$APP_DIR"
 
+          cd "$APP_DIR"
+
           if [ ! -d ".git" ]; then
-            git clone git@github.com:RusosVascosYValencianos/AplicacionWeb.git .
+              git clone git@github.com:RusosVascosYValencianos/AplicacionWeb.git .
           else
-            git fetch origin master
-            git reset --hard origin/master
+              git remote set-url origin git@github.com:RusosVascosYValencianos/AplicacionWeb.git
+              git fetch origin master
+              git reset --hard origin/master
           fi
+
 
           # Setup Python environment
           sudo apt-get update -y
