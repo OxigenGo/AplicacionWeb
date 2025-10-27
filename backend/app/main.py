@@ -4,7 +4,7 @@
 #-----------------------------------
 
 import os
-from fastapi import FastAPI, HTTPExceptionfrom
+from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from .core import insert_user, login_user

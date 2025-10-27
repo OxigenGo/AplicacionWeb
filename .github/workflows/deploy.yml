@@ -3,41 +3,36 @@ name: Deploy FastAPI App to EC2
 on:
   push:
     branches:
-      - master  # Deploy on master branch push
+      - master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repository (needed for GitHub Actions info)
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Setup SSH agent
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.EC2_DEPLOY_KEY }}
 
-      # 3️⃣ Deploy to EC2
       - name: Deploy to EC2
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USER: ${{ secrets.EC2_USER }}
         run: |
           ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
-          set -e  # Exit on any error
+          set -e
 
           APP_DIR="/home/ubuntu/app"
           echo "Deploying FastAPI app to $APP_DIR ..."
 
-          # Ensure the directory exists
           mkdir -p "$APP_DIR"
           cd "$APP_DIR"
 
-          cd "$APP_DIR"
-
+          # Clone or update repo
           if [ ! -d ".git" ]; then
               git clone git@github.com:RusosVascosYValencianos/AplicacionWeb.git .
           else
@@ -46,14 +41,13 @@ jobs:
               git reset --hard origin/master
           fi
 
-
           # Setup Python environment
           sudo apt-get update -y
           sudo apt-get install -y python3 python3-venv python3-pip
           python3 -m venv venv
           source venv/bin/activate
 
-          # Install requirements (adjust path if needed)
+          # Install requirements
           if [ -f "backend/requirements.txt" ]; then
               pip install -r backend/requirements.txt
           else
@@ -61,7 +55,10 @@ jobs:
               exit 1
           fi
 
-          # Stop any running app and start the new version
+          # Stop any running uvicorn app
           pkill -f "uvicorn" || true
+
+          # Start the FastAPI app
+          echo "Starting FastAPI app..."
           nohup venv/bin/uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 > app.log 2>&1 &
           EOF
