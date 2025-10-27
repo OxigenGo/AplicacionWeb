@@ -33,15 +33,15 @@ def create_user(user: UserCreate):
     return insert_user(user.username, user.email, user.password)
 
 #-----------------------------------
-#   POST /v1/users -> Login
+#   POST /v1/users/login -> Login
 #-----------------------------------
 
-@app.post("/v1/users")
+@app.post("/v1/users/login")
 def attempt_login(user: UserLogin):
     return login_user(user.username_or_email, user.password)
 
 #-----------------------------------
-#   GET /v1/users -> Login
+#   SET /v1/users -> Login
 #-----------------------------------
 
 #-----------------------------------

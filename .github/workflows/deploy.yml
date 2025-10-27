@@ -65,5 +65,5 @@ jobs:
 
           # Start the FastAPI app in background
           echo "Starting FastAPI app..."
-          nohup venv/bin/uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload > app.log 2>&1 &
+          nohup python3 -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 > app.log 2>&1 &
           EOF

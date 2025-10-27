@@ -3,24 +3,25 @@
 #   Fecha: 26 de octubre de 2025
 #-----------------------------------
 
+import os
 import mysql.connector
 from datetime import datetime
 from fastapi import HTTPException
 import bcrypt
 
 #-----------------------------------
-#   Funcion para conectar a la base de datos
+#   Función para conectar a la base de datos
 #-----------------------------------
 def get_connection():
     return mysql.connector.connect(
-        host="localhost",
-        user="fedor",
-        password="fedor123",
-        database="RRVVDB"
+        host=os.environ.get("DB_HOST", "localhost"),
+        user=os.environ.get("DB_USER", "root"),
+        password=os.environ.get("DB_PASSWORD", ""),
+        database=os.environ.get("DB_NAME", "mydb")
     )
 
 #-----------------------------------
-#   Insert a new user into the database
+#   Inserta un nuevo usuario en la base de datos
 #-----------------------------------
 def insert_user(username: str, email: str, password: str):
     try:
