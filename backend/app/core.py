@@ -9,13 +9,13 @@ from fastapi import HTTPException
 import bcrypt
 
 #-----------------------------------
-#   Helper function to get MySQL connection
+#   Funcion para conectar a la base de datos
 #-----------------------------------
 def get_connection():
     return mysql.connector.connect(
-        host="localhost",        # Change if your MySQL is remote
-        user="fedor",           # Replace with your MySQL user
-        password="fedor123",   # Replace with your MySQL password
+        host="localhost",
+        user="fedor",
+        password="fedor123",
         database="RRVVDB"
     )
 
@@ -59,27 +59,24 @@ def insert_user(username: str, email: str, password: str):
     return {"status": "ok", "mensaje": f"Usuario '{username}' creado exitosamente"}
 
 #-----------------------------------
-#   Authenticate a user by username/email and password
+# Authenticate a user by username/email and password
 #-----------------------------------
 def login_user(username_or_email: str, password: str):
+    row = None
     try:
-        conn = get_connection()
-        cursor = conn.cursor(dictionary=True)
+        with get_connection() as conn:
+            with conn.cursor(dictionary=True) as cursor:
+                cursor.execute(
+                    "SELECT ID, USERNAME, EMAIL, PASSWORD FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
+                    (username_or_email, username_or_email)
+                )
+                row = cursor.fetchone()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Error en la base de datos")
 
-        # Find user by username or email
-        cursor.execute(
-            "SELECT ID, USERNAME, EMAIL, PASSWORD FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
-            (username_or_email, username_or_email)
-        )
-        row = cursor.fetchone()
-
-    finally:
-        conn.close()
-
-    # If user not found
     if not row:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
-     
+
     user_id = row["ID"]
     username = row["USERNAME"]
     email = row["EMAIL"]
@@ -96,12 +93,15 @@ def login_user(username_or_email: str, password: str):
     # Update last login
     today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     try:
-        conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute("UPDATE USUARIOS SET LAST_LOGIN = %s WHERE ID = %s", (today, user_id))
-        conn.commit()
-    finally:
-        conn.close()
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE USUARIOS SET LAST_LOGIN = %s WHERE ID = %s",
+                    (today, user_id)
+                )
+                conn.commit()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Error actualizando último login")
 
     return {
         "status": "ok",

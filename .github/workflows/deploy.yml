@@ -44,10 +44,15 @@ jobs:
           # Setup Python environment
           sudo apt-get update -y
           sudo apt-get install -y python3 python3-venv python3-pip
-          python3 -m venv venv
+          
+          # Create virtual environment if not exists
+          if [ ! -d "venv" ]; then
+              python3 -m venv venv
+          fi
           source venv/bin/activate
 
-          # Install requirements
+          # Upgrade pip and install requirements
+          pip install --upgrade pip
           if [ -f "backend/requirements.txt" ]; then
               pip install -r backend/requirements.txt
           else
@@ -58,7 +63,7 @@ jobs:
           # Stop any running uvicorn app
           pkill -f "uvicorn" || true
 
-          # Start the FastAPI app
+          # Start the FastAPI app in background
           echo "Starting FastAPI app..."
-          nohup venv/bin/uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 > app.log 2>&1 &
+          nohup venv/bin/uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload > app.log 2>&1 &
           EOF
