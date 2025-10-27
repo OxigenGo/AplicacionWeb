@@ -29,19 +29,27 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << EOF
           APP_DIR=${{ secrets.APP_DIR }}
+          
           echo "Deploying FastAPI app..."
+          
           mkdir -p \$APP_DIR
           cd \$APP_DIR
+          
           if [ ! -d ".git" ]; then
             git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} .
           else
-            git pull
+            git fetch origin master
+            git reset --hard origin/master
           fi
+
           sudo apt-get update -y
           sudo apt-get install -y python3 python3-venv python3-pip
+
           python3 -m venv venv
           source venv/bin/activate
+
           pip install -r backend/requirements.txt
           pkill -f "uvicorn" || true
+
           nohup venv/bin/uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 > app.log 2>&1 &
           EOF
