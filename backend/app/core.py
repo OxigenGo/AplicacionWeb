@@ -3,38 +3,48 @@
 #   Fecha: 26 de octubre de 2025
 #-----------------------------------
 
-import os
-import sqlite3
+import mysql.connector
 from datetime import datetime
 from fastapi import HTTPException
 import bcrypt
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "BioBase.db")
+#-----------------------------------
+#   Helper function to get MySQL connection
+#-----------------------------------
+def get_connection():
+    return mysql.connector.connect(
+        host="localhost",        # Change if your MySQL is remote
+        user="fedor",           # Replace with your MySQL user
+        password="fedor123",   # Replace with your MySQL password
+        database="RRVVDB"
+    )
 
 #-----------------------------------
-#   Esta funcion recibe el nombre de usuario, el email y la contraseña del usuario que se desea crear y los inserta
-#   en la base de datos si no existe ya alguien con esas credenciales
+#   Insert a new user into the database
 #-----------------------------------
-#   String: user, String: email, String: password --> insert_user() --> 200 OK | Error
-#-----------------------------------
-
 def insert_user(username: str, email: str, password: str):
     try:
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
         
-        cursor.execute("SELECT ID FROM USUARIOS WHERE USERNAME = ? OR EMAIL = ?", (username, email))
+        # Check if user or email already exists
+        cursor.execute(
+            "SELECT ID FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
+            (username, email)
+        )
         existing = cursor.fetchone()
         if existing:
             raise HTTPException(status_code=400, detail="El usuario o el correo ya existen")
         
-        today = datetime.now().strftime("%d-%m-%Y")
+        today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+        # Hash the password
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt)
 
+        # Insert the new user
         cursor.execute(
-            "INSERT INTO USUARIOS (USERNAME, EMAIL, PASSWORD, REGISTER_DATE, LAST_LOGIN) VALUES (?, ?, ?, ?, ?)",
+            "INSERT INTO USUARIOS (USERNAME, EMAIL, PASSWORD, REGISTER_DATE, LAST_LOGIN) VALUES (%s, %s, %s, %s, %s)",
             (username, email, hashed_password.decode("utf-8"), today, today)
         )
         conn.commit()
@@ -42,25 +52,23 @@ def insert_user(username: str, email: str, password: str):
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error en al base de datos: {e}")
+        raise HTTPException(status_code=500, detail=f"Error en la base de datos: {e}")
     finally:
         conn.close()    
+
     return {"status": "ok", "mensaje": f"Usuario '{username}' creado exitosamente"}
 
 #-----------------------------------
-#   Esta funcion recibe el nombre de usuario o email y la contraseña del usuario y los busca en la base de datos
+#   Authenticate a user by username/email and password
 #-----------------------------------
-#   String: user, String: password --> login_user() --> JSON: usuario | Error
-#-----------------------------------
-
 def login_user(username_or_email: str, password: str):
     try:
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
 
-        # Buscamos a un usuario con el correo o nombre introducido
+        # Find user by username or email
         cursor.execute(
-            "SELECT ID, USERNAME, EMAIL, PASSWORD FROM USUARIOS WHERE USERNAME = ? OR EMAIL = ?",
+            "SELECT ID, USERNAME, EMAIL, PASSWORD FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
             (username_or_email, username_or_email)
         )
         row = cursor.fetchone()
@@ -68,14 +76,16 @@ def login_user(username_or_email: str, password: str):
     finally:
         conn.close()
 
-    # Si no existe, lanzamos un 404
+    # If user not found
     if not row:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
      
-    # Si existe, guardamos los datos
-    user_id, username, email, stored_hash = row
+    user_id = row["ID"]
+    username = row["USERNAME"]
+    email = row["EMAIL"]
+    stored_hash = row["PASSWORD"]
 
-    # Comprobamos si la contraseña es correcta
+    # Check password
     if username == "Root" or email == "example@mail.com":
         if password != stored_hash:
             raise HTTPException(status_code=401, detail="Contraseña incorrecta")
@@ -83,11 +93,12 @@ def login_user(username_or_email: str, password: str):
         if not bcrypt.checkpw(password.encode("utf-8"), stored_hash.encode("utf-8")):
             raise HTTPException(status_code=401, detail="Contraseña incorrecta")
 
-    today = datetime.now().strftime("%d-%m-%Y")
+    # Update last login
+    today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = get_connection()
         cursor = conn.cursor()
-        cursor.execute("UPDATE USUARIOS SET LAST_LOGIN = ? WHERE ID = ?", (today, user_id))
+        cursor.execute("UPDATE USUARIOS SET LAST_LOGIN = %s WHERE ID = %s", (today, user_id))
         conn.commit()
     finally:
         conn.close()
