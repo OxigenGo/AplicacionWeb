@@ -36,7 +36,7 @@ jobs:
 
           # Clone repo if not present, otherwise force pull latest
           if [ ! -d ".git" ]; then
-            git clone git@github.com:${{ github.repository }} .
+            git clone git@github.com:username/repo.git
           else
             git fetch origin master
             git reset --hard origin/master
