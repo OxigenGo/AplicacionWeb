@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout this repository (needed for GitHub context)
+      # 1️⃣ Checkout repository (needed for GitHub Actions info)
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Setup SSH agent with deploy key
-      - name: Setup SSH agent
+      # 2️⃣ Setup SSH agent
+      - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.EC2_DEPLOY_KEY }}
@@ -25,21 +25,23 @@ jobs:
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USER: ${{ secrets.EC2_USER }}
-          APP_DIR: ${{ secrets.APP_DIR }}
         run: |
           ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
-          APP_DIR=${APP_DIR}
-          echo "Deploying FastAPI app..."
+          set -e  # Exit on any error
 
+          APP_DIR="/home/ubuntu/app"
+          echo "Deploying FastAPI app to $APP_DIR ..."
+
+          # Ensure the directory exists
           mkdir -p "$APP_DIR"
           cd "$APP_DIR"
 
-          # Clone repo if not present, otherwise force pull latest
+          # Clone repo if not present, otherwise update
           if [ ! -d ".git" ]; then
-            git clone git@github.com:RusosVascosYValencianos/AplicacionWeb.git .
+              git clone git@github.com:ORG/REPO.git .
           else
-            git fetch origin master
-            git reset --hard origin/master
+              git fetch origin master
+              git reset --hard origin/master
           fi
 
           # Setup Python environment
@@ -48,8 +50,13 @@ jobs:
           python3 -m venv venv
           source venv/bin/activate
 
-          # Install requirements
-          pip install -r backend/requirements.txt
+          # Install requirements (adjust path if needed)
+          if [ -f "backend/requirements.txt" ]; then
+              pip install -r backend/requirements.txt
+          else
+              echo "Error: requirements.txt not found!"
+              exit 1
+          fi
 
           # Stop any running app and start the new version
           pkill -f "uvicorn" || true
