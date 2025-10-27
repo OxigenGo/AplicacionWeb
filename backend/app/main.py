@@ -28,7 +28,7 @@ class UserLogin(BaseModel):
 #   POST /v1/users -> Registro / Crear nuevo usuario
 #-----------------------------------
 
-app.post("v1/users")
+app.post("/v1/users")
 def create_user(user: UserCreate):
     return insert_user(user.username, user.email, user.password)
 
@@ -36,7 +36,7 @@ def create_user(user: UserCreate):
 #   GET /v1/users -> Login
 #-----------------------------------
 
-app.get("v1/users")
+app.get("/v1/users")
 def attempt_login(user: UserLogin):
     return login_user(user.username_or_email, user.password)
 
