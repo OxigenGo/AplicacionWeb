@@ -10,46 +10,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repository
+      # 1️⃣ Checkout repository (needed for GitHub token URL)
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Setup SSH agent with private key
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.EC2_DEPLOY_KEY }}
-
-      # 3️⃣ Deploy to EC2
+      # 2️⃣ Deploy to EC2
       - name: Deploy to EC2
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USER: ${{ secrets.EC2_USER }}
           APP_DIR: ${{ secrets.APP_DIR }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub Actions token
         run: |
           ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << EOF
           APP_DIR=${{ secrets.APP_DIR }}
-
           echo "Deploying FastAPI app..."
           
           mkdir -p \$APP_DIR
           cd \$APP_DIR
           
+          # Clone repo if not present, otherwise force pull latest
           if [ ! -d ".git" ]; then
-            git clone git@github.com:${{ github.repository }} .
+            git clone https://x-access-token:\$GITHUB_TOKEN@github.com/${{ github.repository }} .
           else
             git fetch origin master
             git reset --hard origin/master
           fi
 
+          # Setup Python environment
           sudo apt-get update -y
           sudo apt-get install -y python3 python3-venv python3-pip
-
           python3 -m venv venv
           source venv/bin/activate
 
+          # Install requirements
           pip install -r backend/requirements.txt
-          pkill -f "uvicorn" || true
 
+          # Stop any running app and start the new version
+          pkill -f "uvicorn" || true
           nohup venv/bin/uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 > app.log 2>&1 &
           EOF
