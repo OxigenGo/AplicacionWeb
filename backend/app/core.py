@@ -9,7 +9,7 @@ from datetime import datetime
 from fastapi import HTTPException
 import bcrypt
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "usuarios.db")
+DB_PATH = os.path.join(os.path.dirname(__file__), "BioBase.db")
 
 #-----------------------------------
 #   Esta funcion recibe el nombre de usuario, el email y la contraseña del usuario que se desea crear y los inserta
