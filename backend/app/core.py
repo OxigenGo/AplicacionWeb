@@ -22,13 +22,14 @@ def get_connection():
 
 #-----------------------------------
 #   Inserta un nuevo usuario en la base de datos
+#   String: username, String: email, String: pass -> insert_user() -> 200 OK | Error
 #-----------------------------------
 def insert_user(username: str, email: str, password: str):
     try:
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
         
-        # Check if user or email already exists
+        # Comprobar si existe el usuario
         cursor.execute(
             "SELECT ID FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
             (username, email)
@@ -39,11 +40,11 @@ def insert_user(username: str, email: str, password: str):
         
         today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        # Hash the password
+        # Hasheo de la contraseña
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt)
 
-        # Insert the new user
+        # Insertar usuario  
         cursor.execute(
             "INSERT INTO USUARIOS (USERNAME, EMAIL, PASSWORD, REGISTER_DATE, LAST_LOGIN) VALUES (%s, %s, %s, %s, %s)",
             (username, email, hashed_password.decode("utf-8"), today, today)
@@ -60,7 +61,8 @@ def insert_user(username: str, email: str, password: str):
     return {"status": "ok", "mensaje": f"Usuario '{username}' creado exitosamente"}
 
 #-----------------------------------
-# Authenticate a user by username/email and password
+#   Autentifica al usuario usando el correo o el nombre de usuario y la contraseña
+#   String: user_or_email, String: pass -> login_user() -> JSON: user | HTTP Error
 #-----------------------------------
 def login_user(username_or_email: str, password: str):
     row = None
@@ -83,7 +85,6 @@ def login_user(username_or_email: str, password: str):
     email = row["EMAIL"]
     stored_hash = row["PASSWORD"]
 
-    # Check password
     if username == "Root" or email == "example@mail.com":
         if password != stored_hash:
             raise HTTPException(status_code=401, detail="Contraseña incorrecta")
@@ -91,7 +92,6 @@ def login_user(username_or_email: str, password: str):
         if not bcrypt.checkpw(password.encode("utf-8"), stored_hash.encode("utf-8")):
             raise HTTPException(status_code=401, detail="Contraseña incorrecta")
 
-    # Update last login
     today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     try:
         with get_connection() as conn:
