@@ -32,9 +32,11 @@ async function handleRegister(event) {
         } else {
             //Si el registro falla
             if (data.detail) {
+                //Si hay varios errores, los une en un string y los muestra
                 if (Array.isArray(data.detail)) {
                     messageDiv.textContent = data.detail.map(d => d.msg).join(", ");
                 } else {
+                    //Si solo hay un error, lo muestra directamente
                     messageDiv.textContent = data.detail;
                 }
             } else {
