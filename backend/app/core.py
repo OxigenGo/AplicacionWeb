@@ -1,24 +1,18 @@
 #-----------------------------------
+#   © 2025 RRVV Systems. Todos los derechos reservados.
+#-----------------------------------
 #   Autor: Fédor Tikhomirov
 #   Fecha: 26 de octubre de 2025
 #-----------------------------------
+#   Fichero: core.py
+#   Descripción: Funciones de manejo de usuarios
+#-----------------------------------
 
-import os
-import mysql.connector
 from datetime import datetime
 from fastapi import HTTPException
 import bcrypt
 
-#-----------------------------------
-#   Función para conectar a la base de datos
-#-----------------------------------
-def get_connection():
-    return mysql.connector.connect(
-        host=os.environ.get("DB_HOST", "localhost"),
-        user=os.environ.get("DB_USER", "root"),
-        password=os.environ.get("DB_PASSWORD", ""),
-        database=os.environ.get("DB_NAME", "mydb")
-    )
+from db import get_connection
 
 #-----------------------------------
 #   Inserta un nuevo usuario en la base de datos
