@@ -25,6 +25,7 @@ def get_connection():
 #   String: username, String: email, String: pass -> insert_user() -> 200 OK | Error
 #-----------------------------------
 def insert_user(username: str, email: str, password: str):
+    user_id = None
     try:
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
@@ -51,6 +52,8 @@ def insert_user(username: str, email: str, password: str):
         )
         conn.commit()
 
+        user_id = cursor.lastrowid
+
     except HTTPException:
         raise
     except Exception as e:
@@ -58,7 +61,16 @@ def insert_user(username: str, email: str, password: str):
     finally:
         conn.close()    
 
-    return {"status": "ok", "mensaje": f"Usuario '{username}' creado exitosamente"}
+    return {
+        "status": "ok",
+        "mensaje": f"Usuario '{username}' creado exitosamente",
+        "usuario": {
+            "id": user_id,
+            "username": username,
+            "email": email,
+        }
+    }
+
 
 #-----------------------------------
 #   Autentifica al usuario usando el correo o el nombre de usuario y la contraseña
@@ -141,7 +153,7 @@ def update_user(username: str, email: str, password: str, profilePicture: str):
                 if email:
                     updates.append("EMAIL = %s")
                     values.append(email)
-                if password:
+                if password is not None and password != "":
                     salt = bcrypt.gensalt()
                     hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt).decode("utf-8")
                     updates.append("PASSWORD = %s")
