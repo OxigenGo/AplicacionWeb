@@ -3,7 +3,7 @@
 //   Fecha: 28 de octubre de 2025
 //-----------------------------------
 
-const form = document.getElementById("register_form");
+const form = document.getElementById("register-form");
 const messageDiv = document.getElementById("register_message");
 
 async function handleRegister(event) {
