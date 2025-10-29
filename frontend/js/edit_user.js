@@ -4,7 +4,7 @@
 //   Esta fichero permite el envio del formulario y sus datos a la API
 //-----------------------------------
 
-const form = document.querySelector("form");
+const form = document.getElementById("edit_user_form");
 const messageDiv = document.createElement("div");
 form.prepend(messageDiv);
 
@@ -61,3 +61,5 @@ async function handleEditUser(event) {
         console.error(error);
     }
 }
+
+form.addEventListener("submit", handleEditUser);
