@@ -31,7 +31,7 @@ async function handleEditUser(event) {
 
     try {
         const response = await fetch("/v1/users/update", {
-            method: "POST",
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json"
             },
