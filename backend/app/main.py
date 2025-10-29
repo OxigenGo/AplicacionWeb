@@ -16,14 +16,14 @@ app = FastAPI()
 #   Esquemas para valida datos JSON
 #-----------------------------------
 
-class UserCreate(BaseModel):
+class RegistrationData(BaseModel):
     username: str
     email: str
     password: str
-class UserLogin(BaseModel):
+class LoginData(BaseModel):
     username_or_email: str
     password: str
-class UserUpdate(BaseModel):
+class UpdateData(BaseModel):
     username: str
     email: str
     password: str
@@ -34,7 +34,7 @@ class UserUpdate(BaseModel):
 #-----------------------------------
 
 @app.post("/v1/users/register")
-def create_user(user: UserCreate):
+def create_user(user: RegistrationData):
     return insert_user(user.username, user.email, user.password)
 
 #-----------------------------------
@@ -42,7 +42,7 @@ def create_user(user: UserCreate):
 #-----------------------------------
 
 @app.post("/v1/users/login")
-def attempt_login(user: UserLogin):
+def attempt_login(user: LoginData):
     return login_user(user.username_or_email, user.password)
 
 #-----------------------------------
