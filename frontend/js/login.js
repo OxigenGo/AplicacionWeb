@@ -29,7 +29,7 @@ async function handleLogin(event) {
             messageDiv.textContent = `¡Bienvenido, ${data.usuario.username}!`;
             messageDiv.style.color = "green";
             //TODO - Redirigir a siguiente página
-
+            
         } else {
             // Login fallido
             if (data.detail) {
