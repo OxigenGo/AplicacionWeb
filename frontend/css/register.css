@@ -1,0 +1,191 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Rubik', sans-serif;
+    min-height: 100vh;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+}
+
+/* Lado izquierdo - Bienvenida */
+.welcome-section {
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.welcome-content {
+    text-align: center;
+    max-width: 28rem;
+}
+
+.welcome-content h2 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: hsl(220, 90%, 25%);
+    margin-bottom: 1rem;
+}
+
+.welcome-content p {
+    font-size: 1.125rem;
+    color: #6b7280;
+}
+
+/* Lado derecho - Formulario */
+.form-section {
+    background-color: hsl(220, 90%, 25%);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+/* Efecto de estrellas */
+.stars {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+.stars::before,
+.stars::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 3s infinite;
+}
+
+.stars::before {
+    top: 20%;
+    left: 30%;
+    animation-delay: 0s;
+}
+
+.stars::after {
+    top: 60%;
+    left: 70%;
+    animation-delay: 1.5s;
+}
+
+@keyframes twinkle {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.5);
+    }
+}
+
+/* Contenedor del formulario */
+.form-container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 28rem;
+}
+
+.form-container h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+#register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.form-group input {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-family: 'Rubik', sans-serif;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.form-group input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: white;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+button[type="submit"] {
+    width: 100%;
+    background-color: white;
+    color: hsl(220, 90%, 25%);
+    font-weight: 600;
+    font-size: 1.125rem;
+    padding: 1.25rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-family: 'Rubik', sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+
+    .welcome-section {
+        display: none;
+    }
+
+    .form-section {
+        padding: 1.5rem;
+    }
+
+    .welcome-content h2 {
+        font-size: 1.875rem;
+    }
+
+    .form-container h1 {
+        font-size: 1.875rem;
+    }
+}
