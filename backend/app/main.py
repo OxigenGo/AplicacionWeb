@@ -50,7 +50,7 @@ def attempt_login(user: LoginData):
 #-----------------------------------
 
 @app.put("/v1/users/update")
-def attempt_update(user: UserCreate):
+def attempt_update(user: UpdateData):
     return update_user(user.username, user.email, user.password, user.profilePic)
 
 #-----------------------------------
