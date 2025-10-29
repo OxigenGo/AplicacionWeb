@@ -1,6 +1,11 @@
 //-----------------------------------
-//   Autor: Adrián Jáuregui
+//   © 2025 RRVV Systems. Todos los derechos reservados.
+//-----------------------------------
+//   Autor: Adrián Jáuregui Felipe
 //   Fecha: 28 de octubre de 2025
+//-----------------------------------
+//   Fichero: register.js
+//   Descripción: Este fichero envia los datos de registro a la API
 //-----------------------------------
 
 const form = document.getElementById("register-form");

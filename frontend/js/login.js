@@ -1,6 +1,11 @@
 //-----------------------------------
+//   © 2025 RRVV Systems. Todos los derechos reservados.
+//-----------------------------------
 //   Autor: Fédor Tikhomirov
 //   Fecha: 27 de octubre de 2025
+//-----------------------------------
+//   Fichero: login.js
+//   Descripción: Este fichero permite el envío de los datos de inicio de sesión a la API
 //-----------------------------------
 
 const form = document.getElementById("login_form");

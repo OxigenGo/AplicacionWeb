@@ -1,7 +1,11 @@
 //-----------------------------------
+//   © 2025 RRVV Systems. Todos los derechos reservados.
+//-----------------------------------
 //   Autor: Fédor Tikhomirov
 //   Fecha: 27 de octubre de 2025
-//   Esta fichero permite el envio del formulario y sus datos a la API
+//-----------------------------------
+//   Fichero: edit_user.js
+//   Descripción: Este fichero permite el envio del formulario de edicion de usuario y sus datos a la API
 //-----------------------------------
 
 const form = document.getElementById("edit_user_form");

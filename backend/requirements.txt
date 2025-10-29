@@ -1,3 +1,13 @@
+#-----------------------------------
+#   © 2025 RRVV Systems. Todos los derechos reservados.
+#-----------------------------------
+#   Autor: Fédor Tikhomirov
+#   Fecha: 26 de octubre de 2025
+#-----------------------------------
+#   Fichero: requirements.txt
+#   Descripción: Este fichero se usa para asegurarse de que todas las librerias necesaria están instaladas
+#-----------------------------------
+
 fastapi==0.112.0
 uvicorn[standard]==0.23.1
 bcrypt==4.1.0
