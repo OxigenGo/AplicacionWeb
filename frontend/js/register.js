@@ -14,18 +14,23 @@ async function handleRegister(event) {
     const password = document.getElementById("password").value;
     const confirm_password = document.getElementById("password-confirm").value;
 
+    if (password !== confirm_password) {
+        // TODO: Mostrar mensaje de error
+        return;
+    }
+
     try {
-        const respones = await fetch("v1/users/register", {
+        const response = await fetch("v1/users/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ username, email, password, confirm_password })
+            body: JSON.stringify({ username, email, password })
         });
 
-        const data = await respones.json();
+        const data = await response.json();
 
-        if (respones.ok) {
+        if (response.ok) {
             messageDiv.textContent = `¡Registro exitoso, ${data.usuario.username}!`;
             messageDiv.style.color = "black";
             //TODO - Redirigir a página de registro exitoso
