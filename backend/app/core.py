@@ -113,3 +113,64 @@ def login_user(username_or_email: str, password: str):
             "email": email,
         }
     }
+
+#-----------------------------------
+#   Edita el usuario en la base de datos
+#   String: username, String: email, String: pass, String: profilePicture -> update_user() -> JSON: user | HTTP Error
+#-----------------------------------
+def update_user(username: str, email: str, password: str, profilePicture: str):
+    try:
+        with get_connection() as conn:
+            with conn.cursor(dictionary=True) as cursor:
+                cursor.execute(
+                    "SELECT ID FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
+                    (username, email)
+                )
+                user = cursor.fetchone()
+                if not user:
+                    raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+                user_id = user["ID"]
+
+                updates = []
+                values = []
+
+                if username:
+                    updates.append("USERNAME = %s")
+                    values.append(username)
+                if email:
+                    updates.append("EMAIL = %s")
+                    values.append(email)
+                if password:
+                    salt = bcrypt.gensalt()
+                    hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt).decode("utf-8")
+                    updates.append("PASSWORD = %s")
+                    values.append(hashed_password)
+                if profilePicture:
+                    updates.append("PROFILE_PICTURE = %s")
+                    values.append(profilePicture)
+
+                if not updates:
+                    raise HTTPException(status_code=400, detail="No hay datos para actualizar")
+
+                query = f"UPDATE USUARIOS SET {', '.join(updates)} WHERE ID = %s"
+                values.append(user_id)
+                cursor.execute(query, tuple(values))
+                conn.commit()
+
+                cursor.execute(
+                    "SELECT ID, USERNAME, EMAIL, PROFILE_PICTURE, LAST_LOGIN FROM USUARIOS WHERE ID = %s",
+                    (user_id,)
+                )
+                updated_user = cursor.fetchone()
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al actualizar usuario: {e}")
+
+    return {
+        "status": "ok",
+        "mensaje": "Usuario actualizado correctamente",
+        "usuario": updated_user
+    }

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar usuario</title>
+    <!--Estilos-->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/edit_user.css">
+    <!--Scripts-->
+    <script src="js/edit_user.js" defer></script>
+</head>
+<body>
+    <h1>Editar usuario</h1>
+    
+    <form action="#" method="post" enctype="multipart/form-data">
+        <label for="username">Nombre de usuario:</label><br>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <label for="email">Correo electrónico:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="password">Contraseña:</label><br>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <label for="confirm_password">Confirmar contraseña:</label><br>
+        <input type="password" id="confirm_password" name="confirm_password" required><br><br>
+
+        <label for="profile_picture">Foto de perfil:</label><br>
+        <input type="file" id="profile_picture" name="profile_picture" accept="image/*"><br><br>
+
+        <input type="submit" value="Guardar cambios">
+    </form>
+</body>
+</html>

@@ -46,8 +46,12 @@ def attempt_login(user: UserLogin):
     return login_user(user.username_or_email, user.password)
 
 #-----------------------------------
-#   SET /v1/users -> Login
+#   PUT /v1/users/update -> Edit user
 #-----------------------------------
+
+@app.put("/v1/users/update")
+def attempt_update(user: UserCreate):
+    return update_user(user.username, user.email, user.password, user.profilePic)
 
 #-----------------------------------
 #   SERVIR FICHEROS ESTATICOS
