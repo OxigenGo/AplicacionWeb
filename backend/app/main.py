@@ -1,19 +1,25 @@
 #-----------------------------------
+#   © 2025 RRVV Systems. Todos los derechos reservados.
+#-----------------------------------
 #   Autor: Fédor Tikhomirov
 #   Fecha: 26 de octubre de 2025
-#   Descripción: Endpoints de la API
+#-----------------------------------
+#   Fichero: main.py
+#   Descripción: Definicion de los modelos de datos y los endpoints de la APP Web
 #-----------------------------------
 
 import os
+from typing import Optional
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from .core import insert_user, login_user, update_user
+from .sensores import bind_sensor_to_user, add_reading
 
 app = FastAPI()
 
 #-----------------------------------
-#   Esquemas para valida datos JSON
+#   Esquemas para validar datos JSON
 #-----------------------------------
 
 class RegistrationData(BaseModel):
@@ -28,17 +34,27 @@ class UpdateData(BaseModel):
     email: str
     password: str
     profilePic: str
+class AssociationData(BaseModel):
+    user_id: int
+    uuid: str
+    
+class Reading(BaseModel):
+    associated_uuid: str
+    date_time: str
+    gas: float
+    temperature: float
+    position: Optional[str] = None
 
 #-----------------------------------
 #   POST /v1/users/register -> Registro / Crear nuevo usuario
 #-----------------------------------
 
 @app.post("/v1/users/register")
-def create_user(user: RegistrationData):
+def attempt_create(user: RegistrationData):
     return insert_user(user.username, user.email, user.password)
 
 #-----------------------------------
-#   POST /v1/users/login -> Login
+#   POST /v1/users/login -> Iniciar sesión
 #-----------------------------------
 
 @app.post("/v1/users/login")
@@ -46,12 +62,28 @@ def attempt_login(user: LoginData):
     return login_user(user.username_or_email, user.password)
 
 #-----------------------------------
-#   PUT /v1/users/update -> Edit user
+#   PUT /v1/users/update -> Editar usuario
 #-----------------------------------
 
 @app.put("/v1/users/update")
 def attempt_update(user: UpdateData):
     return update_user(user.username, user.email, user.password, user.profilePic)
+
+#-----------------------------------
+#   POST /v1/data/bind -> Vincular sensor a usuario
+#-----------------------------------
+
+@app.post("/v1/data/bind")
+def attempt_bind(user: AssociationData):
+    return bind_sensor_to_user(user.user_id, user.uuid)
+
+#-----------------------------------
+#   POST /v1/data/reading -> Añadir una medida de sensor
+#-----------------------------------
+
+@app.post("/v1/data/reading")
+def attempt_register_reading(reading: Reading):
+    return add_reading(reading.associated_uuid, reading.date_time, reading.gas, reading.temperature, reading.position)
 
 #-----------------------------------
 #   SERVIR FICHEROS ESTATICOS
