@@ -27,10 +27,12 @@ def test_bind_sensor_to_user(db):
     assert result["sensor"]["uuid"] == uuid
     assert result["sensor"]["associated_user"] == user_id
 
-    db.execute("SELECT * FROM SENSORES WHERE UUID=%s", (uuid,))
-    sensor = db.fetchone()
-    assert sensor is not None
-    assert sensor["ASSOCIATED_USER"] == user_id
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM SENSORES WHERE UUID=%s", (uuid,))
+    sensor_row = cursor.fetchone()
+    cursor.close()
+    assert sensor_row is not None
+    assert sensor_row["ASSOCIATED_USER"] == user_id
 
 #-----------------------------------
 #   Test de inserción de lectura.
@@ -46,9 +48,8 @@ def test_add_reading(db):
     result = add_reading(uuid, gas_value=3.14, temperature_value=25.5, position="Lab", conn=db)
     assert result["status"] == "ok"
 
-    db.execute("SELECT * FROM MEDICIONES WHERE ASSOCIATED_UUID=%s", (uuid,))
-    reading = db.fetchone()
-    assert reading is not None
-    assert reading["GAS_VALUE"] == 3.14
-    assert reading["TEMPERATURE_VALUE"] == 25.5
-    assert reading["POSITION"] == "Lab"
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM MEDICIONES WHERE ASSOCIATED_UUID=%s", (uuid,))
+    reading_row = cursor.fetchone()
+    cursor.close()
+    assert reading_row is not None

@@ -27,10 +27,12 @@ def test_insert_user(db):
     assert result["usuario"]["username"] == username
     assert result["usuario"]["email"] == email
 
-    db.execute("SELECT * FROM USUARIOS WHERE EMAIL=%s", (email,))
-    user = db.fetchone()
-    assert user is not None
-    assert user["USERNAME"] == username
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM USUARIOS WHERE EMAIL=%s", (email,))
+    row = cursor.fetchone()
+    cursor.close()
+    assert row is not None
+    assert row["USERNAME"] == username
 
 #-----------------------------------
 #   Test de inicio de sesión.
