@@ -17,14 +17,10 @@ from backend.app.db import get_connection
 #   La funcion en sí crea una conexión y antes de cerrarla revierte todos los cambios
 #-----------------------------------
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def db():
     conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
     conn.start_transaction()
-    try:
-        yield cursor
-    finally:
-        conn.rollback()
-        cursor.close()
-        conn.close()
+    yield conn
+    conn.rollback()
+    conn.close()

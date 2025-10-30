@@ -18,11 +18,11 @@ from backend.app.core import insert_user
 #-----------------------------------
 
 def test_bind_sensor_to_user(db):
-    user = insert_user("sensoruser", "sensor@example.com", "password")["usuario"]
+    user = insert_user("sensoruser", "sensor@example.com", "password", conn=db)["usuario"]
     user_id = user["id"]
 
     uuid = "sensor-1234"
-    result = bind_sensor_to_user(user_id, uuid)
+    result = bind_sensor_to_user(user_id, uuid, conn=db)
     assert result["status"] == "ok"
     assert result["sensor"]["uuid"] == uuid
     assert result["sensor"]["associated_user"] == user_id
@@ -38,12 +38,12 @@ def test_bind_sensor_to_user(db):
 #-----------------------------------
 
 def test_add_reading(db):
-    user = insert_user("readinguser", "reading@example.com", "password")["usuario"]
+    user = insert_user("readinguser", "reading@example.com", "password", conn=db)["usuario"]
     user_id = user["id"]
     uuid = "sensor-5678"
-    bind_sensor_to_user(user_id, uuid)
+    bind_sensor_to_user(user_id, uuid, conn=db)
 
-    result = add_reading(uuid, gas_value=3.14, temperature_value=25.5, position="Lab")
+    result = add_reading(uuid, gas_value=3.14, temperature_value=25.5, position="Lab", conn=db)
     assert result["status"] == "ok"
 
     db.execute("SELECT * FROM MEDICIONES WHERE ASSOCIATED_UUID=%s", (uuid,))

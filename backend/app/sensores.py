@@ -12,16 +12,19 @@
 from datetime import datetime
 from fastapi import HTTPException
 
-from db import get_connection
+from .db import get_connection
 
 #-----------------------------------
 #   Crea un sensor y lo vincula a un usuario
 #   N: user_id, String: email -> bind_sensor_to_user() -> 200 OK | Error
 #-----------------------------------
 
-def bind_sensor_to_user(user_id: int, uuid: str):
+def bind_sensor_to_user(user_id: int, uuid: str, conn=None):
+    close_conn = False
     try:
-        conn = get_connection()
+        if conn is None:
+            conn = get_connection()
+            close_conn = True
         cursor = conn.cursor(dictionary=True)
 
         cursor.execute("SELECT ID FROM USUARIOS WHERE ID = %s", (user_id,))
@@ -35,14 +38,18 @@ def bind_sensor_to_user(user_id: int, uuid: str):
             "INSERT INTO SENSORES (UUID, ASSOCIATED_USER, LAST_ACTIVE) VALUES (%s, %s, %s)",
             (uuid, user_id, last_active)
         )
-        conn.commit()
+
+        if close_conn:
+            conn.commit()
 
     except HTTPException:
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error en la base de datos: {e}")
     finally:
-        conn.close()
+        cursor.close()
+        if close_conn:
+            conn.close()
 
     return {
         "status": "ok",
@@ -60,9 +67,12 @@ def bind_sensor_to_user(user_id: int, uuid: str):
 #   String: associated_uuid, float: gas_value, float: temperature_value, String|Null: posicion -> add_reading() -> 200 OK | Error
 #-----------------------------------
 
-def add_reading(associated_uuid: str, gas_value: float, temperature_value: float, position: str = None):
+def add_reading(associated_uuid: str, gas_value: float, temperature_value: float, position: str = None, conn=None):
+    close_conn = False
     try:
-        conn = get_connection()
+        if conn is None:
+            conn = get_connection()
+            close_conn = True
         cursor = conn.cursor(dictionary=True)
 
         cursor.execute("SELECT UUID FROM SENSORES WHERE UUID = %s", (associated_uuid,))
@@ -71,23 +81,26 @@ def add_reading(associated_uuid: str, gas_value: float, temperature_value: float
             raise HTTPException(status_code=404, detail="Sensor no encontrado")
 
         cursor.execute(
-            "INSERT INTO MEDICIONES (ASSOCIATED_UUID, GAS_VALUE, TEMPERATURE_VALUE, POSITION)VALUES (%s, %s, %s, %s)"
-            ,(associated_uuid, gas_value, temperature_value, position)
+            "INSERT INTO MEDICIONES (ASSOCIATED_UUID, GAS_VALUE, TEMPERATURE_VALUE, POSITION) VALUES (%s, %s, %s, %s)",
+            (associated_uuid, gas_value, temperature_value, position)
         )
 
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         cursor.execute(
-            "UPDATE SENSORES SET LAST_ACTIVE = %s WHERE UUID = %s",(now, associated_uuid)
+            "UPDATE SENSORES SET LAST_ACTIVE = %s WHERE UUID = %s", (now, associated_uuid)
         )
 
-        conn.commit()
+        if close_conn:
+            conn.commit()
 
     except HTTPException:
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error en la base de datos: {e}")
     finally:
-        conn.close()
+        cursor.close()
+        if close_conn:
+            conn.close()
 
     return {
         "status": "ok",
