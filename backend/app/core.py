@@ -19,8 +19,8 @@ from .db import get_connection
 #   String: username, String: email, String: pass -> insert_user() -> 200 OK | Error
 #-----------------------------------
 def insert_user(username: str, email: str, password: str, conn=None):
-    user_id = None
     close_conn = False
+    user_id = None
     try:
         if conn is None:
             conn = get_connection()
@@ -41,9 +41,11 @@ def insert_user(username: str, email: str, password: str, conn=None):
                 "INSERT INTO USUARIOS (USERNAME, EMAIL, PASSWORD, REGISTER_DATE, LAST_LOGIN) VALUES (%s, %s, %s, %s, %s)",
                 (username, email, hashed_password, today, today)
             )
-            if close_conn:
-                conn.commit()
+
             user_id = cursor.lastrowid
+
+        if close_conn:
+            conn.commit()
 
     except HTTPException:
         raise
@@ -53,16 +55,8 @@ def insert_user(username: str, email: str, password: str, conn=None):
         if close_conn and conn:
             conn.close()
 
-    return {
-        "status": "ok",
-        "mensaje": f"Usuario '{username}' creado exitosamente",
-        "usuario": {
-            "id": user_id,
-            "username": username,
-            "email": email,
-        }
-    }
-
+    return {"status": "ok", "mensaje": f"Usuario '{username}' creado exitosamente",
+            "usuario": {"id": user_id, "username": username, "email": email}}
 
 #-----------------------------------
 #   Autentifica al usuario usando el correo o el nombre de usuario y la contraseña
@@ -85,11 +79,8 @@ def login_user(username_or_email: str, password: str, conn=None):
         if not row:
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
-        user_id = row["ID"]
-        username = row["USERNAME"]
-        email = row["EMAIL"]
-        stored_hash = row["PASSWORD"]
-        
+        user_id, username, email, stored_hash = row["ID"], row["USERNAME"], row["EMAIL"], row["PASSWORD"]
+
         if username == "Root" or email == "example@mail.com":
             if password != stored_hash:
                 raise HTTPException(status_code=401, detail="Contraseña incorrecta")
@@ -99,12 +90,10 @@ def login_user(username_or_email: str, password: str, conn=None):
 
         today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         with conn.cursor() as cursor:
-            cursor.execute(
-                "UPDATE USUARIOS SET LAST_LOGIN = %s WHERE ID = %s",
-                (today, user_id)
-            )
-            if close_conn:
-                conn.commit()
+            cursor.execute("UPDATE USUARIOS SET LAST_LOGIN = %s WHERE ID = %s", (today, user_id))
+
+        if close_conn:
+            conn.commit()
 
     except HTTPException:
         raise
@@ -114,15 +103,8 @@ def login_user(username_or_email: str, password: str, conn=None):
         if close_conn and conn:
             conn.close()
 
-    return {
-        "status": "ok",
-        "mensaje": "Inicio de sesión exitoso",
-        "usuario": {
-            "id": user_id,
-            "username": username,
-            "email": email,
-        }
-    }
+    return {"status": "ok", "mensaje": "Inicio de sesión exitoso",
+            "usuario": {"id": user_id, "username": username, "email": email}}
 
 #-----------------------------------
 #   Edita el usuario en la base de datos
@@ -136,18 +118,13 @@ def update_user(username: str, email: str, password: str, profilePicture: str, c
             close_conn = True
 
         with conn.cursor(dictionary=True) as cursor:
-            # Check if user exists
-            cursor.execute(
-                "SELECT ID FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
-                (username, email)
-            )
+            cursor.execute("SELECT ID FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s", (username, email))
             user = cursor.fetchone()
             if not user:
                 raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
             user_id = user["ID"]
-            updates = []
-            values = []
+            updates, values = [], []
 
             if username:
                 updates.append("USERNAME = %s")
@@ -169,14 +146,12 @@ def update_user(username: str, email: str, password: str, profilePicture: str, c
             query = f"UPDATE USUARIOS SET {', '.join(updates)} WHERE ID = %s"
             values.append(user_id)
             cursor.execute(query, tuple(values))
-            if close_conn:
-                conn.commit()
 
-            cursor.execute(
-                "SELECT ID, USERNAME, EMAIL, PROFILE_PICTURE, LAST_LOGIN FROM USUARIOS WHERE ID = %s",
-                (user_id,)
-            )
+            cursor.execute("SELECT ID, USERNAME, EMAIL, PROFILE_PICTURE, LAST_LOGIN FROM USUARIOS WHERE ID = %s", (user_id,))
             updated_user = cursor.fetchone()
+
+        if close_conn:
+            conn.commit()
 
     except HTTPException:
         raise
@@ -186,8 +161,4 @@ def update_user(username: str, email: str, password: str, profilePicture: str, c
         if close_conn and conn:
             conn.close()
 
-    return {
-        "status": "ok",
-        "mensaje": "Usuario actualizado correctamente",
-        "usuario": updated_user
-    }
+    return {"status": "ok", "mensaje": "Usuario actualizado correctamente", "usuario": updated_user}
