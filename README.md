@@ -27,6 +27,24 @@ La Web utiliza *Python* para su backend, haciendo uso de la librería FastAPI.
   + Método HTTP: POST
 ---
 
+## TESTS
+Para los tests se ha usado la librería Pytest.
+
+### Para ejecutar los tests se necesita:
+
+1. Acceder a la instancia EC2 por SSH (explicado abajo)
+
+2. Abrir el entorno virtual de Python (explicado abajo)
+
+3. Acceder al directorio donde se encuentra la APP:
+```bash
+cd /home/ubuntu/app/
+```
+4. Ejecutar el comando de los tests:
+```bash
+PYTHONPATH=. pytest tests/ -v
+```
+
 ## PARA DESARROLLADORES:
 
 ### Para acceder a la instancia EC2 en la que se aloja el servidor, ejecutar en **cmd**:
