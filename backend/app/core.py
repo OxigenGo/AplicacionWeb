@@ -77,59 +77,43 @@ def insert_user(username: str, email: str, password: str, conn=None):
 #   Autentifica al usuario usando el correo o el nombre de usuario y la contraseña
 #   String: user_or_email, String: pass -> login_user() -> JSON: user | HTTP Error
 #-----------------------------------
-def login_user(username_or_email: str, password: str, conn=None):
-    close_conn = False
-    row = None
+def login_user(username_or_email: str, password: str):
     try:
-        if conn is None:
-            conn = get_connection()
-            close_conn = True
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute(
-            "SELECT ID, USERNAME, EMAIL, PASSWORD FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
-            (username_or_email, username_or_email)
-        )
-        row = cursor.fetchone()
+        with get_connection() as conn:
+            with conn.cursor(dictionary=True) as cursor:
+                cursor.execute(
+                    "SELECT ID, USERNAME, EMAIL, PASSWORD FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
+                    (username_or_email, username_or_email)
+                )
+                row = cursor.fetchone()
+
+            if not row:
+                raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+            user_id = row["ID"]
+            username = row["USERNAME"]
+            email = row["EMAIL"]
+            stored_hash = row["PASSWORD"]
+
+            if username == "Root" or email == "example@mail.com":
+                if password != stored_hash:
+                    raise HTTPException(status_code=401, detail="Contraseña incorrecta")
+            else:
+                if not bcrypt.checkpw(password.encode("utf-8"), stored_hash.encode("utf-8")):
+                    raise HTTPException(status_code=401, detail="Contraseña incorrecta")
+
+            today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE USUARIOS SET LAST_LOGIN = %s WHERE ID = %s",
+                    (today, user_id)
+                )
+                conn.commit()
+
+    except HTTPException:
+        raise
     except Exception:
         raise HTTPException(status_code=500, detail="Error en la base de datos")
-    finally:
-        if close_conn:
-            cursor.close()
-            conn.close()
-
-    if not row:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
-
-    user_id = row["ID"]
-    username = row["USERNAME"]
-    email = row["EMAIL"]
-    stored_hash = row["PASSWORD"]
-
-    if username == "Root" or email == "example@mail.com":
-        if password != stored_hash:
-            raise HTTPException(status_code=401, detail="Contraseña incorrecta")
-    else:
-        if not bcrypt.checkpw(password.encode("utf-8"), stored_hash.encode("utf-8")):
-            raise HTTPException(status_code=401, detail="Contraseña incorrecta")
-
-    today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    try:
-        if conn is None:
-            conn = get_connection()
-            close_conn = True
-        cursor = conn.cursor()
-        cursor.execute(
-            "UPDATE USUARIOS SET LAST_LOGIN = %s WHERE ID = %s",
-            (today, user_id)
-        )
-        if close_conn:
-            conn.commit()
-    except Exception:
-        raise HTTPException(status_code=500, detail="Error actualizando último login")
-    finally:
-        if close_conn:
-            cursor.close()
-            conn.close()
 
     return {
         "status": "ok",
