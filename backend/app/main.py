@@ -40,7 +40,6 @@ class AssociationData(BaseModel):
     
 class Reading(BaseModel):
     associated_uuid: str
-    date_time: str
     gas: float
     temperature: float
     position: Optional[str] = None
@@ -83,7 +82,7 @@ def attempt_bind(user: AssociationData):
 
 @app.post("/v1/data/reading")
 def attempt_register_reading(reading: Reading):
-    return add_reading(reading.associated_uuid, reading.date_time, reading.gas, reading.temperature, reading.position)
+    return add_reading(reading.associated_uuid, reading.gas, reading.temperature, reading.position)
 
 #-----------------------------------
 #   SERVIR FICHEROS ESTATICOS
