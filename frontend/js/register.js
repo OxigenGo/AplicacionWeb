@@ -11,6 +11,7 @@
 const form = document.getElementById("register-form");
 const messageDiv = document.getElementById("register_message");
 
+//HandleRegister se encarga de enviar los datos del formulario a la API
 async function handleRegister(event) {
     event.preventDefault();
 
@@ -24,6 +25,7 @@ async function handleRegister(event) {
         return;
     }
 
+    //Envía los datos a la API
     try {
         const response = await fetch("v1/users/register", {
             method: "POST",
@@ -35,6 +37,7 @@ async function handleRegister(event) {
 
         const data = await response.json();
 
+        //Si el registro es exitoso
         if (response.ok) {
             messageDiv.textContent = `¡Registro exitoso, ${data.usuario.username}!`;
             messageDiv.style.color = "black";
@@ -53,6 +56,7 @@ async function handleRegister(event) {
                 messageDiv.textContent = "Error al registrar usuario";
             }
         }
+    //Si hay un error de conexión
     } catch (error) {
         messageDiv.textContent = "Error de conexión con el servidor.";
         messageDiv.style.color = "red";
