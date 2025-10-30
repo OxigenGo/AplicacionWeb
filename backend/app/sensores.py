@@ -80,14 +80,17 @@ def add_reading(associated_uuid: str, gas_value: float, temperature_value: float
         if not sensor:
             raise HTTPException(status_code=404, detail="Sensor no encontrado")
 
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
         cursor.execute(
-            "INSERT INTO MEDICIONES (ASSOCIATED_UUID, GAS_VALUE, TEMPERATURE_VALUE, POSITION) VALUES (%s, %s, %s, %s)",
-            (associated_uuid, gas_value, temperature_value, position)
+            "INSERT INTO MEDICIONES (ASSOCIATED_UUID, DATE, GAS_VALUE, TEMPERATURE_VALUE, POSITION) "
+            "VALUES (%s, %s, %s, %s, %s)",
+            (associated_uuid, now, gas_value, temperature_value, position)
         )
 
-        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         cursor.execute(
-            "UPDATE SENSORES SET LAST_ACTIVE = %s WHERE UUID = %s", (now, associated_uuid)
+            "UPDATE SENSORES SET LAST_ACTIVE = %s WHERE UUID = %s",
+            (now, associated_uuid)
         )
 
         if close_conn:
