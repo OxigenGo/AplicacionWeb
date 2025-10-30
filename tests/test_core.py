@@ -22,7 +22,7 @@ def test_insert_user(db):
     email = "testuser@example.com"
     password = "testpass123"
 
-    result = insert_user(username, email, password, conn=db)
+    result = insert_user(username, email, password)
     assert result["status"] == "ok"
     assert result["usuario"]["username"] == username
     assert result["usuario"]["email"] == email
@@ -46,7 +46,7 @@ def test_login_user(db):
 
     insert_user(username, email, password, conn=db)
 
-    result = login_user(username, password, conn=db)
+    result = login_user(username, password)
     assert result["status"] == "ok"
     assert result["usuario"]["username"] == username
 

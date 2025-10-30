@@ -21,45 +21,36 @@ from .db import get_connection
 def insert_user(username: str, email: str, password: str, conn=None):
     user_id = None
     close_conn = False
-
     try:
         if conn is None:
             conn = get_connection()
             close_conn = True
-        cursor = conn.cursor(dictionary=True)
 
-        # Comprobar si existe el usuario
-        cursor.execute(
-            "SELECT ID FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
-            (username, email)
-        )
-        existing = cursor.fetchone()
-        if existing:
-            raise HTTPException(status_code=400, detail="El usuario o el correo ya existen")
+        with conn.cursor(dictionary=True) as cursor:
+            cursor.execute(
+                "SELECT ID FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
+                (username, email)
+            )
+            if cursor.fetchone():
+                raise HTTPException(status_code=400, detail="El usuario o el correo ya existen")
 
-        today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
-        # Hasheo de la contraseña
-        salt = bcrypt.gensalt()
-        hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt)
-
-        # Insertar usuario
-        cursor.execute(
-            "INSERT INTO USUARIOS (USERNAME, EMAIL, PASSWORD, REGISTER_DATE, LAST_LOGIN) VALUES (%s, %s, %s, %s, %s)",
-            (username, email, hashed_password.decode("utf-8"), today, today)
-        )
-        if close_conn:
-            conn.commit()
-
-        user_id = cursor.lastrowid
+            cursor.execute(
+                "INSERT INTO USUARIOS (USERNAME, EMAIL, PASSWORD, REGISTER_DATE, LAST_LOGIN) VALUES (%s, %s, %s, %s, %s)",
+                (username, email, hashed_password, today, today)
+            )
+            if close_conn:
+                conn.commit()
+            user_id = cursor.lastrowid
 
     except HTTPException:
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error en la base de datos: {e}")
     finally:
-        cursor.close()
-        if close_conn:
+        if close_conn and conn:
             conn.close()
 
     return {
@@ -77,43 +68,51 @@ def insert_user(username: str, email: str, password: str, conn=None):
 #   Autentifica al usuario usando el correo o el nombre de usuario y la contraseña
 #   String: user_or_email, String: pass -> login_user() -> JSON: user | HTTP Error
 #-----------------------------------
-def login_user(username_or_email: str, password: str):
+def login_user(username_or_email: str, password: str, conn=None):
+    close_conn = False
     try:
-        with get_connection() as conn:
-            with conn.cursor(dictionary=True) as cursor:
-                cursor.execute(
-                    "SELECT ID, USERNAME, EMAIL, PASSWORD FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
-                    (username_or_email, username_or_email)
-                )
-                row = cursor.fetchone()
+        if conn is None:
+            conn = get_connection()
+            close_conn = True
 
-            if not row:
-                raise HTTPException(status_code=404, detail="Usuario no encontrado")
+        with conn.cursor(dictionary=True) as cursor:
+            cursor.execute(
+                "SELECT ID, USERNAME, EMAIL, PASSWORD FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
+                (username_or_email, username_or_email)
+            )
+            row = cursor.fetchone()
 
-            user_id = row["ID"]
-            username = row["USERNAME"]
-            email = row["EMAIL"]
-            stored_hash = row["PASSWORD"]
+        if not row:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
-            if username == "Root" or email == "example@mail.com":
-                if password != stored_hash:
-                    raise HTTPException(status_code=401, detail="Contraseña incorrecta")
-            else:
-                if not bcrypt.checkpw(password.encode("utf-8"), stored_hash.encode("utf-8")):
-                    raise HTTPException(status_code=401, detail="Contraseña incorrecta")
+        user_id = row["ID"]
+        username = row["USERNAME"]
+        email = row["EMAIL"]
+        stored_hash = row["PASSWORD"]
+        
+        if username == "Root" or email == "example@mail.com":
+            if password != stored_hash:
+                raise HTTPException(status_code=401, detail="Contraseña incorrecta")
+        else:
+            if not bcrypt.checkpw(password.encode("utf-8"), stored_hash.encode("utf-8")):
+                raise HTTPException(status_code=401, detail="Contraseña incorrecta")
 
-            today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            with conn.cursor() as cursor:
-                cursor.execute(
-                    "UPDATE USUARIOS SET LAST_LOGIN = %s WHERE ID = %s",
-                    (today, user_id)
-                )
+        today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with conn.cursor() as cursor:
+            cursor.execute(
+                "UPDATE USUARIOS SET LAST_LOGIN = %s WHERE ID = %s",
+                (today, user_id)
+            )
+            if close_conn:
                 conn.commit()
 
     except HTTPException:
         raise
     except Exception:
         raise HTTPException(status_code=500, detail="Error en la base de datos")
+    finally:
+        if close_conn and conn:
+            conn.close()
 
     return {
         "status": "ok",
@@ -135,58 +134,56 @@ def update_user(username: str, email: str, password: str, profilePicture: str, c
         if conn is None:
             conn = get_connection()
             close_conn = True
-        cursor = conn.cursor(dictionary=True)
 
-        cursor.execute(
-            "SELECT ID FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
-            (username, email)
-        )
-        user = cursor.fetchone()
-        if not user:
-            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+        with conn.cursor(dictionary=True) as cursor:
+            # Check if user exists
+            cursor.execute(
+                "SELECT ID FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
+                (username, email)
+            )
+            user = cursor.fetchone()
+            if not user:
+                raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
-        user_id = user["ID"]
-        updates = []
-        values = []
+            user_id = user["ID"]
+            updates = []
+            values = []
 
-        if username:
-            updates.append("USERNAME = %s")
-            values.append(username)
-        if email:
-            updates.append("EMAIL = %s")
-            values.append(email)
-        if password is not None and password != "":
-            salt = bcrypt.gensalt()
-            hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt).decode("utf-8")
-            updates.append("PASSWORD = %s")
-            values.append(hashed_password)
-        if profilePicture:
-            updates.append("PROFILE_PICTURE = %s")
-            values.append(profilePicture)
+            if username:
+                updates.append("USERNAME = %s")
+                values.append(username)
+            if email:
+                updates.append("EMAIL = %s")
+                values.append(email)
+            if password:
+                hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+                updates.append("PASSWORD = %s")
+                values.append(hashed_password)
+            if profilePicture:
+                updates.append("PROFILE_PICTURE = %s")
+                values.append(profilePicture)
 
-        if not updates:
-            raise HTTPException(status_code=400, detail="No hay datos para actualizar")
+            if not updates:
+                raise HTTPException(status_code=400, detail="No hay datos para actualizar")
 
-        query = f"UPDATE USUARIOS SET {', '.join(updates)} WHERE ID = %s"
-        values.append(user_id)
-        cursor.execute(query, tuple(values))
+            query = f"UPDATE USUARIOS SET {', '.join(updates)} WHERE ID = %s"
+            values.append(user_id)
+            cursor.execute(query, tuple(values))
+            if close_conn:
+                conn.commit()
 
-        if close_conn:
-            conn.commit()
-
-        cursor.execute(
-            "SELECT ID, USERNAME, EMAIL, PROFILE_PICTURE, LAST_LOGIN FROM USUARIOS WHERE ID = %s",
-            (user_id,)
-        )
-        updated_user = cursor.fetchone()
+            cursor.execute(
+                "SELECT ID, USERNAME, EMAIL, PROFILE_PICTURE, LAST_LOGIN FROM USUARIOS WHERE ID = %s",
+                (user_id,)
+            )
+            updated_user = cursor.fetchone()
 
     except HTTPException:
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al actualizar usuario: {e}")
     finally:
-        cursor.close()
-        if close_conn:
+        if close_conn and conn:
             conn.close()
 
     return {
