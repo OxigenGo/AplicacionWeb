@@ -9,8 +9,9 @@
 #-----------------------------------
 
 from datetime import datetime
-from fastapi import HTTPException
+from fastapi import HTTPException, Response
 import bcrypt
+import json
 
 from .db import get_connection
 
@@ -62,7 +63,7 @@ def insert_user(username: str, email: str, password: str, conn=None):
 #   Autentifica al usuario usando el correo o el nombre de usuario y la contraseña
 #   String: user_or_email, String: pass -> login_user() -> JSON: user | HTTP Error
 #-----------------------------------
-def login_user(username_or_email: str, password: str, conn=None):
+def login_user(username_or_email: str, password: str, response: Response, conn=None):
     close_conn = False
     try:
         if conn is None:
@@ -94,6 +95,22 @@ def login_user(username_or_email: str, password: str, conn=None):
 
         if close_conn:
             conn.commit()
+
+        # Guarda los datos del usuario en una cookie
+        cookie_data = {
+            "id": user_id,
+            "username": username,
+            "email": email
+        }
+
+        response.set_cookie(
+            key="user_data",
+            value=json.dumps(cookie_data),
+            httponly=False, # Desactivado para poder leerla despues desde JS
+            secure=False,   # Desactivado porque la el servidor no usan https
+            samesite="Lax",
+            max_age=60 * 60 * 24 # Duración de 1 día
+        )
 
     except HTTPException:
         raise

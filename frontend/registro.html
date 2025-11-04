@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/register.css">
     <script src="js/register.js" defer></script>
+    <script src="js/password_check.js" defer></script>
+    <script src="js/toggle_password.js" defer></script>
+    
+    <script src="js/retrieve_login_info.js"></script>
 </head>
 
 <body>
@@ -39,11 +43,17 @@
                     <div class="form-group">
                         <label for="password">Contraseña:</label>
                         <input type="password" id="password" name="password" required>
+                        <span id="toggle-password">👁️</span>
                     </div>
                     <div class="form-group">
                         <label for="password-confirm">Confirmar Contraseña:</label>
                         <input type="password" id="password-confirm" name="password-confirm" required>
+                        <span id="toggle-password-confirm">👁️</span>
                     </div>
+                    <label>
+                        <input id="terms" type="checkbox">
+                        Acepto los términos y condiciones
+                    </label>
                     <button type="submit">Registrarse</button>
                 </form>
             </div>

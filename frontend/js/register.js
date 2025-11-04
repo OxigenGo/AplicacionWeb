@@ -19,9 +19,23 @@ async function handleRegister(event) {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     const confirm_password = document.getElementById("password-confirm").value;
+    const termsChecked = document.getElementById("terms").checked;
 
     if (password !== confirm_password) {
-        // TODO: Mostrar mensaje de error
+        messageDiv.textContent = "Las contraseñas no coinciden.";
+        messageDiv.style.color = "red";
+        return;
+    }
+
+    if (!isPasswordSecure(password)) {
+        messageDiv.textContent = "La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial.";
+        messageDiv.style.color = "red";
+        return;
+    }
+
+    if (!termsChecked) {
+        messageDiv.textContent = "Debes aceptar los términos y condiciones.";
+        messageDiv.style.color = "red";
         return;
     }
 
@@ -56,7 +70,7 @@ async function handleRegister(event) {
                 messageDiv.textContent = "Error al registrar usuario";
             }
         }
-    //Si hay un error de conexión
+        //Si hay un error de conexión
     } catch (error) {
         messageDiv.textContent = "Error de conexión con el servidor.";
         messageDiv.style.color = "red";

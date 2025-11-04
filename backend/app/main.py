@@ -10,7 +10,7 @@
 
 import os
 from typing import Optional
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from .core import insert_user, login_user, update_user
@@ -37,7 +37,6 @@ class UpdateData(BaseModel):
 class AssociationData(BaseModel):
     user_id: int
     uuid: str
-    
 class Reading(BaseModel):
     associated_uuid: str
     gas: float
@@ -57,8 +56,8 @@ def attempt_create(user: RegistrationData):
 #-----------------------------------
 
 @app.post("/v1/users/login")
-def attempt_login(user: LoginData):
-    return login_user(user.username_or_email, user.password)
+def attempt_login(user: LoginData, response: Response):
+    return login_user(user.username_or_email, user.password, response)
 
 #-----------------------------------
 #   PUT /v1/users/update -> Editar usuario
