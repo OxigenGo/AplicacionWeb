@@ -10,6 +10,8 @@
 
 const form = document.getElementById("register-form");
 const messageDiv = document.getElementById("register_message");
+const errorcontainer = document.querySelector(".container-error");
+const closebutton = document.getElementById("close-error");
 
 //HandleRegister se encarga de enviar los datos del formulario a la API
 async function handleRegister(event) {
@@ -22,20 +24,20 @@ async function handleRegister(event) {
     const termsChecked = document.getElementById("terms").checked;
 
     if (password !== confirm_password) {
+        errorcontainer.style.display = "flex";
         messageDiv.textContent = "Las contraseñas no coinciden.";
-        messageDiv.style.color = "red";
         return;
     }
 
     if (!isPasswordSecure(password)) {
+        errorcontainer.style.display = "flex";
         messageDiv.textContent = "La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial.";
-        messageDiv.style.color = "red";
         return;
     }
 
     if (!termsChecked) {
+        errorcontainer.style.display = "flex";
         messageDiv.textContent = "Debes aceptar los términos y condiciones.";
-        messageDiv.style.color = "red";
         return;
     }
 
@@ -76,7 +78,15 @@ async function handleRegister(event) {
         messageDiv.style.color = "red";
         console.error(error);
     }
+
+    closebutton.addEventListener("click", () => {
+        errorcontainer.style.display = "none";
+    });
 }
+
+closebutton.addEventListener("click", () => {
+    errorcontainer.style.display = "none";
+});
 
 //Al hacer el submit ejecuta la función de registro
 form.addEventListener("submit", handleRegister);
