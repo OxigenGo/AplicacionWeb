@@ -12,7 +12,7 @@
     <script src="js/password_check.js" defer></script>
     <script src="js/toggle_password.js" defer></script>
     
-    <script src="js/retrieve_login_info.js"></script>
+    <script type="module" src="js/retrieve_login_info.js"></script>
 </head>
 
 <body>
@@ -32,7 +32,7 @@
             <!--Contenedor del formulario-->
             <div class="form-container">
                 <h1>Registrate aquí!</h1>
-                <form id="register-form">
+                <form id="register-form" novalidate>
                     <div class="form-group">
                         <label for="username">Usuario:</label>
                         <input type="text" id="username" name="username" required>

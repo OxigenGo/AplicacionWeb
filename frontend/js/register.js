@@ -23,23 +23,27 @@ async function handleRegister(event) {
     const confirm_password = document.getElementById("password-confirm").value;
     const termsChecked = document.getElementById("terms").checked;
 
+//----------------- Validaciones de los datos del formulario -----------------
+    if (!username || !email || !password || !confirm_password) {
+        showError("Por favor, completa todos los campos.");
+        return;
+    }
+
     if (password !== confirm_password) {
-        errorcontainer.style.display = "flex";
-        messageDiv.textContent = "Las contraseñas no coinciden.";
+        showError("Las contraseñas no coinciden.");
         return;
     }
 
     if (!isPasswordSecure(password)) {
-        errorcontainer.style.display = "flex";
-        messageDiv.textContent = "La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial.";
+        showError("La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial.");
         return;
     }
 
     if (!termsChecked) {
-        errorcontainer.style.display = "flex";
-        messageDiv.textContent = "Debes aceptar los términos y condiciones.";
+        showError("Debes aceptar los términos y condiciones.");
         return;
     }
+//-----------------------------------------------------------------------------
 
     //Envía los datos a la API
     try {
@@ -79,14 +83,18 @@ async function handleRegister(event) {
         console.error(error);
     }
 
-    closebutton.addEventListener("click", () => {
-        errorcontainer.style.display = "none";
-    });
 }
 
+//Cierra el contenedor de error al hacer click en el botón de cerrar
 closebutton.addEventListener("click", () => {
     errorcontainer.style.display = "none";
 });
+
+//Muestra el contenedor de error con el mensaje pasado
+function showError(message){
+    errorcontainer.style.display = "flex";
+    messageDiv.textContent = message;
+}
 
 //Al hacer el submit ejecuta la función de registro
 form.addEventListener("submit", handleRegister);
