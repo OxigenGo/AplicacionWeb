@@ -1,5 +1,5 @@
 #-----------------------------------
-#   © 2025 RRVV Systems. Todos los derechos reservados.
+#   © 2025 OxiGo. Todos los derechos reservados.
 #-----------------------------------
 #   Autor: Fédor Tikhomirov
 #   Fecha: 26 de octubre de 2025
@@ -33,7 +33,7 @@ class UpdateData(BaseModel):
     username: str
     email: str
     password: str
-    profilePic: str
+    profilePic: Optional[str]
 class AssociationData(BaseModel):
     user_id: int
     uuid: str

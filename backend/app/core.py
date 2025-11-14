@@ -1,5 +1,5 @@
 #-----------------------------------
-#   © 2025 RRVV Systems. Todos los derechos reservados.
+#   © 2025 OxiGo. Todos los derechos reservados.
 #-----------------------------------
 #   Autor: Fédor Tikhomirov
 #   Fecha: 26 de octubre de 2025
@@ -36,11 +36,10 @@ def insert_user(username: str, email: str, password: str, conn=None):
                 raise HTTPException(status_code=400, detail="El usuario o el correo ya existen")
 
             today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
             cursor.execute(
                 "INSERT INTO USUARIOS (USERNAME, EMAIL, PASSWORD, REGISTER_DATE, LAST_LOGIN) VALUES (%s, %s, %s, %s, %s)",
-                (username, email, hashed_password, today, today)
+                (username, email, password, today, today)
             )
 
             user_id = cursor.lastrowid
@@ -82,12 +81,8 @@ def login_user(username_or_email: str, password: str, response: Response, conn=N
 
         user_id, username, email, stored_hash = row["ID"], row["USERNAME"], row["EMAIL"], row["PASSWORD"]
 
-        if username == "Root" or email == "example@mail.com":
-            if password != stored_hash:
-                raise HTTPException(status_code=401, detail="Contraseña incorrecta")
-        else:
-            if not bcrypt.checkpw(password.encode("utf-8"), stored_hash.encode("utf-8")):
-                raise HTTPException(status_code=401, detail="Contraseña incorrecta")
+        if password != stored_hash:
+            raise HTTPException(status_code=401, detail="Contraseña incorrecta")
 
         today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         with conn.cursor() as cursor:
@@ -107,7 +102,7 @@ def login_user(username_or_email: str, password: str, response: Response, conn=N
             key="user_data",
             value=json.dumps(cookie_data),
             httponly=False, # Desactivado para poder leerla despues desde JS
-            secure=False,   # Desactivado porque la el servidor no usan https
+            secure=False,   # Desactivado porque el servidor no usan https
             samesite="Lax",
             max_age=60 * 60 * 24 # Duración de 1 día
         )

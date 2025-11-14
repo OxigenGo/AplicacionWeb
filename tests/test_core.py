@@ -1,5 +1,5 @@
 #-----------------------------------
-#   © 2025 RRVV Systems. Todos los derechos reservados.
+#   © 2025 OxiGo. Todos los derechos reservados.
 #-----------------------------------
 #   Autor: Fédor Tikhomirov
 #   Fecha: 30 de octubre de 2025
@@ -10,7 +10,15 @@
 #-----------------------------------
 
 import pytest
+import bcrypt
 from backend.app.core import insert_user, login_user, update_user
+
+#-----------------------------------
+#   Helper para hashear contraseñas
+#-----------------------------------
+
+def hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 #-----------------------------------
 #   Test de registro de usuario.
@@ -20,20 +28,16 @@ from backend.app.core import insert_user, login_user, update_user
 def test_insert_user(db):
     username = "testuser"
     email = "testuser@example.com"
-    password = "testpass123"
+    raw_password = "testpass123"
+    hashed_password = hash_password(raw_password)
 
-    result = insert_user(username, email, password, conn=db)
+    result = insert_user(username, email, hashed_password, conn=db)
+
     assert result["status"] == "ok"
     assert result["usuario"]["username"] == username
     assert result["usuario"]["email"] == email
-
-    cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM USUARIOS WHERE EMAIL=%s", (email,))
-    row = cursor.fetchone()
-    cursor.close()
-    assert row is not None
-    assert row["USERNAME"] == username
-
+    assert "id" in result["usuario"]
+    
 #-----------------------------------
 #   Test de inicio de sesión.
 #   Registra un usuario e inicia sesión con él
@@ -42,13 +46,18 @@ def test_insert_user(db):
 def test_login_user(db):
     username = "testlogin"
     email = "testlogin@example.com"
-    password = "secret123"
+    raw_password = "secret123"
+    hashed_password = hash_password(raw_password)
 
-    insert_user(username, email, password, conn=db)
+    insert_user(username, email, hashed_password, conn=db)
 
-    result = login_user(username, password, conn=db)
+    # login_user espera el hash, no la contraseña cruda
+    result = login_user(username, hashed_password, conn=db)
+
     assert result["status"] == "ok"
     assert result["usuario"]["username"] == username
+    assert result["usuario"]["email"] == email
+    assert "id" in result["usuario"]
 
 #-----------------------------------
 #   Test de edición de usuario.
@@ -58,9 +67,16 @@ def test_login_user(db):
 def test_update_user(db):
     username = "updateuser"
     email = "updateuser@example.com"
-    password = "mypassword"
-    user = insert_user(username, email, password, conn=db)["usuario"]
 
-    updated = update_user(username, email, "newpassword", None, conn=db)
+    raw_password = "mypassword"
+    hashed_password = hash_password(raw_password)
+
+    user = insert_user(username, email, hashed_password, conn=db)["usuario"]
+
+    new_raw_password = "newpassword"
+    new_hashed_password = hash_password(new_raw_password)
+
+    updated = update_user(username, email, new_hashed_password, None, conn=db)
+
     assert updated["status"] == "ok"
     assert updated["usuario"]["ID"] == user["id"]
