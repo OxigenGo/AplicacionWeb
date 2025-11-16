@@ -1,5 +1,5 @@
 //-----------------------------------
-//   © 2025 RRVV Systems. Todos los derechos reservados.
+//   © 2025 OxiGo. Todos los derechos reservados.
 //-----------------------------------
 //   Autor: Fédor Tikhomirov
 //   Fecha: 27 de octubre de 2025
@@ -19,13 +19,14 @@ async function handleLogin(event) {
     const password = document.getElementById("password").value;
 
     try {
+        const hashedPassword = await hashPassword(password);
         // Envia POST al endpoint de login
         const response = await fetch("/v1/users/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ username_or_email, password })
+            body: JSON.stringify({ username_or_email, hashedPassword })
         });
 
         const data = await response.json();
