@@ -36,10 +36,11 @@ def insert_user(username: str, email: str, password: str, conn=None):
                 raise HTTPException(status_code=400, detail="El usuario o el correo ya existen")
 
             today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
             cursor.execute(
                 "INSERT INTO USUARIOS (USERNAME, EMAIL, PASSWORD, REGISTER_DATE, LAST_LOGIN) VALUES (%s, %s, %s, %s, %s)",
-                (username, email, password, today, today)
+                (username, email, hashed_password, today, today)
             )
 
             user_id = cursor.lastrowid
@@ -80,6 +81,9 @@ def login_user(username_or_email: str, password: str, response: Response, conn=N
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
         user_id, username, email, stored_hash = row["ID"], row["USERNAME"], row["EMAIL"], row["PASSWORD"]
+        
+        if not bcrypt.checkpw(password.encode("utf-8"), stored_hash.encode("utf-8")):
+            raise HTTPException(status_code=401, detail="Contraseña incorrecta")
 
         if password != stored_hash:
             raise HTTPException(status_code=401, detail="Contraseña incorrecta")

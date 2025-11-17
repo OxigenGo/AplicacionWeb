@@ -47,14 +47,13 @@ async function handleRegister(event) {
 
     //Envía los datos a la API
     try {
-        const hashedPassword = await hashPassword(password);
 
         const response = await fetch("v1/users/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ username, email, hashedPassword })
+            body: JSON.stringify({ username, email, password })
         });
 
         const data = await response.json();

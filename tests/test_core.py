@@ -10,15 +10,7 @@
 #-----------------------------------
 
 import pytest
-import bcrypt
 from backend.app.core import insert_user, login_user, update_user
-
-#-----------------------------------
-#   Helper para hashear contraseñas
-#-----------------------------------
-
-def hash_password(password: str) -> str:
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 #-----------------------------------
 #   Test de registro de usuario.
@@ -28,10 +20,9 @@ def hash_password(password: str) -> str:
 def test_insert_user(db):
     username = "testuser"
     email = "testuser@example.com"
-    raw_password = "testpass123"
-    hashed_password = hash_password(raw_password)
+    password = "testpass123"
 
-    result = insert_user(username, email, hashed_password, conn=db)
+    result = insert_user(username, email, password, conn=db)
 
     assert result["status"] == "ok"
     assert result["usuario"]["username"] == username
@@ -46,13 +37,12 @@ def test_insert_user(db):
 def test_login_user(db):
     username = "testlogin"
     email = "testlogin@example.com"
-    raw_password = "secret123"
-    hashed_password = hash_password(raw_password)
+    password = "secret123"
 
-    insert_user(username, email, hashed_password, conn=db)
+    insert_user(username, email, password, conn=db)
 
     # login_user espera el hash, no la contraseña cruda
-    result = login_user(username, hashed_password, conn=db)
+    result = login_user(username, password, conn=db)
 
     assert result["status"] == "ok"
     assert result["usuario"]["username"] == username
@@ -68,15 +58,13 @@ def test_update_user(db):
     username = "updateuser"
     email = "updateuser@example.com"
 
-    raw_password = "mypassword"
-    hashed_password = hash_password(raw_password)
+    password = "mypassword"
 
-    user = insert_user(username, email, hashed_password, conn=db)["usuario"]
+    user = insert_user(username, email, password, conn=db)["usuario"]
 
-    new_raw_password = "newpassword"
-    new_hashed_password = hash_password(new_raw_password)
+    new_password = "newpassword"
 
-    updated = update_user(username, email, new_hashed_password, None, conn=db)
+    updated = update_user(username, email, new_password, None, conn=db)
 
     assert updated["status"] == "ok"
     assert updated["usuario"]["ID"] == user["id"]
