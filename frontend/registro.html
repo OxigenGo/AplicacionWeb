@@ -7,7 +7,9 @@
     <title>Registro Usuario</title>
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/register.css">
-    <link rel="stylesheet" href="./css/error_user.css">
+    <link rel="stylesheet" href="./css/reutilizable/error_user.css">
+    <link rel="stylesheet" href="./css/reutilizable/header.css">
+    <link rel="stylesheet" href="./css/reutilizable/wave.css">
     <script src="js/register.js" defer></script>
     <script src="js/password_check.js" defer></script>
     <script src="js/toggle_password.js" defer></script>
@@ -16,50 +18,95 @@
 </head>
 
 <body>
-    <div class="container">
-        <!-- Lado izquierdo - Fondo blanco -->
-        <div class="welcome-section">
-            <div class="welcome-content">
-                <h2>¡Bienvenido!</h2>
-                <p>Únete a nuestra comunidad y disfruta de todos los beneficios que tenemos para ti.</p>
-            </div>
+    <!--Header-->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">OxyGo</div>
+            <nav class="nav">
+                <a href="#" class="nav-link">Inicio</a>
+                <a href="#" class="nav-link">Nosotros</a>
+                <a href="#" class="nav-link">Contacto</a>
+            </nav>
+            <button class="profile-button">User</button>
         </div>
+    </header>
 
-        <!-- Lado derecho - Formulario con fondo azul estrella -->
-        <div class="form-section">
-            <!-- Efecto de estrellas -->
-            <div class="stars"></div>
-            <!--Contenedor del formulario-->
-            <div class="form-container">
-                <h1>Registrate aquí!</h1>
-                <form id="register-form" novalidate>
-                    <div class="form-group">
-                        <label for="username">Usuario:</label>
-                        <input type="text" id="username" name="username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Contraseña:</label>
-                        <input type="password" id="password" name="password" required>
-                        <span id="toggle-password">👁️</span>
-                    </div>
-                    <div class="form-group">
-                        <label for="password-confirm">Confirmar Contraseña:</label>
-                        <input type="password" id="password-confirm" name="password-confirm" required>
-                        <span id="toggle-password-confirm">👁️</span>
-                    </div>
-                    <label>
-                        <input id="terms" type="checkbox">
-                        Acepto los términos y condiciones
-                    </label>
-                    <button type="submit">Registrarse</button>
-                </form>
-            </div>
-        </div>
+    <!-- Wave Background -->
+    <div class="wave-background">
+        <svg class="wave wave-1" viewBox="0 0 2 1 " preserveAspectRatio="none">
+            <path d="M 0 0 A 1 0.4 0 0 0 2,0 L 2,1 L 0,1 Z"></path>
+        </svg>
     </div>
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="form-container">
+            <h1 class="form-title">Crear Cuenta</h1>
+            <p class="form-subtitle">Completa el siguiente formulario para registrarte</p>
+
+            <form id="registerForm" class="register-form" novalidate>
+                <div class="form-group">
+                    <label for="username" class="form-label">Usuario</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username"
+                        class="form-input" 
+                        placeholder="Ingresa tu nombre de usuario"
+                    />
+                    <span class="error-message" id="usernameError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email"
+                        class="form-input" 
+                        placeholder="tu@ejemplo.com"
+                    />
+                    <span class="error-message" id="emailError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password"
+                        class="form-input" 
+                        placeholder="Ingresa tu contraseña"
+                    />
+                    <span id="toggle-password">👁️</span>
+                    <span class="error-message" id="passwordError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
+                    <input 
+                        type="password" 
+                        id="password-confirm" 
+                        name="confirmPassword"
+                        class="form-input" 
+                        placeholder="Confirma tu contraseña"
+                    />
+                    <span id="toggle-password-confirm">👁️</span>
+                    <span class="error-message" id="confirmPasswordError"></span>
+                </div>
+
+                <button type="submit" class="submit-button">
+                    Crear Cuenta
+                </button>
+                
+            </form>
+            <p>Ya tienes una cuenta? <a href="./login.html">Inicia sesión</a></p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 OxyGo. Todos los derechos reservados.</p>
+    </footer>
+
     <div class = "container-error">
         <div id="cuadro-error">
             <div id="container-message">
@@ -67,7 +114,6 @@
                 <button id="close-error">Cerrar</button>
             </div>
         </div>
-
     </div>
 </body>
 
