@@ -11,6 +11,7 @@
 
 import pytest
 from backend.app.core import insert_user, login_user, update_user
+from fastapi import Response
 
 #-----------------------------------
 #   Test de registro de usuario.
@@ -41,8 +42,8 @@ def test_login_user(db):
 
     insert_user(username, email, password, conn=db)
 
-    # login_user espera el hash, no la contraseña cruda
-    result = login_user(username, password, conn=db)
+    response = Response()
+    result = login_user(username, password, response, conn=db)
 
     assert result["status"] == "ok"
     assert result["usuario"]["username"] == username

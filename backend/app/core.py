@@ -85,9 +85,6 @@ def login_user(username_or_email: str, password: str, response: Response, conn=N
         if not bcrypt.checkpw(password.encode("utf-8"), stored_hash.encode("utf-8")):
             raise HTTPException(status_code=401, detail="Contraseña incorrecta")
 
-        if password != stored_hash:
-            raise HTTPException(status_code=401, detail="Contraseña incorrecta")
-
         today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         with conn.cursor() as cursor:
             cursor.execute("UPDATE USUARIOS SET LAST_LOGIN = %s WHERE ID = %s", (today, user_id))
