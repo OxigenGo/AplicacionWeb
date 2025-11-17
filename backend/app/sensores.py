@@ -1,5 +1,5 @@
 #-----------------------------------
-#   © 2025 RRVV Systems. Todos los derechos reservados.
+#   © 2025 OxiGo. Todos los derechos reservados.
 #-----------------------------------
 #   Autor: Fédor Tikhomirov
 #   Fecha: 29 de octubre de 2025
@@ -59,6 +59,78 @@ def bind_sensor_to_user(user_id: int, uuid: str, conn=None):
             "associated_user": user_id,
             "last_active": last_active,
         }
+    }
+    
+#-----------------------------------
+#   Borra un sensor concreto o todos los sensores de un usuario
+#   N: user_id, Bool: erase_all ,String: uuid -> delete_sensor_records() -> 200 OK | Error
+#-----------------------------------
+
+def delete_sensor_records(user_id: int, erase_all: bool, uuid: str = None, conn=None):
+    close_conn = False
+    cursor = None
+    try:
+        if conn is None:
+            conn = get_connection()
+            close_conn = True
+
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("SELECT ID FROM USUARIOS WHERE ID = %s", (user_id,))
+        user = cursor.fetchone()
+        if not user:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+        cursor.execute("SELECT UUID FROM SENSORES WHERE ASSOCIATED_USER = %s", (user_id,))
+        sensores = cursor.fetchall()
+
+        if not sensores:
+            raise HTTPException(status_code=404, detail="El usuario no tiene sensores asociados")
+
+        if erase_all:
+            cursor.execute("DELETE FROM SENSORES WHERE ASSOCIATED_USER = %s", (user_id,))
+            message = f"Todos los sensores del usuario {user_id} han sido eliminados"
+
+        else:
+            if uuid is None:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Debe proporcionar un UUID para borrar un sensor específico"
+                )
+
+            cursor.execute(
+                "SELECT UUID FROM SENSORES WHERE UUID = %s AND ASSOCIATED_USER = %s",
+                (uuid, user_id)
+            )
+            sensor = cursor.fetchone()
+
+            if not sensor:
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"El sensor '{uuid}' no está asociado al usuario {user_id}"
+                )
+
+            cursor.execute("DELETE FROM SENSORES WHERE UUID = %s", (uuid,))
+            message = f"El sensor '{uuid}' ha sido eliminado del usuario {user_id}"
+
+        if close_conn:
+            conn.commit()
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error en la base de datos: {e}")
+    finally:
+        if cursor:
+            cursor.close()
+        if close_conn and conn:
+            conn.close()
+
+    return {
+        "status": "ok",
+        "mensaje": message,
+        "usuario": user_id,
+        "eliminado": "todos" if erase_all else uuid
     }
     
     

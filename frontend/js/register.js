@@ -1,5 +1,5 @@
 //-----------------------------------
-//   © 2025 RRVV Systems. Todos los derechos reservados.
+//   © 2025 OxiGo. Todos los derechos reservados.
 //-----------------------------------
 //   Autor: Adrián Jáuregui Felipe
 //   Fecha: 28 de octubre de 2025
@@ -47,6 +47,7 @@ async function handleRegister(event) {
 
     //Envía los datos a la API
     try {
+
         const response = await fetch("v1/users/register", {
             method: "POST",
             headers: {
