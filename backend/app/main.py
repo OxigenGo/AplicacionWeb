@@ -14,7 +14,7 @@ from fastapi import FastAPI, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from .core import insert_user, login_user, update_user
-from .sensores import bind_sensor_to_user, add_reading
+from .sensores import bind_sensor_to_user, add_reading, delete_sensor_records
 
 app = FastAPI()
 
@@ -32,11 +32,17 @@ class LoginData(BaseModel):
 class UpdateData(BaseModel):
     username: str
     email: str
-    password: str
+    password: Optional[str]
     profilePic: Optional[str]
 class AssociationData(BaseModel):
     user_id: int
     uuid: str
+    
+class AssociationDeletionData(BaseModel):
+    user_id: int
+    erase_all: bool
+    uuid: Optional[str]
+    
 class Reading(BaseModel):
     associated_uuid: str
     gas: float
@@ -74,6 +80,14 @@ def attempt_update(user: UpdateData):
 @app.post("/v1/data/bind")
 def attempt_bind(user: AssociationData):
     return bind_sensor_to_user(user.user_id, user.uuid)
+
+#-----------------------------------
+#   DELETE /v1/data/bind -> Eliminar sensor o sensores de usuario
+#-----------------------------------
+
+@app.delete("/v1/data/bind")
+def attempt_delete_bind(deletionData: AssociationDeletionData):
+    return delete_sensor_records(deletionData.user_id, deletionData.erase_all, deletionData.uuid)
 
 #-----------------------------------
 #   POST /v1/data/reading -> Añadir una medida de sensor
