@@ -8,12 +8,21 @@
 #   Descripción: Funciones de manejo de usuarios
 #-----------------------------------
 
-from datetime import datetime
+import random
+from datetime import datetime, timedelta
 from fastapi import HTTPException, Response
+from dataclasses import dataclass
 import bcrypt
 import json
 
 from .db import get_connection
+from .email_utils import send_confirmation_email
+
+@dataclass
+class UserToRegister:
+    username: str
+    email: str
+    password: str
 
 #-----------------------------------
 #   Inserta un nuevo usuario en la base de datos
@@ -59,6 +68,112 @@ def insert_user(username: str, email: str, password: str, conn=None):
     return {"status": "ok", "mensaje": f"Usuario '{username}' creado exitosamente",
             "usuario": {"id": user_id, "username": username, "email": email}}
 
+#-----------------------------------
+#   Añade a la base de datos un usuario provisional y le envia el correo de verificacion
+#   String: email, String: usernames, String: pass -> register_request() -> 200 OK | HTTP Error
+#-----------------------------------
+def register_request(username: str, email: str, password: str):
+    conn = None
+    try:
+        conn = get_connection()
+
+        with conn.cursor(dictionary=True) as cursor:
+            cursor.execute(
+                "SELECT ID FROM USUARIOS WHERE EMAIL = %s",
+                (email,)
+            )
+            row = cursor.fetchone()
+            if row:
+                raise HTTPException(status_code=400, detail="El usuario ya existe")
+
+            hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+            code = str(random.randint(100000, 999999))
+            expires = datetime.now() + timedelta(minutes=20)
+
+            cursor.execute(
+                "INSERT INTO CODIGOS (EMAIL, USERNAME, PASSWORD, CODE, EXPIRES) VALUES (%s, %s, %s, %s, %s)",
+                (email, username, hashed_password, code, expires)
+            )
+
+        conn.commit()
+
+        send_confirmation_email(email, code)
+
+        return {
+            "status": "ok",
+            "mensaje": "Código de verificación enviado",
+            "email": email
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al procesar registro: {e}")
+    finally:
+        if conn:
+            conn.close()
+            
+            
+def register_verify(email: str, code: int):
+    conn = None
+    try:
+        conn = get_connection()
+
+        with conn.cursor(dictionary=True) as cursor:
+            cursor.execute(
+                "SELECT ID, USERNAME, PASSWORD, CODE, EXPIRES FROM CODIGOS WHERE EMAIL = %s",
+                (email,)
+            )
+            row = cursor.fetchone()
+
+            if not row:
+                raise HTTPException(status_code=404, detail="No se encontró una solicitud de registro para este correo")
+
+            if str(row["CODE"]) != str(code):
+                raise HTTPException(status_code=400, detail="El código es incorrecto")
+
+            if datetime.now() > row["EXPIRES"]:
+                cursor.execute("DELETE FROM CODIGOS WHERE EMAIL = %s", (email,))
+                conn.commit()
+                raise HTTPException(status_code=400, detail="El código ha expirado")
+
+            username = row["USERNAME"]
+            hashed_password = row["PASSWORD"]
+
+            # 4. Insertar al usuario en la tabla USUARIOS
+            today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            cursor.execute(
+                "INSERT INTO USUARIOS (USERNAME, EMAIL, PASSWORD, REGISTER_DATE, LAST_LOGIN) "
+                "VALUES (%s, %s, %s, %s, %s)",
+                (username, email, hashed_password, today, today)
+            )
+
+            user_id = cursor.lastrowid
+
+            cursor.execute("DELETE FROM CODIGOS WHERE EMAIL = %s", (email,))
+
+        conn.commit()
+
+        return {
+            "status": "ok",
+            "mensaje": "Correo verificado y usuario creado exitosamente",
+            "usuario": {
+                "id": user_id,
+                "username": username,
+                "email": email
+            }
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al verificar el código: {e}")
+    finally:
+        if conn:
+            conn.close()
+
+        
 #-----------------------------------
 #   Autentifica al usuario usando el correo o el nombre de usuario y la contraseña
 #   String: user_or_email, String: pass -> login_user() -> JSON: user | HTTP Error
