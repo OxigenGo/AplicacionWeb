@@ -72,7 +72,7 @@ def insert_user(username: str, email: str, password: str, conn=None):
 #   Añade a la base de datos un usuario provisional y le envia el correo de verificacion
 #   String: email, String: usernames, String: pass -> register_request() -> 200 OK | HTTP Error
 #-----------------------------------
-def register_request(username: str, email: str, password: str):
+def register_request(email: str, username: str, password: str):
     conn = None
     try:
         conn = get_connection()
