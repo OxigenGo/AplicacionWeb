@@ -8,7 +8,7 @@
 //   Descripción: Este fichero envia los datos de registro a la API
 //-----------------------------------
 
-const form = document.getElementById("register-form");
+const form = document.getElementById("registerForm");
 const messageDiv = document.getElementById("register_message");
 const errorcontainer = document.querySelector(".container-error");
 const closebutton = document.getElementById("close-error");
