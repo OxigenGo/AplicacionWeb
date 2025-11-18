@@ -121,7 +121,7 @@ def register_verify(email: str, code: int):
 
         with conn.cursor(dictionary=True) as cursor:
             cursor.execute(
-                "SELECT ID, USERNAME, PASSWORD, CODE, EXPIRES FROM CODIGOS WHERE EMAIL = %s",
+                "SELECT USERNAME, PASSWORD_HASH, CODE, EXPIRES FROM CODIGOS WHERE EMAIL = %s",
                 (email,)
             )
             row = cursor.fetchone()
@@ -138,11 +138,9 @@ def register_verify(email: str, code: int):
                 raise HTTPException(status_code=400, detail="El código ha expirado")
 
             username = row["USERNAME"]
-            hashed_password = row["PASSWORD"]
+            hashed_password = row["PASSWORD_HASH"]
 
-            # 4. Insertar al usuario en la tabla USUARIOS
             today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
             cursor.execute(
                 "INSERT INTO USUARIOS (USERNAME, EMAIL, PASSWORD, REGISTER_DATE, LAST_LOGIN) "
                 "VALUES (%s, %s, %s, %s, %s)",
@@ -172,6 +170,7 @@ def register_verify(email: str, code: int):
     finally:
         if conn:
             conn.close()
+
 
         
 #-----------------------------------
