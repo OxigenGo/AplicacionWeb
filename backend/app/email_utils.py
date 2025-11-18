@@ -10,17 +10,18 @@
 
 import os
 import logging
+import traceback
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
+# Configurar logging para systemd/journalctl
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
 SENDER_EMAIL = "ftikhom@upv.edu.es"
 
-def send_confirmation_email(to_email: str, code: str):
-    """Envía un correo con un código de verificación al usuario."""
-
+def send_confirmation_email(to_email: str, code: str) -> bool:
+    SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
     if not SENDGRID_API_KEY:
         logger.error("No se encontró la variable de entorno SENDGRID_API_KEY")
         return False
@@ -53,4 +54,15 @@ def send_confirmation_email(to_email: str, code: str):
         return True
     except Exception as e:
         logger.error(f"Error al enviar correo a {to_email}: {e}")
+        logger.error(traceback.format_exc())
         return False
+
+
+# Bloque de prueba opcional
+if __name__ == "__main__":
+    test_email = "tu_correo@gmail.com"
+    test_code = "123456"
+    if send_confirmation_email(test_email, test_code):
+        print("Correo enviado correctamente")
+    else:
+        print("Fallo al enviar el correo")
