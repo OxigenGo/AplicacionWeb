@@ -13,7 +13,7 @@ from typing import Optional
 from fastapi import FastAPI, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from .core import insert_user, login_user, update_user
+from .core import insert_user, login_user, update_user, register_request, register_verify
 from .sensores import bind_sensor_to_user, add_reading, delete_sensor_records
 
 app = FastAPI()
@@ -26,6 +26,15 @@ class RegistrationData(BaseModel):
     username: str
     email: str
     password: str
+    
+class RegisterRequest(BaseModel):
+    username: str
+    email: str
+    password: str
+class VerifyRequest(BaseModel):
+    email: str
+    code: int
+    
 class LoginData(BaseModel):
     username_or_email: str
     password: str
@@ -56,6 +65,15 @@ class Reading(BaseModel):
 @app.post("/v1/users/register")
 def attempt_create(user: RegistrationData):
     return insert_user(user.username, user.email, user.password)
+
+
+@app.post("/v2/register/request")
+def attempt_register_request(request: RegisterRequest):
+    return register_request(request.email, request.username, request.password)
+
+@app.post("/v2/register/verify")
+def attempt_register_verify(request: VerifyRequest):
+    return register_verify(request.email, request.code)
 
 #-----------------------------------
 #   POST /v1/users/login -> Iniciar sesión
