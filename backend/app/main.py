@@ -13,7 +13,7 @@ from typing import Optional
 from fastapi import FastAPI, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from .core import insert_user, login_user, update_user, register_request, register_verify
+from .core import insert_user, login_user, update_user, register_request, register_verify, delete_user
 from .sensores import bind_sensor_to_user, add_reading, delete_sensor_records, get_user_sensors
 
 app = FastAPI()
@@ -31,6 +31,7 @@ class RegisterRequest(BaseModel):
     username: str
     email: str
     password: str
+    
 class VerifyRequest(BaseModel):
     email: str
     code: int
@@ -38,11 +39,18 @@ class VerifyRequest(BaseModel):
 class LoginData(BaseModel):
     username_or_email: str
     password: str
+    
 class UpdateData(BaseModel):
     username: str
     email: str
     password: Optional[str]
     profilePic: Optional[str]
+    
+class UserDeletionData(BaseModel):
+    user_id: Optional[int]
+    username: Optional[str]
+    email: Optional[str]
+    
 class AssociationData(BaseModel):
     user_id: int
     uuid: str
@@ -69,10 +77,17 @@ class Reading(BaseModel):
 def attempt_create(user: RegistrationData):
     return insert_user(user.username, user.email, user.password)
 
+#-----------------------------------
+#   POST /v2/register/request -> Enviar código verificacion
+#-----------------------------------
 
 @app.post("/v2/register/request")
 def attempt_register_request(request: RegisterRequest):
     return register_request(request.email, request.username, request.password)
+
+#-----------------------------------
+#   POST /v2/register/verify -> Verificar y crear usuario
+#-----------------------------------
 
 @app.post("/v2/register/verify")
 def attempt_register_verify(request: VerifyRequest):
@@ -93,6 +108,15 @@ def attempt_login(user: LoginData, response: Response):
 @app.put("/v1/users/update")
 def attempt_update(user: UpdateData):
     return update_user(user.username, user.email, user.password, user.profilePic)
+
+#-----------------------------------
+#   DELETE /v1/users/update -> Eliminar usuario
+#-----------------------------------
+
+@app.delete("/v1/users/update")
+def attempt_delete(user: UserDeletionData):
+    return delete_user(user.user_id, user.username, user.email)
+
 
 #-----------------------------------
 #   POST /v1/data/bind -> Vincular sensor a usuario
