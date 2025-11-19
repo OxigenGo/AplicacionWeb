@@ -138,7 +138,7 @@ def register_verify(email: str, code: int):
                 raise HTTPException(status_code=400, detail="El código ha expirado")
 
             username = row["USERNAME"]
-            hashed_password = row["PASSWORD_HASH"]
+            hashed_password = row["PASSWORD"]
 
             today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             cursor.execute(
