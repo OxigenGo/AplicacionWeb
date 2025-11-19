@@ -181,3 +181,59 @@ def add_reading(associated_uuid: str, gas_value: float, temperature_value: float
         "status": "ok",
         "mensaje": f"Medición agregada exitosamente para el sensor '{associated_uuid}'"
     }
+    
+#-----------------------------------
+#   Devuelve una lista con todos los sensores de un usuario y sus 10 ultimas lecturas
+#   String: user_id -> add_reading() -> 200 OK | Error
+#-----------------------------------
+
+def get_user_sensors(user_id: int, conn=None):
+    close_conn = False
+    cursor = None
+    try:
+        if conn is None:
+            conn = get_connection()
+            close_conn = True
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("SELECT ID FROM USUARIOS WHERE ID = %s", (user_id,))
+        user = cursor.fetchone()
+        if not user:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+        cursor.execute("SELECT UUID, LAST_ACTIVE FROM SENSORES WHERE ASSOCIATED_USER = %s", (user_id,))
+        sensores = cursor.fetchall()
+
+        if not sensores:
+            raise HTTPException(status_code=404, detail="El usuario no tiene sensores asociados")
+
+        resultado = []
+        for sensor in sensores:
+            cursor.execute(
+                "SELECT DATE, GAS_VALUE, TEMPERATURE_VALUE, POSITION "
+                "FROM MEDICIONES WHERE ASSOCIATED_UUID = %s "
+                "ORDER BY DATE DESC LIMIT 20",
+                (sensor["UUID"],)
+            )
+            mediciones = cursor.fetchall()
+            resultado.append({
+                "uuid": sensor["UUID"],
+                "last_active": sensor["LAST_ACTIVE"],
+                "mediciones": mediciones
+            })
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error en la base de datos: {e}")
+    finally:
+        if cursor:
+            cursor.close()
+        if close_conn and conn:
+            conn.close()
+
+    return {
+        "status": "ok",
+        "usuario": user_id,
+        "sensores": resultado
+    }
