@@ -121,7 +121,7 @@ def register_verify(email: str, code: int):
 
         with conn.cursor(dictionary=True) as cursor:
             cursor.execute(
-                "SELECT USERNAME, PASSWORD_HASH, CODE, EXPIRES FROM CODIGOS WHERE EMAIL = %s",
+                "SELECT USERNAME, PASSWORD, CODE, EXPIRES FROM CODIGOS WHERE EMAIL = %s",
                 (email,)
             )
             row = cursor.fetchone()
