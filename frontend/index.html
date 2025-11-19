@@ -6,15 +6,35 @@
     <title>Sistemas RRVV</title>
     <!--Estilos-->
     <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/reutilizable/header.css">
+    <link rel="stylesheet" href="css/index.css"><!--no poner antes que el header-->
 </head>
 <body>
-    <div id="login_container">
-        <h1>Header 1</h1><br>
-        <h2>Header 2</h2><br>
-        <h3>Header 3</h3><br>
-        <a>Texto normal</a>
-         
-    </div>
+    <!--Header-->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">OxyGo</div>
+            <nav class="nav">
+                <a href="#" class="nav-link">Inicio</a>
+                <a href="#" class="nav-link">Nosotros</a>
+                <a href="#" class="nav-link">Contacto</a>
+            </nav>
+            <div class="sesion-buttons">
+                <a href="./registro.html" class="register-button">Registro</a>
+                <a href="./login.html" class="login-button">Iniciar Sesión</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="info-container">
+            <div class="info-text">
+                <h1>Respira Tecnología</h1>
+                <p>Controla y visualiza la calidad del aire a tu alrededor en tiempo real.</p>
+            </div>
+            <a href="./login.html" class="button-landing">Comenzar</a>
+            
+        </div>
+    </main>
 </body>
 </html>
