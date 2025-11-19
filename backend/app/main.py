@@ -14,7 +14,7 @@ from fastapi import FastAPI, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from .core import insert_user, login_user, update_user, register_request, register_verify
-from .sensores import bind_sensor_to_user, add_reading, delete_sensor_records
+from .sensores import bind_sensor_to_user, add_reading, delete_sensor_records, get_user_sensors
 
 app = FastAPI()
 
@@ -51,6 +51,9 @@ class AssociationDeletionData(BaseModel):
     user_id: int
     erase_all: bool
     uuid: Optional[str]
+    
+class UserSensorList(BaseModel):
+    user_id: int
     
 class Reading(BaseModel):
     associated_uuid: str
@@ -106,6 +109,14 @@ def attempt_bind(user: AssociationData):
 @app.delete("/v1/data/bind")
 def attempt_delete_bind(deletionData: AssociationDeletionData):
     return delete_sensor_records(deletionData.user_id, deletionData.erase_all, deletionData.uuid)
+
+#-----------------------------------
+#   POST /v1/data/user_sensors -> Obtener los sensores de un usuario y sus medidas
+#-----------------------------------
+
+@app.post("/v1/data/user_sensors")
+def attempt_get_user_sensors(data: UserSensorList):
+    return get_user_sensors(data.user_id)
 
 #-----------------------------------
 #   POST /v1/data/reading -> Añadir una medida de sensor

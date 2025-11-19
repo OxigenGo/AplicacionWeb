@@ -1,0 +1,132 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, hsl(214, 85%, 30%) 0%, hsl(214, 85%, 50%) 50%, hsl(195, 100%, 50%) 100%);
+    min-height: 100vh;
+    color: hsl(220, 15%, 25%);
+    position: relative;
+    overflow-x: hidden;
+}
+
+.main-content {
+    position: relative;
+    z-index: 10;
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.form-container {
+    background: white;
+    border-radius: 1rem;
+    padding: 3rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.form-container p{
+    text-align: center;
+    margin-top: 1rem;
+    color: hsl(215, 20%, 65%);
+}
+
+.form-container p a{
+    color: hsl(214, 85%, 50%);
+    text-decoration: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, hsl(214, 85%, 50%), hsl(195, 100%, 50%));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.form-subtitle {
+    text-align: center;
+    color: hsl(215, 20%, 65%);
+    margin-bottom: 2rem;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: hsl(220, 15%, 25%);
+}
+
+.form-input {
+    padding: 0.75rem;
+    border: none;
+    border-bottom: 2px solid hsl(220, 15%, 85%);
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none ;
+    border-color:hsl(214, 85%, 50%);
+}
+
+.submit-button {
+    background: linear-gradient(135deg, hsl(214, 85%, 50%), hsl(195, 100%, 50%));
+    color: white;
+    border: none;
+    padding: 0.875rem;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 0.5rem;
+}
+
+.submit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(33, 150, 243, 0.4);
+}
+
+.submit-button:active {
+    transform: translateY(0);
+}
+
+.footer {
+    position: relative;
+    text-align: center;
+    color: hsl(214, 10%, 43%);
+    margin-top: -1rem;
+}

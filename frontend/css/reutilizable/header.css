@@ -6,7 +6,6 @@
 }
 
 .header-content {
-    max-width: 1200px;
     margin: 0 auto;
     padding: 1rem 2rem;
     display: flex;
@@ -69,6 +68,56 @@
 .profile-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 20px rgba(33, 150, 243, 0.4);
+}
+
+.sesion-buttons{
+    display: flex;
+    flex-direction: row;
+    gap: 0.8rem;
+}
+
+.register-button {
+    color: white;
+    text-decoration: none;
+    background-color: hsl(214, 81%, 69%);
+    border: none;
+    border-radius: 5rem;
+    padding: 0.6rem 2.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+}
+
+.register-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(33, 150, 243, 0.4);
+}
+
+.register-button:active {
+    transform: translateY(0);
+}
+
+.login-button {
+    color: hsl(214, 85%, 50%);
+    text-decoration: none;
+    background-color: white;
+    border: none;
+    border-radius: 5rem;
+    padding: 0.6rem 2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+}
+
+.login-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(33, 150, 243, 0.4);
+}
+
+.login-button:active {
+    transform: translateY(0);
 }
 
 /*To do: Hacer header responsive*/
