@@ -99,7 +99,6 @@ def register_request(email: str, username: str, password: str):
         conn = get_connection()
 
         with conn.cursor(dictionary=True) as cursor:
-            # Check if the user already exists in the real users table
             cursor.execute(
                 "SELECT ID FROM USUARIOS WHERE EMAIL = %s",
                 (email,)
@@ -108,14 +107,12 @@ def register_request(email: str, username: str, password: str):
             if row:
                 raise HTTPException(status_code=400, detail="El usuario ya existe")
 
-            # Check if there is a pending code for this email
             cursor.execute(
-                "SELECT ID FROM CODIGOS WHERE EMAIL = %s",
+                "SELECT 1 FROM CODIGOS WHERE EMAIL = %s",
                 (email,)
             )
             pending = cursor.fetchone()
 
-            # If pending verification exists → delete it
             if pending:
                 cursor.execute(
                     "DELETE FROM CODIGOS WHERE EMAIL = %s",
