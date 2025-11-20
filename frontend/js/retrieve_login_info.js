@@ -23,8 +23,14 @@ function getCookie(name) {
  */
 function getLoginInfo() {
     try {
-        const cookie = getCookie("user_data");
+        let cookie = getCookie("user_data");
         if (!cookie) return null;
+
+        if (cookie.startsWith('"') && cookie.endsWith('"')) {
+            cookie = cookie.slice(1, -1);
+        }
+
+        cookie = cookie.replace(/\\054/g, ',');
 
         const userData = JSON.parse(cookie);
 
@@ -38,6 +44,7 @@ function getLoginInfo() {
         return null;
     }
 }
+
 
 /**
  * Verifica si hay sesión iniciada
