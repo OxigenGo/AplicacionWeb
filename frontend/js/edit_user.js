@@ -8,6 +8,8 @@
 //   Descripción: Este fichero permite el envio del formulario de edicion de usuario y sus datos a la API
 //-----------------------------------
 
+import { getCookie } from "./retrieve_login_info";
+
 const form = document.getElementById("edit_user_form");
 const messageDiv = document.createElement("div");
 form.prepend(messageDiv);
@@ -65,5 +67,26 @@ async function handleEditUser(event) {
         console.error(error);
     }
 }
+
+function fill_user_data() {
+    let raw = getCookie();
+    if (!raw) return;
+
+    let user = {};
+
+    try {
+        user = JSON.parse(raw);
+    } catch (e) {
+        console.error("Cookie de usuario no es JSON válido.");
+        return;
+    }
+
+    document.getElementById("username").value = user.username || "";
+    document.getElementById("email").value = user.email || "";
+}
+
+
+if (getCookie() == null) window.location.href = "../login.html";
+else { fill_user_data(); }
 
 form.addEventListener("submit", handleEditUser);
