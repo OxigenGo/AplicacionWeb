@@ -117,15 +117,16 @@
                 <p>Por favor, complete los campos con el código que le hemos mandado al correo proporcionado.</p>
             </div>
             <div class="code">
-                <input type="text" class="code-input" id="code-one" name="code-one" required>
-                <input type="text" class="code-input" id="code-two" name="code-two" required>
-                <input type="text" class="code-input" id="code-three" name="code-three" required>
-                <input type="text" class="code-input" id="code-four" name="code-four" required>
-                <input type="text" class="code-input" id="code-five" name="code-five" required>
-                <input type="text" class="code-input" id="code-six" name="code-six" required>
+                <input type="text" class="code-input" id="code-one" name="code-one" maxlength="1" inputmode="numeric" required>
+                <input type="text" class="code-input" id="code-two" name="code-two" maxlength="1" inputmode="numeric" required>
+                <input type="text" class="code-input" id="code-three" name="code-three" maxlength="1" inputmode="numeric" required>
+                <input type="text" class="code-input" id="code-four" name="code-four" maxlength="1" inputmode="numeric" required>
+                <input type="text" class="code-input" id="code-five" name="code-five" maxlength="1" inputmode="numeric" required>
+                <input type="text" class="code-input" id="code-six" name="code-six" maxlength="1" inputmode="numeric" required>
             </div>
+            <div id="code-error" class="error-code-message"></div>
             <div class="send-code">
-                <p>No te ha llegado ningun código?</p>
+                <p>No ha llegado ningun código?</p>
                 <button id="resend-code">Reenviar código</button>
             </div>
         </div>

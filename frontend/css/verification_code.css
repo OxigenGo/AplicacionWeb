@@ -51,23 +51,28 @@
 .code{
     display: flex;
     justify-content: space-around;
-    padding: 2rem 4rem;
+    padding: 2rem 4rem 0 4rem;
+
 }
 
 .code-input{
+    color: hsl(214, 85%, 50%);
     border: 3px solid hsl(218, 4%, 58%);
     border-radius: 7.5px;
     max-width: 3rem;
     height: 4rem;
     max-height: 10rem;
-    font-size: 1rem;
+    font-size: 2rem;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    font-weight: 1000;
 }
 
 .send-code{
     justify-content: center;
     display: flex;
     gap: 1rem;
+    margin-top: 1rem;
 }
 
 #resend-code{
@@ -77,6 +82,11 @@
     color: hsl(214, 85%, 50%);
     text-decoration: underline;
     cursor: pointer;
+}
+
+.error-code-message{
+    color: red;
+    margin-top: 1rem;
 }
 
 
