@@ -50,7 +50,7 @@ async function handleRegister(event) {
     //Envía los datos a la API
     try {
 
-        const response = await fetch("v1/users/register", {
+        const response = await fetch("/v2/register/request", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -64,6 +64,7 @@ async function handleRegister(event) {
         if (response.ok) {
             codeMessage.style.display = "flex";
 
+            //No se si hay que pasar por aqui para poner el codigo sin que guarde el usuario en la BBDD o eso se puede cortar o eliminar de alguna manera
             //TODO - Redirigir a página de registro exitoso
         } else {
             //Si el registro falla
@@ -121,17 +122,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 try{
-                    const respone = await fetch("/v2/register/verify", {
+                    const response = await fetch("/v2/register/verify", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json" 
                         },
-                        body: JSON.stringify({ username, email, password })
+                        body: JSON.stringify({ email, code})
                     });
 
                     const result = await response.json();
                     if(response.ok){
-                        window.location.href = "./edit_user.html";
+                        window.location.href = "../edit_user.html";
                     } else { 
                         errorCodeDiv.textContent = result.message || "El código es incorrecto.";
                     }
