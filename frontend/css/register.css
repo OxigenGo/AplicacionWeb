@@ -150,6 +150,18 @@ body {
     margin-top: 1rem;
 }
 
+.eye-button{
+    background: white;
+    border: none;
+    height: 5rem;
+    width: 5rem;
+}
+
+.img-eye{
+    height: 2rem;
+    width: 2rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .nav {
