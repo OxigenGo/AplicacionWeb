@@ -1,5 +1,5 @@
 //-----------------------------------
-//   © 2025 RRVV Systems. Todos los derechos reservados.
+//   © 2025 OxiGo. Todos los derechos reservados.
 //-----------------------------------
 //   Autor: Fédor Tikhomirov
 //   Fecha: 27 de octubre de 2025
@@ -67,11 +67,14 @@ async function handleEditUser(event) {
 }
 
 function fill_user_data() {
-    const user = getCookie("user_data"); // ya devuelve objeto
+    const user = getCookie("user_data");
     if (!user) return;
+
+    const registration_year = new Date(user.registration_date).getFullYear();
 
     document.getElementById("username").value = user.username || "";
     document.getElementById("email").value = user.email || "";
+    document.getElementById("registration_date").textContent = `Usuario activo desde ${registration_year}`;
 }
 
 

@@ -224,7 +224,7 @@ def login_user(username_or_email: str, password: str, response: Response, conn=N
 
         with conn.cursor(dictionary=True) as cursor:
             cursor.execute(
-                "SELECT ID, USERNAME, EMAIL, PASSWORD FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
+                "SELECT ID, USERNAME, EMAIL, PASSWORD, REGISTER_DATE FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
                 (username_or_email, username_or_email)
             )
             row = cursor.fetchone()
@@ -232,7 +232,7 @@ def login_user(username_or_email: str, password: str, response: Response, conn=N
         if not row:
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
-        user_id, username, email, stored_hash = row["ID"], row["USERNAME"], row["EMAIL"], row["PASSWORD"]
+        user_id, username, email, stored_hash, registration_date = row["ID"], row["USERNAME"], row["EMAIL"], row["PASSWORD"], row["REGISTER_DATE"]
         
         if not bcrypt.checkpw(password.encode("utf-8"), stored_hash.encode("utf-8")):
             raise HTTPException(status_code=401, detail="Contraseña incorrecta")
@@ -244,7 +244,7 @@ def login_user(username_or_email: str, password: str, response: Response, conn=N
         if close_conn:
             conn.commit()
 
-        cookie_data = {"id": user_id, "username": username, "email": email}
+        cookie_data = {"id": user_id, "username": username, "email": email, "registration_date": registration_date}
         cookie_json = json.dumps(cookie_data)
         cookie_base64 = base64.b64encode(cookie_json.encode()).decode()
 
@@ -266,7 +266,7 @@ def login_user(username_or_email: str, password: str, response: Response, conn=N
             conn.close()
 
     return {"status": "ok", "mensaje": "Inicio de sesión exitoso",
-            "usuario": {"id": user_id, "username": username, "email": email}}
+            "usuario": {"id": user_id, "username": username, "email": email, "registration_date": registration_date}}
 
 #-----------------------------------
 #   Edita el usuario en la base de datos
