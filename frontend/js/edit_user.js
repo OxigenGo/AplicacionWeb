@@ -8,8 +8,6 @@
 //   Descripción: Este fichero permite el envio del formulario de edicion de usuario y sus datos a la API
 //-----------------------------------
 
-import getCookie from "./retrieve_login_info";
-
 const form = document.getElementById("edit_user_form");
 const messageDiv = document.createElement("div");
 form.prepend(messageDiv);
