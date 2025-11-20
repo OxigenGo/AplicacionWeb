@@ -232,7 +232,7 @@ def login_user(username_or_email: str, password: str, response: Response, conn=N
         if not row:
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
-        user_id, username, email, stored_hash, registration_date = row["ID"], row["USERNAME"], row["EMAIL"], row["PASSWORD"], row["REGISTER_DATE"]
+        user_id, username, email, stored_hash, registration_date = row["ID"], row["USERNAME"], row["EMAIL"], row["PASSWORD"], row["REGISTER_DATE"].strftime("%Y-%m-%d %H:%M:%S")
         
         if not bcrypt.checkpw(password.encode("utf-8"), stored_hash.encode("utf-8")):
             raise HTTPException(status_code=401, detail="Contraseña incorrecta")
