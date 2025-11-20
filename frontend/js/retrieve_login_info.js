@@ -1,5 +1,5 @@
 //-----------------------------------
-//   © 2025 AirChecker. Todos los derechos reservados.
+//   © 2025 OxiGo. Todos los derechos reservados.
 //-----------------------------------
 //   Autor: Fédor Tikhomirov
 //   Fecha: 2 de noviembre de 2025
@@ -10,45 +10,37 @@
 
 /**
  * Obtiene el valor de una cookie por nombre
- * @param {string} name - Nombre de la cookie
- * @returns {string|null} - Valor de la cookie o null si no existe
  */
 function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
+    const cookies = document.cookie.split('; ');
+    for (let cookie of cookies) {
+        const index = cookie.indexOf('=');
+        if (index === -1) continue;
+
+        const key = cookie.slice(0, index);
+        let value = cookie.slice(index + 1);
+
+        if (key === name) {
+            if (value.startsWith('"') && value.endsWith('"')) {
+                value = value.slice(1, -1);
+            }
+
+            try {
+                const decoded = atob(value);
+                return JSON.parse(decoded);
+            } catch (e) {
+                console.error("Error al decodificar cookie:", e);
+                return null;
+            }
+        }
+    }
     return null;
 }
 
-/**
- * Recupera y analiza los datos del usuario desde la cookie "user_data"
- * @returns {object|null} - Objeto con { id, username, email } o null si no existe / es inválido
- */
-function getLoginInfo() {
-    try {
-        const cookie = getCookie("user_data");
-        if (!cookie) return null;
-
-        const userData = JSON.parse(cookie);
-
-        if (userData && userData.id && userData.username && userData.email) {
-            return userData;
-        }
-
-        return null; // En caso de malformación o fallo
-    } catch (err) {
-        console.error("Error al leer la cookie de usuario:", err);
-        return null;
-    }
-}
 
 /**
- * Verifica si hay una sesión iniciada
- * @returns {boolean} - true si hay cookie válida, false si no
+ * Verifica si hay sesión iniciada
  */
 function isUserLoggedIn() {
-    return getLoginInfo() !== null;
+    return getCookie("user_data") !== null;
 }
-
-// Exportar funciones
-export { getCookie, getLoginInfo, isUserLoggedIn };
