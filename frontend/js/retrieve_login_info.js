@@ -10,8 +10,6 @@
 
 /**
  * Obtiene el valor de una cookie por nombre
- * @param {string} name - Nombre de la cookie
- * @returns {string|null} - Valor de la cookie o null si no existe
  */
 function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -21,8 +19,7 @@ function getCookie(name) {
 }
 
 /**
- * Recupera y analiza los datos del usuario desde la cookie "user_data"
- * @returns {object|null} - Objeto con { id, username, email } o null si no existe / es inválido
+ * Recupera los datos del usuario desde la cookie "user_data"
  */
 function getLoginInfo() {
     try {
@@ -35,7 +32,7 @@ function getLoginInfo() {
             return userData;
         }
 
-        return null; // En caso de malformación o fallo
+        return null;
     } catch (err) {
         console.error("Error al leer la cookie de usuario:", err);
         return null;
@@ -43,12 +40,8 @@ function getLoginInfo() {
 }
 
 /**
- * Verifica si hay una sesión iniciada
- * @returns {boolean} - true si hay cookie válida, false si no
+ * Verifica si hay sesión iniciada
  */
 function isUserLoggedIn() {
     return getLoginInfo() !== null;
 }
-
-// Exportar funciones
-export { getCookie, getLoginInfo, isUserLoggedIn };
