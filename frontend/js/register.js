@@ -12,6 +12,9 @@ const form = document.getElementById("registerForm");
 const messageDiv = document.getElementById("error-message-form");
 const closebutton = document.getElementById("close-error");
 const codeMessage = document.getElementById("body-code");
+
+let registeredEmail = null;
+
 //const number_inputs = 5;
 
 //HandleRegister se encarga de enviar los datos del formulario a la API
@@ -62,6 +65,7 @@ async function handleRegister(event) {
 
         //Si el registro es exitoso
         if (response.ok) {
+            registeredEmail = email;
             codeMessage.style.display = "flex";
 
             //No se si hay que pasar por aqui para poner el codigo sin que guarde el usuario en la BBDD o eso se puede cortar o eliminar de alguna manera
@@ -127,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         headers: {
                             "Content-Type": "application/json" 
                         },
-                        body: JSON.stringify({ email, code})
+                        body: JSON.stringify({ registeredEmail, code})
                     });
 
                     const result = await response.json();
