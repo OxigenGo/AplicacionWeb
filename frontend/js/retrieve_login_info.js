@@ -15,21 +15,26 @@ function getCookie(name) {
     const value = `; ${document.cookie}`;
     console.log(value);
     const parts = value.split(`; ${name}=`);
+    console.log(parts)
+    console.log(parts.length)
     if (parts.length === 2) {
         let raw = parts.pop().split(';').shift();
-
+        console.log(raw)
         if (raw.startsWith('"') && raw.endsWith('"')) {
             raw = raw.slice(1, -1);
+            console.log(raw)
         }
 
         try {
             const decoded = atob(raw);
+            console.log(JSON.parse(decoded))
             return JSON.parse(decoded);
         } catch (e) {
             console.error("Error al decodificar cookie:", e);
             return raw;
         }
     }
+    console.log("Fallo")
     return null;
 }
 
