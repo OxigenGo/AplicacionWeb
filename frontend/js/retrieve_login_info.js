@@ -13,6 +13,7 @@
  */
 function getCookie(name) {
     const value = `; ${document.cookie}`;
+    console.log(value);
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) {
         const raw = parts.pop().split(';').shift();
@@ -33,8 +34,10 @@ function getCookie(name) {
 function getLoginInfo() {
     try {
         const cookie = getCookie("user_data");
-        if (!cookie) return null;
-
+        if (!cookie){
+            console.error("No hay cookie user_data")
+            return null;
+        }
         const userData = JSON.parse(cookie);
 
         if (userData && userData.id && userData.username && userData.email) {
