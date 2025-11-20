@@ -54,6 +54,10 @@
     width: 100%;
 }
 
+.button-div{
+    min-width: 4.5rem;
+}
+
 .profile-button {
     background: white;
     color: hsl(214, 89%, 64%);
