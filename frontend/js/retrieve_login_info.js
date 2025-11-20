@@ -1,5 +1,5 @@
 //-----------------------------------
-//   © 2025 AirChecker. Todos los derechos reservados.
+//   © 2025 OxiGo. Todos los derechos reservados.
 //-----------------------------------
 //   Autor: Fédor Tikhomirov
 //   Fecha: 2 de noviembre de 2025
@@ -14,23 +14,26 @@
 function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
+    if (parts.length === 2) {
+        const raw = parts.pop().split(';').shift();
+        try {
+            const decoded = atob(raw);
+            return JSON.parse(decoded);
+        } catch (e) {
+            return raw;
+        }
+    }
     return null;
 }
+
 
 /**
  * Recupera los datos del usuario desde la cookie "user_data"
  */
 function getLoginInfo() {
     try {
-        let cookie = getCookie("user_data");
+        const cookie = getCookie("user_data");
         if (!cookie) return null;
-
-        if (cookie.startsWith('"') && cookie.endsWith('"')) {
-            cookie = cookie.slice(1, -1);
-        }
-
-        cookie = cookie.replace(/\\054/g, ',');
 
         const userData = JSON.parse(cookie);
 
@@ -44,7 +47,6 @@ function getLoginInfo() {
         return null;
     }
 }
-
 
 /**
  * Verifica si hay sesión iniciada

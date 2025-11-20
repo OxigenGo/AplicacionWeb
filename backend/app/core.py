@@ -14,6 +14,7 @@ from fastapi import HTTPException, Response
 from dataclasses import dataclass
 import bcrypt
 import json
+import base64
 
 from .db import get_connection
 from .email_utils import send_confirmation_email
@@ -243,20 +244,17 @@ def login_user(username_or_email: str, password: str, response: Response, conn=N
         if close_conn:
             conn.commit()
 
-        # Guarda los datos del usuario en una cookie
-        cookie_data = {
-            "id": user_id,
-            "username": username,
-            "email": email
-        }
+        cookie_data = {"id": user_id, "username": username, "email": email}
+        cookie_json = json.dumps(cookie_data)
+        cookie_base64 = base64.b64encode(cookie_json.encode()).decode()
 
         response.set_cookie(
             key="user_data",
-            value=json.dumps(cookie_data),
-            httponly=False, # Desactivado para poder leerla despues desde JS
-            secure=False,   # Desactivado porque el servidor no usan https
+            value=cookie_base64,
+            httponly=False,
+            secure=False,
             samesite="Lax",
-            max_age=60 * 60 * 24 # Duración de 1 día
+            max_age=60*60*24
         )
 
     except HTTPException:
