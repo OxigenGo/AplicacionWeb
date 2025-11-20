@@ -13,7 +13,7 @@ from typing import Optional
 from fastapi import FastAPI, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from .core import insert_user, login_user, update_user, register_request, register_verify, delete_user
+from .core import insert_user, login_user, update_user, register_request, register_verify, delete_user, get_all_users
 from .sensores import bind_sensor_to_user, add_reading, delete_sensor_records, get_user_sensors
 
 app = FastAPI()
@@ -68,6 +68,15 @@ class Reading(BaseModel):
     gas: float
     temperature: float
     position: Optional[str] = None
+    
+    
+#-----------------------------------
+#   GET /v1/users -> Añadir una medida de sensor
+#-----------------------------------
+
+@app.get("/v1/users")
+def attempt_get_all_users():
+    return get_all_users()
 
 #-----------------------------------
 #   POST /v1/users/register -> Registro / Crear nuevo usuario
@@ -116,7 +125,6 @@ def attempt_update(user: UpdateData):
 @app.delete("/v1/users/update")
 def attempt_delete(user: UserDeletionData):
     return delete_user(user.user_id, user.username, user.email)
-
 
 #-----------------------------------
 #   POST /v1/data/bind -> Vincular sensor a usuario

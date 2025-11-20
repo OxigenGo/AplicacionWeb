@@ -18,11 +18,32 @@ import json
 from .db import get_connection
 from .email_utils import send_confirmation_email
 
-@dataclass
-class UserToRegister:
-    username: str
-    email: str
-    password: str
+
+#-----------------------------------
+#   Obtiene a todos los usuarios de la base de datos
+#   get_all_users() -> Json: usuarios | Error
+#-----------------------------------
+def get_all_users():
+    conn = None
+    try:
+        conn = get_connection()
+
+        with conn.cursor(dictionary=True) as cursor:
+            cursor.execute("SELECT ID, USERNAME, EMAIL, PROFILE_PICTURE, REGISTER_DATE, LAST_LOGIN FROM USUARIOS")
+            users = cursor.fetchall()
+
+        return {
+            "status": "ok",
+            "usuarios": users
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al obtener los usuarios: {e}")
+
+    finally:
+        if conn:
+            conn.close()
+    
 
 #-----------------------------------
 #   Inserta un nuevo usuario en la base de datos
@@ -72,7 +93,7 @@ def insert_user(username: str, email: str, password: str, conn=None):
 #   Añade a la base de datos un usuario provisional y le envia el correo de verificacion
 #   String: email, String: usernames, String: pass -> register_request() -> 200 OK | HTTP Error
 #-----------------------------------
-def register_request(username: str, email: str, password: str):
+def register_request(email: str, username: str, password: str):
     conn = None
     try:
         conn = get_connection()
@@ -124,7 +145,7 @@ def register_verify(email: str, code: int):
 
         with conn.cursor(dictionary=True) as cursor:
             cursor.execute(
-                "SELECT ID, USERNAME, PASSWORD, CODE, EXPIRES FROM CODIGOS WHERE EMAIL = %s",
+                "SELECT USERNAME, PASSWORD, CODE, EXPIRES FROM CODIGOS WHERE EMAIL = %s",
                 (email,)
             )
             row = cursor.fetchone()
@@ -143,9 +164,7 @@ def register_verify(email: str, code: int):
             username = row["USERNAME"]
             hashed_password = row["PASSWORD"]
 
-            # 4. Insertar al usuario en la tabla USUARIOS
             today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
             cursor.execute(
                 "INSERT INTO USUARIOS (USERNAME, EMAIL, PASSWORD, REGISTER_DATE, LAST_LOGIN) "
                 "VALUES (%s, %s, %s, %s, %s)",
@@ -175,6 +194,7 @@ def register_verify(email: str, code: int):
     finally:
         if conn:
             conn.close()
+
 
         
 #-----------------------------------
