@@ -16,16 +16,23 @@ function getCookie(name) {
     console.log(value);
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) {
-        const raw = parts.pop().split(';').shift();
+        let raw = parts.pop().split(';').shift();
+
+        if (raw.startsWith('"') && raw.endsWith('"')) {
+            raw = raw.slice(1, -1);
+        }
+
         try {
             const decoded = atob(raw);
             return JSON.parse(decoded);
         } catch (e) {
+            console.error("Error al decodificar cookie:", e);
             return raw;
         }
     }
     return null;
 }
+
 
 
 /**
