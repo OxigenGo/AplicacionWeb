@@ -113,7 +113,10 @@ def register_request(username: str, email: str, password: str):
         if conn:
             conn.close()
             
-            
+#-----------------------------------
+#   Añade a la base de datos un usuario si el codigo de verificacion es correcto
+#   String: email, R: code -> register_verify() -> 200 OK | HTTP Error
+#-----------------------------------
 def register_verify(email: str, code: int):
     conn = None
     try:
@@ -290,3 +293,51 @@ def update_user(username: str, email: str, password: str, profilePicture: str, c
             conn.close()
 
     return {"status": "ok", "mensaje": "Usuario actualizado correctamente", "usuario": updated_user}
+
+#-----------------------------------
+#   Elimina un usuario de la BBDD
+#   R: user_id, String: username, String: email -> delete_user() -> 200 OK | HTTP Error
+#-----------------------------------
+def delete_user(user_id: int = None, username: str = None, email: str = None, conn=None):
+    if user_id is None and username is None and email is None:
+        raise HTTPException(status_code=400, detail="Debe proporcionar al menos un parámetro para eliminar al usuario")
+
+    close_conn = False
+    try:
+        if conn is None:
+            conn = get_connection()
+            close_conn = True
+
+        with conn.cursor(dictionary=True) as cursor:
+            conditions, values = [], []
+            if user_id is not None:
+                conditions.append("ID = %s")
+                values.append(user_id)
+            if username is not None:
+                conditions.append("USERNAME = %s")
+                values.append(username)
+            if email is not None:
+                conditions.append("EMAIL = %s")
+                values.append(email)
+
+            where_clause = " OR ".join(conditions)
+
+            cursor.execute(f"SELECT ID, USERNAME, EMAIL FROM USUARIOS WHERE {where_clause}", tuple(values))
+            user = cursor.fetchone()
+            if not user:
+                raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+            cursor.execute(f"DELETE FROM USUARIOS WHERE {where_clause}", tuple(values))
+
+        if close_conn:
+            conn.commit()
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al eliminar usuario: {e}")
+    finally:
+        if close_conn and conn:
+            conn.close()
+
+    return {"status": "ok", "mensaje": "Usuario eliminado correctamente", "usuario": user}
