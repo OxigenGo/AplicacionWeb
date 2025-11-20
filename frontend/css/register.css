@@ -25,7 +25,7 @@ body {
 .form-container {
     background: white;
     border-radius: 1rem;
-    padding: 3rem;
+    padding: 3rem 3rem 1rem 3rem;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 500px;
@@ -68,7 +68,7 @@ body {
 .form-subtitle {
     text-align: center;
     color: hsl(215, 20%, 65%);
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .register-form {
@@ -127,7 +127,6 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    margin-top: 0.5rem;
 }
 
 .submit-button:hover {
@@ -144,6 +143,11 @@ body {
     text-align: center;
     color: hsl(214, 10%, 43%);
     margin-top: -1rem;
+}
+
+#error-message-form{
+    color: red;
+    margin-top: 1rem;
 }
 
 /* Responsive */

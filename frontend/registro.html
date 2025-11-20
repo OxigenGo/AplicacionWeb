@@ -24,7 +24,7 @@
     <!--Header-->
     <header class="header">
         <div class="header-content">
-            <div class="logo">OxyGo</div>
+            <div class="logo"><a href="./index.html">OxyGo</a></div>
             <nav class="nav">
                 <a href="./index.html" class="nav-link">Inicio</a>
                 <a href="#" class="nav-link">Nosotros</a>
@@ -97,11 +97,17 @@
                     <span class="error-message" id="confirmPasswordError"></span>
                 </div>
 
+                <div class="checkbox-div">
+                    <input type="checkbox" id="checkbox-terms">
+                    <label for="checkbox-terms">Acepto los Términos y condiciones.</label>
+                </div>
+
                 <button type="submit" class="submit-button">
                     Crear Cuenta
                 </button>
                 
             </form>
+            <div id="error-message-form"></div>
             <p>Ya tienes una cuenta? <a href="./login.html">Inicia sesión</a></p>
         </div>
     </main>

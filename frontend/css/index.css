@@ -16,7 +16,6 @@ body{
         #00c1ec 280deg,
         #09a0e3 310deg
     );
-    color: hsl(220, 15%, 25%);
 }
 
 .logo {
@@ -85,4 +84,8 @@ body{
     text-align: center;
     color: hsl(214, 10%, 43%);
     margin-top: -1rem;
+}
+
+#error-message-form{
+    color: red;
 }
