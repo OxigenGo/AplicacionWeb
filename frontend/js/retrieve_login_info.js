@@ -12,30 +12,22 @@
  * Obtiene el valor de una cookie por nombre
  */
 function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    console.log(value);
-    const parts = value.split(`; ${name}=`);
-    console.log(parts)
-    console.log(parts.length)
-    if (parts.length === 2) {
-        let raw = parts.pop().split(';').shift();
-        console.log(raw)
-        if (raw.startsWith('"') && raw.endsWith('"')) {
-            raw = raw.slice(1, -1);
-            console.log(raw)
-        }
+    const cookies = document.cookie.split(';').map(c => c.trim());
+    const cookie = cookies.find(c => c.startsWith(name + '='));
+    if (!cookie) return null;
 
-        try {
-            const decoded = atob(raw);
-            console.log(JSON.parse(decoded))
-            return JSON.parse(decoded);
-        } catch (e) {
-            console.error("Error al decodificar cookie:", e);
-            return raw;
-        }
+    let raw = cookie.split('=')[1];
+
+    if (raw.startsWith('"') && raw.endsWith('"')) {
+        raw = raw.slice(1, -1);
     }
-    console.log("Fallo")
-    return null;
+
+    try {
+        return JSON.parse(atob(raw));
+    } catch (e) {
+        console.error("Error decoding cookie:", e);
+        return null;
+    }
 }
 
 
