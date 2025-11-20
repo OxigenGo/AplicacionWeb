@@ -1,0 +1,85 @@
+.body-code {
+    display: flex;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(255, 255, 255, 0.5);
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    color: hsl(216, 3%, 36%);
+
+}
+
+
+.exit{
+    display: flex;
+    justify-content: right;
+}
+
+#exit-button{
+    background: white;
+    border: none;
+    cursor: pointer;
+    color: hsl(216, 3%, 36%);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.container-code{
+    background: white;
+    border: 0.3rem solid hsl(214, 85%, 50%);
+    border-radius: 2rem;
+    text-align: center;
+    min-height: 20rem;
+    padding: 2.5rem;
+}
+
+.code-text{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 30rem;
+}
+
+.code{
+    display: flex;
+    justify-content: space-around;
+    padding: 2rem 4rem;
+}
+
+.code-input{
+    border: 3px solid hsl(218, 4%, 58%);
+    border-radius: 7.5px;
+    max-width: 3rem;
+    height: 4rem;
+    max-height: 10rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.send-code{
+    justify-content: center;
+    display: flex;
+    gap: 1rem;
+}
+
+#resend-code{
+    background: white;
+    border: none;
+    font-weight: 600;
+    color: hsl(214, 85%, 50%);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+
+
+

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="./css/reutilizable/error_user.css">
     <link rel="stylesheet" href="./css/reutilizable/header.css">
     <link rel="stylesheet" href="./css/reutilizable/wave.css">
+    <link rel="stylesheet" href="./css/verification_code.css">
     <!--Scripts-->
     <script src="js/register.js" defer></script>
     <script src="js/password_check.js" defer></script>
@@ -109,11 +110,23 @@
         <p>&copy; 2025 OxyGo. Todos los derechos reservados.</p>
     </footer>
 
-    <div class = "container-error">
-        <div id="cuadro-error">
-            <div id="container-message">
-                <p id="register_message"> Algo ha ido mal.</p>
-                <button id="close-error">Cerrar</button>
+    <div class="body-code">
+        <div class="container-code">
+            <div class="code-text">
+                <h1>Código de verificación</h1>
+                <p>Por favor, complete los campos con el código que le hemos mandado al correo proporcionado.</p>
+            </div>
+            <div class="code">
+                <input type="text" class="code-input" id="code-one" name="code-one" required>
+                <input type="text" class="code-input" id="code-two" name="code-two" required>
+                <input type="text" class="code-input" id="code-three" name="code-three" required>
+                <input type="text" class="code-input" id="code-four" name="code-four" required>
+                <input type="text" class="code-input" id="code-five" name="code-five" required>
+                <input type="text" class="code-input" id="code-six" name="code-six" required>
+            </div>
+            <div class="send-code">
+                <p>No te ha llegado ningun código?</p>
+                <button id="resend-code">Reenviar código</button>
             </div>
         </div>
     </div>
