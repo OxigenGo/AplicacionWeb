@@ -13,6 +13,7 @@
  */
 function getCookie(name) {
     const cookies = document.cookie.split(';').map(c => c.trim());
+    console.log(cookie)
     const cookie = cookies.find(c => c.startsWith(name + '='));
     if (!cookie) return null;
 
