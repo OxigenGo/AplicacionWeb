@@ -17,10 +17,38 @@ async function handleEditUser(event) {
 
     const username = document.getElementById("username").value.trim();
     const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const confirmPassword = document.getElementById("confirm_password").value.trim();
+    const newPassword = document.getElementById("password").value.trim();
+    const confirmNewPassword = document.getElementById("confirm_password").value.trim();
+    const currentPassword = document.getElementById("current-password").value.trim();
 
-    if (password !== confirmPassword) {
+    current_user_data = getCookie("user_data")
+    if (!current_user_data) return
+    const current_email = current_user_data.email
+
+    try {
+        const response = await fetch("/v1/users/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                username_or_email: current_email,
+                password: currentPassword
+            })
+        });
+
+        if (!response.ok) {
+            messageDiv.textContent = "Contraseña actual incorrecta.";
+            messageDiv.style.color = "red";
+            return;
+        }
+
+    } catch (error) {
+        messageDiv.textContent = "Error de conexión con el servidor.";
+        messageDiv.style.color = "red";
+        console.error(error);
+        return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
         messageDiv.textContent = "Las contraseñas no coinciden.";
         messageDiv.style.color = "red";
         return;
@@ -29,7 +57,7 @@ async function handleEditUser(event) {
     const payload = {
         username: username,
         email: email,
-        password: password,
+        password: newPassword,
         profilePic: "" // Placeholder
     };
 
@@ -39,7 +67,7 @@ async function handleEditUser(event) {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify({ payload })
         });
 
         const data = await response.json();
