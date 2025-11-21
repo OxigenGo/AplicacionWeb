@@ -33,7 +33,7 @@ async function handleLogin(event) {
         if (response.ok) {
             messageDiv.textContent = `¡Bienvenido, ${data.usuario.username}!`;
             messageDiv.style.color = "green";
-            //TODO - Redirigir a siguiente página
+           window.location.href="../edit_user.html"
             
         } else {
             // Login fallido
@@ -56,5 +56,6 @@ async function handleLogin(event) {
     }
 }
 
+if(isUserLoggedIn() != null) window.location.href = "../edit_user.html"
 // Asocia la función al submit del login
 form.addEventListener("submit", handleLogin);
