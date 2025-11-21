@@ -56,6 +56,6 @@ async function handleLogin(event) {
     }
 }
 
-if(isUserLoggedIn() != null) window.location.href = "../edit_user.html"
+if(isUserLoggedIn() == false) window.location.href = "../edit_user.html"
 // Asocia la función al submit del login
 form.addEventListener("submit", handleLogin);

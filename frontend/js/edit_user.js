@@ -104,7 +104,7 @@ function fill_user_data() {
 
 
 
-if (isUserLoggedIn() == null) window.location.href = "../login.html";
+if (isUserLoggedIn() == false) window.location.href = "../login.html";
 else { fill_user_data(); }
 
 form.addEventListener("submit", handleEditUser);
