@@ -12,6 +12,9 @@ const form = document.getElementById("registerForm");
 const messageDiv = document.getElementById("error-message-form");
 const closebutton = document.getElementById("close-error");
 const codeMessage = document.getElementById("body-code");
+
+let registeredEmail = null;
+
 //const number_inputs = 5;
 
 //HandleRegister se encarga de enviar los datos del formulario a la API
@@ -62,6 +65,7 @@ async function handleRegister(event) {
 
         //Si el registro es exitoso
         if (response.ok) {
+            registeredEmail = email;
             codeMessage.style.display = "flex";
 
             //No se si hay que pasar por aqui para poner el codigo sin que guarde el usuario en la BBDD o eso se puede cortar o eliminar de alguna manera
@@ -88,7 +92,6 @@ async function handleRegister(event) {
     }
 
 }
-
 
 //---------------------EventListener de los inputs (Codigo de verificacion)-----------------------------------------------//
 //Al cargar la página añade un eventListener para recoger todos los inputs del codigo de verificacion
@@ -127,12 +130,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         headers: {
                             "Content-Type": "application/json" 
                         },
-                        body: JSON.stringify({ email, code})
+                        body: JSON.stringify({ email: registeredEmail, code})
                     });
 
                     const result = await response.json();
                     if(response.ok){
-                        window.location.href = "../edit_user.html";
+                        window.location.href = "../login.html";
                     } else { 
                         errorCodeDiv.textContent = result.message || "El código es incorrecto.";
                     }
@@ -170,6 +173,10 @@ function getFullCode(inputs){
         code += input.value;
     })
     return code;
+}
+
+if(isUserLoggedIn() != null){
+    window.location.href = "../edit_user.html"
 }
 
 //Al hacer el submit ejecuta la función de registro
