@@ -55,11 +55,12 @@ async function handleEditUser(event) {
     }
 
     const payload = {
-        username: username,
-        email: email,
-        password: newPassword || undefined,
-        profilePic: "" // Placeholder
+        username,
+        email,
+        profilePic: ""
     };
+
+    if (newPassword) payload.password = newPassword;
 
     try {
         const response = await fetch("/v1/users/update", {

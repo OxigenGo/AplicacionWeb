@@ -10,6 +10,7 @@
 
 import random
 from datetime import datetime, timedelta
+from typing import Optional
 from fastapi import HTTPException, Response
 from dataclasses import dataclass
 import bcrypt
@@ -272,7 +273,7 @@ def login_user(username_or_email: str, password: str, response: Response, conn=N
 #   Edita el usuario en la base de datos
 #   String: username, String: email, String: pass, String: profilePicture -> update_user() -> JSON: user | HTTP Error
 #-----------------------------------
-def update_user(username: str, email: str, password: str, profilePicture: str, conn=None):
+def update_user(username: str, email: str, password: Optional[str] = None, profilePicture: Optional[str] = None, conn=None):
     close_conn = False
     try:
         if conn is None:
