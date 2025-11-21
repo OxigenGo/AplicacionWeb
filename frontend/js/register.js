@@ -175,7 +175,7 @@ function getFullCode(inputs){
     return code;
 }
 
-if(isUserLoggedIn() != null){
+if(isUserLoggedIn() == true){
     window.location.href = "../edit_user.html"
 }
 
