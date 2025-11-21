@@ -18,7 +18,7 @@ async function handleEditUser(event) {
     const username = document.getElementById("username").value.trim();
     const email = document.getElementById("email").value.trim();
     const newPassword = document.getElementById("password").value.trim();
-    const confirmNewPassword = document.getElementById("confirm_password").value.trim();
+    const confirmNewPassword = document.getElementById("confirm-password").value.trim();
     const currentPassword = document.getElementById("current-password").value.trim();
 
     current_user_data = getCookie("user_data")
