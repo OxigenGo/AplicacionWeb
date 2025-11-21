@@ -57,6 +57,7 @@ async function handleEditUser(event) {
     const payload = {
         username: username,
         email: email,
+        password: null,
         profilePic: "" // Placeholder
     };
 
