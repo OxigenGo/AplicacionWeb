@@ -63,36 +63,32 @@ async function handleEditUser(event) {
     if (newPassword) payload.password = newPassword;
 
     try {
-        const response = await fetch("/v1/users/update", {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ payload })
-        });
+    const response = await fetch("/v1/users/update", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
 
-        const data = await response.json();
+    const data = await response.json();
 
-        if (response.ok) {
-            messageDiv.textContent = `Usuario actualizado correctamente: ${data.usuario.username}`;
-            messageDiv.style.color = "green";
+    if (response.ok) {
+        messageDiv.textContent = `Usuario actualizado correctamente: ${data.usuario.username}`;
+        messageDiv.style.color = "green";
+    } else {
+        if (data.detail) {
+            messageDiv.textContent = Array.isArray(data.detail) ? 
+                data.detail.map(d => d.msg).join(", ") :
+                data.detail;
         } else {
-            if (data.detail) {
-                if (Array.isArray(data.detail)) {
-                    messageDiv.textContent = data.detail.map(d => d.msg).join(", ");
-                } else {
-                    messageDiv.textContent = data.detail;
-                }
-            } else {
-                messageDiv.textContent = "Error al actualizar el usuario.";
-            }
-            messageDiv.style.color = "red";
+            messageDiv.textContent = "Error al actualizar el usuario.";
         }
-    } catch (error) {
-        messageDiv.textContent = "Error de conexión con el servidor.";
         messageDiv.style.color = "red";
-        console.error(error);
     }
+} catch (error) {
+    messageDiv.textContent = "Error de conexión con el servidor.";
+    messageDiv.style.color = "red";
+    console.error(error);
+}
 }
 
 function fill_user_data() {
