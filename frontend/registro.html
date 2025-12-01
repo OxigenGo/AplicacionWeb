@@ -17,7 +17,7 @@
     <script src="js/password_check.js" defer></script>
     <script src="js/toggle_password.js" defer></script>
     
-    <script type="module" src="js/retrieve_login_info.js"></script>
+    <script src="js/retrieve_login_info.js"></script>
 </head>
 
 <body>
@@ -73,6 +73,7 @@
 
                 <div class="form-group">
                     <label for="password" class="form-label">Contraseña</label>
+                    <div class="eye-password">
                     <input 
                         type="password" 
                         id="password" 
@@ -80,12 +81,19 @@
                         class="form-input" 
                         placeholder="Ingresa tu contraseña"
                     />
+                    <button id="toggle-password" class="eye-button" type="button">
+                        <img class="img-eye" id="open-eye" src="./img/ojo-abierto.png">
+                        <img class="img-eye" id="close-eye" src="./img/ojo-cerrado.png">
+                    </button>
+                    </div>
+
                     <!--<span id="toggle-password">👁️</span>-->
                     <span class="error-message" id="passwordError"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
+                    <div class="eye-password">
                     <input 
                         type="password" 
                         id="password-confirm" 
@@ -93,6 +101,11 @@
                         class="form-input" 
                         placeholder="Confirma tu contraseña"
                     />
+                    <button id="toggle-password-confirm" class="eye-button" type="button">
+                        <img class="img-eye" id="open-eye-confirm" src="./img/ojo-abierto.png">
+                        <img class="img-eye" id="close-eye-confirm" src="./img/ojo-cerrado.png">
+                    </button>
+                    </div>
                     <!--<span id="toggle-password-confirm">👁️</span>-->
                     <span class="error-message" id="confirmPasswordError"></span>
                 </div>
@@ -116,7 +129,7 @@
         <p>&copy; 2025 OxiGo. Todos los derechos reservados.</p>
     </footer>
 
-    <div class="body-code">
+    <div class="body-code" id="body-code">
         <div class="container-code">
             <div class="code-text">
                 <h1>Código de verificación</h1>

@@ -95,6 +95,7 @@ body {
     border-radius: 5px;
     font-size: 1rem;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    flex: 1;
 }
 
 .form-input:focus {
@@ -148,6 +149,33 @@ body {
 #error-message-form{
     color: red;
     margin-top: 1rem;
+}
+
+.eye-password{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.eye-button{
+    background: white;
+    border: none;
+    height: 2rem;
+    width: 2rem;
+    margin-left: 0.5rem;
+}
+
+.img-eye{
+    height: 100%;
+    width: 100%;
+}
+
+#close-eye{
+    display: none;
+}
+
+#close-eye-confirm{
+    display: none;
 }
 
 /* Responsive */

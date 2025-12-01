@@ -1,5 +1,5 @@
 //-----------------------------------
-//   © 2025 RRVV Systems. Todos los derechos reservados.
+//   © 2025 OxiGo. Todos los derechos reservados.
 //-----------------------------------
 //   Autor: Fédor Tikhomirov
 //   Fecha: 27 de octubre de 2025
@@ -17,66 +17,94 @@ async function handleEditUser(event) {
 
     const username = document.getElementById("username").value.trim();
     const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const confirmPassword = document.getElementById("confirm_password").value.trim();
+    const newPassword = document.getElementById("password").value.trim();
+    const confirmNewPassword = document.getElementById("confirm-password").value.trim();
+    const currentPassword = document.getElementById("current-password").value.trim();
 
-    if (password !== confirmPassword) {
+    current_user_data = getCookie("user_data")
+    if (!current_user_data) return
+    const current_email = current_user_data.email
+
+    try {
+        const response = await fetch("/v1/users/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                username_or_email: current_email,
+                password: currentPassword
+            })
+        });
+
+        if (!response.ok) {
+            messageDiv.textContent = "Contraseña actual incorrecta.";
+            messageDiv.style.color = "red";
+            return;
+        }
+
+    } catch (error) {
+        messageDiv.textContent = "Error de conexión con el servidor.";
+        messageDiv.style.color = "red";
+        console.error(error);
+        return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
         messageDiv.textContent = "Las contraseñas no coinciden.";
         messageDiv.style.color = "red";
         return;
     }
 
     const payload = {
-        username: username,
-        email: email,
-        password: password,
-        profilePic: "" // Placeholder
+        username,
+        email,
+        profilePic: ""
     };
 
+    if (newPassword) payload.password = newPassword;
+
     try {
-        const response = await fetch("/v1/users/update", {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-        });
+    const response = await fetch("/v1/users/update", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
 
-        const data = await response.json();
+    const data = await response.json();
 
-        if (response.ok) {
-            messageDiv.textContent = `Usuario actualizado correctamente: ${data.usuario.username}`;
-            messageDiv.style.color = "green";
+    if (response.ok) {
+        messageDiv.textContent = `Usuario actualizado correctamente: ${data.usuario.username}`;
+        messageDiv.style.color = "green";
+    } else {
+        if (data.detail) {
+            messageDiv.textContent = Array.isArray(data.detail) ? 
+                data.detail.map(d => d.msg).join(", ") :
+                data.detail;
         } else {
-            if (data.detail) {
-                if (Array.isArray(data.detail)) {
-                    messageDiv.textContent = data.detail.map(d => d.msg).join(", ");
-                } else {
-                    messageDiv.textContent = data.detail;
-                }
-            } else {
-                messageDiv.textContent = "Error al actualizar el usuario.";
-            }
-            messageDiv.style.color = "red";
+            messageDiv.textContent = "Error al actualizar el usuario.";
         }
-    } catch (error) {
-        messageDiv.textContent = "Error de conexión con el servidor.";
         messageDiv.style.color = "red";
-        console.error(error);
     }
+} catch (error) {
+    messageDiv.textContent = "Error de conexión con el servidor.";
+    messageDiv.style.color = "red";
+    console.error(error);
+}
 }
 
 function fill_user_data() {
-    const user = getCookie("user_data"); // ya devuelve objeto
+    const user = getCookie("user_data");
     if (!user) return;
+
+    const registration_year = new Date(user.registration_date).getFullYear();
 
     document.getElementById("username").value = user.username || "";
     document.getElementById("email").value = user.email || "";
+    document.getElementById("registration_date").textContent = `Usuario activo desde ${registration_year}`;
 }
 
 
 
-if (isUserLoggedIn() == null) window.location.href = "../login.html";
+if (isUserLoggedIn() == false) window.location.href = "../login.html";
 else { fill_user_data(); }
 
 form.addEventListener("submit", handleEditUser);
