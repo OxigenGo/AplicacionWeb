@@ -2,10 +2,10 @@
 #   © 2025 OxiGo. Todos los derechos reservados.
 #-----------------------------------
 #   Autor: Fédor Tikhomirov
-#   Fecha: 26 de octubre de 2025
+#   Fecha: 1 de diciembre de 2025
 #-----------------------------------
 #   Fichero: core.py
-#   Descripción: Funciones de manejo de usuarios
+#   Descripción: Fichero con operaciones de lógica de negocio asociadas a usuarios
 #-----------------------------------
 
 import random
@@ -187,6 +187,12 @@ def register_verify(email: str, code: int):
             )
 
             user_id = cursor.lastrowid
+            
+            default_role = "Usuario"
+            cursor.execute(
+                "INSERT INTO ROLES (USER_ID, ROLE) VALUES (%s, %s)",
+                (user_id, default_role)
+            )
 
             cursor.execute("DELETE FROM CODIGOS WHERE EMAIL = %s", (email,))
 
@@ -198,7 +204,8 @@ def register_verify(email: str, code: int):
             "usuario": {
                 "id": user_id,
                 "username": username,
-                "email": email
+                "email": email,
+                "role": default_role
             }
         }
 
@@ -237,6 +244,18 @@ def login_user(username_or_email: str, password: str, response: Response, conn=N
         
         if not bcrypt.checkpw(password.encode("utf-8"), stored_hash.encode("utf-8")):
             raise HTTPException(status_code=401, detail="Contraseña incorrecta")
+        
+        with conn.cursor(dictionary=True) as cursor:
+            cursor.execute(
+                "SELECT ROLE FROM ROLES WHERE USER_ID = %s LIMIT 1",
+                (user_id,)
+            )
+            role_row = cursor.fetchone()
+
+        if not role_row:
+            role = "Usuario"
+        else:
+            role = role_row["ROLE"]
 
         today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         with conn.cursor() as cursor:
@@ -245,7 +264,14 @@ def login_user(username_or_email: str, password: str, response: Response, conn=N
         if close_conn:
             conn.commit()
 
-        cookie_data = {"id": user_id, "username": username, "email": email, "registration_date": registration_date}
+        cookie_data = {
+            "id": user_id,
+            "username": username,
+            "email": email,
+            "registration_date": registration_date,
+            "role": role
+        }
+        
         cookie_json = json.dumps(cookie_data)
         cookie_base64 = base64.b64encode(cookie_json.encode()).decode()
 
@@ -267,7 +293,7 @@ def login_user(username_or_email: str, password: str, response: Response, conn=N
             conn.close()
 
     return {"status": "ok", "mensaje": "Inicio de sesión exitoso",
-            "usuario": {"id": user_id, "username": username, "email": email, "registration_date": registration_date}}
+            "usuario": {"id": user_id, "username": username, "email": email, "registration_date": registration_date, "role": role}}
 
 #-----------------------------------
 #   Edita el usuario en la base de datos
