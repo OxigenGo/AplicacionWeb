@@ -25,3 +25,12 @@ Thumbs.db
 
 # MySQL dumps (optional)
 *.sql
+
+# Entornos y credenciales
+.env
+*.bat
+*.pyc
+__pycache__/
+
+*.rar
+*.zip

@@ -11,28 +11,30 @@
 import os
 import logging
 import traceback
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
-from python_http_client.exceptions import HTTPError
+import requests
+from fastapi import HTTPException
 
-# Configurar logging para systemd/journalctl
+# Configurar logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 SENDER_EMAIL = "ftikhom@upv.edu.es"
+SENDGRID_URL = "https://api.sendgrid.com/v3/mail/send"
+
 
 def send_confirmation_email(to_email: str, code: str) -> bool:
     """
-    Envía un correo con un código de verificación al usuario.
+    Envía un código de verificación al correo del usuario usando SendGrid vía requests.
     
     Args:
-        to_email (str): Correo del destinatario
+        to_email (str): Correo destino
         code (str): Código de verificación
     
     Returns:
-        bool: True si se envió correctamente, False si hubo error
+        bool: True si es enviado correctamente, False si ocurre un error
     """
-    # Leer la API key cada vez para asegurar que está disponible
+
+    # Cargar API key de entorno
     SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
     if not SENDGRID_API_KEY:
         logger.error("No se encontró la variable de entorno SENDGRID_API_KEY")
@@ -52,27 +54,37 @@ def send_confirmation_email(to_email: str, code: str) -> bool:
     <p>Este código expira en 20 minutos.</p>
     """
 
-    message = Mail(
-        from_email=SENDER_EMAIL,
-        to_emails=to_email,
-        subject="Tu código de verificación",
-        html_content=html_content,
-    )
+    payload = {
+        "personalizations": [
+            {
+                "to": [{"email": to_email}],
+                "subject": "Tu código de verificación"
+            }
+        ],
+        "from": {"email": SENDER_EMAIL},
+        "content": [
+            {"type": "text/html", "value": html_content}
+        ]
+    }
+
+    headers = {
+        "Authorization": f"Bearer {SENDGRID_API_KEY}",
+        "Content-Type": "application/json"
+    }
 
     try:
-        sg = SendGridAPIClient(SENDGRID_API_KEY)
-        response = sg.send(message)
-        logger.info(f"Correo enviado a {to_email}, status code: {response.status_code}")
-        return True
+        response = requests.post(SENDGRID_URL, json=payload, headers=headers)
 
-    except HTTPError as e:
-        # Captura errores de HTTP de SendGrid
-        logger.error(f"Error HTTP de SendGrid al enviar a {to_email}: {e.status_code} - {e.body}")
-        logger.error(traceback.format_exc())
+        # SendGrid devuelve 202 cuando el correo se acepta correctamente
+        if response.status_code == 202:
+            logger.info(f"Correo enviado a {to_email}, status code: 202")
+            return True
+
+        # Si hay error de SendGrid
+        logger.error(f"Error de SendGrid al enviar a {to_email}: {response.status_code} - {response.text}")
         return False
 
     except Exception as e:
-        # Captura cualquier otro error
         logger.error(f"Error inesperado al enviar correo a {to_email}: {e}")
         logger.error(traceback.format_exc())
         return False

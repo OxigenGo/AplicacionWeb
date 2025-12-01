@@ -16,3 +16,5 @@ mysql-connector-python==8.1.0
 pytest==7.4.2
 pytest-asyncio==0.21.0
 sendgrid
+python-dotenv
+requests
