@@ -10,6 +10,11 @@
 
 const form = document.getElementById("edit_user_form");
 const messageDiv = document.createElement("div");
+const confirmBtn = document.getElementById("confirm-button");
+const cancelBtn = document.getElementById("cancel-button");
+const bodyCodeDiv = document.getElementById("body-code");
+const confirmError = document.getElementById("password-error");
+
 form.prepend(messageDiv);
 
 async function handleEditUser(event) {
@@ -21,9 +26,10 @@ async function handleEditUser(event) {
     const confirmNewPassword = document.getElementById("confirm-password").value.trim();
     const currentPassword = document.getElementById("current-password").value.trim();
 
-    current_user_data = getCookie("user_data")
-    if (!current_user_data) return
-    const current_email = current_user_data.email
+    
+    //current_user_data = getCookie("user_data")
+    //if (!current_user_data) return
+    //const current_email = current_user_data.email
 
     try {
         const response = await fetch("/v1/users/login", {
@@ -72,8 +78,10 @@ async function handleEditUser(event) {
     const data = await response.json();
 
     if (response.ok) {
+        bodyCodeDiv.style.display = "flex";
         messageDiv.textContent = `Usuario actualizado correctamente: ${data.usuario.username}`;
         messageDiv.style.color = "green";
+
     } else {
         if (data.detail) {
             messageDiv.textContent = Array.isArray(data.detail) ? 
@@ -91,6 +99,24 @@ async function handleEditUser(event) {
 }
 }
 
+confirmBtn.addEventListener("click", function() {
+    try{
+        //TODO: Confirmar contraseña actual antes de que pueda cambiar los datos
+        /*if(){
+            
+        }*/
+    } catch(error){
+        confirmError.textContent = "Error al confirmar la acción.";
+        confirmError.style.color = "red";
+        console.error(error);
+    }
+});
+
+cancelBtn.addEventListener("click", function() {
+    bodyCodeDiv.style.display = "none";
+    console.log("cancelado");
+});
+
 function fill_user_data() {
     const user = getCookie("user_data");
     if (!user) return;
@@ -102,9 +128,7 @@ function fill_user_data() {
     document.getElementById("registration_date").textContent = `Usuario activo desde ${registration_year}`;
 }
 
-
-
-if (isUserLoggedIn() == false) window.location.href = "../login.html";
-else { fill_user_data(); }
+/*if (isUserLoggedIn() == false) window.location.href = "../login.html";
+else { fill_user_data(); }*/
 
 form.addEventListener("submit", handleEditUser);
