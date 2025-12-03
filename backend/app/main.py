@@ -14,7 +14,7 @@ from fastapi import FastAPI, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from .core import insert_user, login_user, update_user, register_request, register_verify, delete_user, get_all_users
-from .sensores import bind_sensor_to_user, add_reading, delete_sensor_records, get_user_sensors
+from .sensores import bind_sensor_to_user, add_reading, delete_sensor_records, get_user_sensors, get_all_sensors
 
 app = FastAPI()
 
@@ -157,6 +157,14 @@ def attempt_get_user_sensors(data: UserSensorList):
 @app.post("/v1/data/reading")
 def attempt_register_reading(reading: Reading):
     return add_reading(reading.associated_uuid, reading.gas, reading.temperature, reading.position)
+
+#-----------------------------------
+#   GET /v1/admin/sensors -> Devuelve todos los sensores inactivos
+#-----------------------------------
+
+@app.get("/v1/admin/sensors")
+def attempt_get_all_sensors():
+    return get_all_sensors()
 
 #-----------------------------------
 #   SERVIR FICHEROS ESTATICOS
