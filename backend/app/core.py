@@ -181,18 +181,12 @@ def register_verify(email: str, code: int):
 
             today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             cursor.execute(
-                "INSERT INTO USUARIOS (USERNAME, EMAIL, PASSWORD, REGISTER_DATE, LAST_LOGIN) "
-                "VALUES (%s, %s, %s, %s, %s)",
-                (username, email, hashed_password, today, today)
+                "INSERT INTO USUARIOS (USERNAME, EMAIL, PASSWORD, REGISTER_DATE, LAST_LOGIN, ADMINISTRATOR) "
+                "VALUES (%s, %s, %s, %s, %s, %s)",
+                (username, email, hashed_password, today, today, 0)
             )
 
             user_id = cursor.lastrowid
-            
-            default_role = "Usuario"
-            cursor.execute(
-                "INSERT INTO ROLES (USER_ID, ROLE) VALUES (%s, %s)",
-                (user_id, default_role)
-            )
 
             cursor.execute("DELETE FROM CODIGOS WHERE EMAIL = %s", (email,))
 
@@ -205,7 +199,7 @@ def register_verify(email: str, code: int):
                 "id": user_id,
                 "username": username,
                 "email": email,
-                "role": default_role
+                "role": "Usuario"
             }
         }
 
@@ -232,7 +226,8 @@ def login_user(username_or_email: str, password: str, response: Response, conn=N
 
         with conn.cursor(dictionary=True) as cursor:
             cursor.execute(
-                "SELECT ID, USERNAME, EMAIL, PASSWORD, REGISTER_DATE FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
+                "SELECT ID, USERNAME, EMAIL, PASSWORD, REGISTER_DATE, ADMINISTRATOR "
+                "FROM USUARIOS WHERE USERNAME = %s OR EMAIL = %s",
                 (username_or_email, username_or_email)
             )
             row = cursor.fetchone()
@@ -240,22 +235,17 @@ def login_user(username_or_email: str, password: str, response: Response, conn=N
         if not row:
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
-        user_id, username, email, stored_hash, registration_date = row["ID"], row["USERNAME"], row["EMAIL"], row["PASSWORD"], row["REGISTER_DATE"].strftime("%Y-%m-%d %H:%M:%S")
+        user_id = row["ID"]
+        username = row["USERNAME"]
+        email = row["EMAIL"]
+        stored_hash = row["PASSWORD"]
+        registration_date = row["REGISTER_DATE"].strftime("%Y-%m-%d %H:%M:%S")
+        is_admin = row["ADMINISTRATOR"]
         
         if not bcrypt.checkpw(password.encode("utf-8"), stored_hash.encode("utf-8")):
             raise HTTPException(status_code=401, detail="Contraseña incorrecta")
         
-        with conn.cursor(dictionary=True) as cursor:
-            cursor.execute(
-                "SELECT ROLE FROM ROLES WHERE USER_ID = %s LIMIT 1",
-                (user_id,)
-            )
-            role_row = cursor.fetchone()
-
-        if not role_row:
-            role = "Usuario"
-        else:
-            role = role_row["ROLE"]
+        role = "Administrador" if is_admin else "Usuario"
 
         today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         with conn.cursor() as cursor:
