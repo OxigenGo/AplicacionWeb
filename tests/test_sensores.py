@@ -1,5 +1,5 @@
 #-----------------------------------
-#   © 2025 RRVV Systems. Todos los derechos reservados.
+#   © 2025 OxiGo. Todos los derechos reservados.
 #-----------------------------------
 #   Autor: Fédor Tikhomirov
 #   Fecha: 30 de octubre de 2025
@@ -10,7 +10,7 @@
 
 import pytest
 from backend.app.sensores import bind_sensor_to_user, add_reading
-from backend.app.core import insert_user
+from backend.app.user_actions import insert_user
 
 #-----------------------------------
 #   Test de vinculación.

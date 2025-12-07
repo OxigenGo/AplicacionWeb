@@ -10,7 +10,7 @@
 #-----------------------------------
 
 import pytest
-from backend.app.core import insert_user, login_user, update_user
+from backend.app.user_actions import insert_user, login_user, update_user
 from fastapi import Response
 
 #-----------------------------------
