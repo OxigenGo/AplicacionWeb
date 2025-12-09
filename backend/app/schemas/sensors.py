@@ -23,3 +23,6 @@ class Reading(BaseModel):
     gas: float
     temperature: float
     position: Optional[str] = None
+
+class MapReading(BaseModel):
+    datetime: str

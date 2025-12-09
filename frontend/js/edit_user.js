@@ -128,7 +128,7 @@ function fill_user_data() {
     document.getElementById("registration_date").textContent = `Usuario activo desde ${registration_year}`;
 }
 
-/*if (isUserLoggedIn() == false) window.location.href = "../login.html";
-else { fill_user_data(); }*/
+if (isUserLoggedIn() == false) window.location.href = "../login.html";
+else { fill_user_data(); }
 
 form.addEventListener("submit", handleEditUser);

@@ -269,3 +269,54 @@ def get_all_sensors(conn=None):
         "status": "ok",
         "sensors": sensors
     }
+    
+#-----------------------------------
+#   Devuelve todas las mediciones registradas en una fecha o fecha-hora específica
+#   String: datetime_str -> get_all_readings_for_datetime() -> 200 OK | Error
+#-----------------------------------
+
+def get_all_readings_for_datetime(datetime_str: str, conn=None):
+    close_conn = False
+    cursor = None
+    try:
+        if conn is None:
+            conn = get_connection()
+            close_conn = True
+
+        cursor = conn.cursor(dictionary=True)
+
+        if not datetime_str or not isinstance(datetime_str, str):
+            raise HTTPException(
+                status_code=400,
+                detail="Debe proporcionar una fecha válida en formato 'YYYY-MM-DD' o 'YYYY-MM-DD HH:MM:SS'"
+            )
+
+        query = (
+            "SELECT ASSOCIATED_UUID, DATE, GAS_VALUE, TEMPERATURE_VALUE, POSITION "
+            "FROM MEDICIONES WHERE DATE LIKE %s ORDER BY DATE DESC"
+        )
+        cursor.execute(query, (f"{datetime_str}%",))
+        mediciones = cursor.fetchall()
+
+        if not mediciones:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No se encontraron mediciones para '{datetime_str}'"
+            )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error en la base de datos: {e}")
+    finally:
+        if cursor:
+            cursor.close()
+        if close_conn and conn:
+            conn.close()
+
+    return {
+        "status": "ok",
+        "consulta": datetime_str,
+        "total_mediciones": len(mediciones),
+        "mediciones": mediciones
+    }
