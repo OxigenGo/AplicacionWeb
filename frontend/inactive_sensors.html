@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de sensores</title>
+    <!--Styles-->
+    <link rel="stylesheet" href="./css/reutilizable/header.css">
+    <link rel="stylesheet" href="./css/reutilizable/wave.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/inactive_sensor_list.css">
+
+    <!--Scripts-->
+    <!--<script src="js/retrieve_login_info.js"></script>-->
+    
+</head>
+
+<body>
+
+    <!--Header-->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo"><a href="./index.html">OxiGo</a></div>
+            <nav class="nav">
+                <a href="./index.html" class="nav-link">Inicio</a>
+                <a href="#" class="nav-link">Nosotros</a>
+                <a href="#" class="nav-link">Contacto</a>
+            </nav>
+            <div class="button-div"></div>
+        </div>
+    </header>
+
+    <!-- Wave Background -->
+    <div class="wave-background">
+        <svg class="wave wave-1" viewBox="0 0 2 1 " preserveAspectRatio="none">
+            <path d="M 0 0 A 1 0.4 0 0 0 2,0 L 2,1 L 0,1 Z"></path>
+        </svg>
+    </div>
+
+    <!-- Main Content -->
+    <h1 id="sensores-title">Sensores</h1>
+    <div id="lista-sensores" class="sensor-container"></div>
+    <script src="js/inactive_sensor_list.js"></script>
+</body>
+
+</html>

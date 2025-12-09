@@ -1,0 +1,44 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, hsl(214, 85%, 30%) 0%, hsl(214, 85%, 50%) 50%, hsl(195, 100%, 50%) 100%);
+    min-height: 100vh;
+    color: hsl(220, 15%, 25%);
+    position: relative;
+    overflow-x: hidden;
+}
+
+#sensores-title {
+    text-align: center;
+    margin: 2rem 0;
+    font-size: 2.5rem;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.sensor-container {
+    display: grid;
+    /*Columnas que se adaptan al ancho*/
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.sensor-card{
+    background: white;
+    border: 0.3rem solid hsl(214, 82%, 26%);
+    border-radius: 2rem;
+    text-align: center;
+    padding: 2.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sensor-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}

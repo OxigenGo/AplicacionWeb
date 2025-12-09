@@ -9,7 +9,7 @@
 #   manejan cualquier cosa relacionada a los sensores
 #-----------------------------------
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from fastapi import HTTPException
 
 from .db import get_connection
@@ -236,4 +236,36 @@ def get_user_sensors(user_id: int, conn=None):
         "status": "ok",
         "usuario": user_id,
         "sensores": resultado
+    }
+    
+def get_all_sensors(conn=None):
+    """
+    @brief Devuelve una lista con todos los sensores de la base de datos
+
+    @param conn Conexión opcional a la base de datos
+    @return dict con todos los sensores y su última actividad
+    @throws HTTPException si hay error en DB
+    """
+    close_conn = False
+    cursor = None
+    try:
+        if conn is None:
+            conn = get_connection()
+            close_conn = True
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("SELECT UUID, ASSOCIATED_USER, LAST_ACTIVE FROM SENSORES")
+        sensors = cursor.fetchall()
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error en la base de datos: {e}")
+    finally:
+        if cursor:
+            cursor.close()
+        if close_conn and conn:
+            conn.close()
+
+    return {
+        "status": "ok",
+        "sensors": sensors
     }
