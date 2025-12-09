@@ -5,19 +5,17 @@
 }
 
 .main-content {
-    position: relative;
     z-index: 10;
     min-height: calc(100vh - 80px);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    margin-top: 1rem;
 }
 
 .form-label {
@@ -40,7 +38,17 @@
     border-radius: 1rem;
     padding: 3rem;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 500px;
+    min-width: 10rem;
     animation: fadeIn 0.5s ease-out;
+}
+
+.formulario-incidencias {
+    display: flex;
+    flex-direction: column;
+}
+
+.description-input{
+    min-height: 20rem;
+    min-width: 10rem;
+    border-radius: .5rem;
 }
