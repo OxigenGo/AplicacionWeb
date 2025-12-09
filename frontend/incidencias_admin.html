@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar usuario</title>
+    <!--Estilos-->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/reutilizable/header.css">
+    <link rel="stylesheet" href="css/reutilizable/wave.css">
+    <!--Scripts-->
+    <script src="js/retrieve_login_info.js"></script>
+</head>
+<body>
+    <!--Header-->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo"><a href="./index.html">OxiGo</a></div>
+            <nav class="nav">
+                <a href="./index.html" class="nav-link">Inicio</a>
+                <a href="#" class="nav-link">Nosotros</a>
+                <a href="#" class="nav-link">Contacto</a>
+            </nav>
+            <button class="profile-button">User</button>
+        </div>
+    </header>
+
+    <!-- Semicirculo Backgroud -->
+    <div class="wave-background">
+        <svg class="wave wave-1" viewBox="0 0 2 1 " preserveAspectRatio="none">
+            <path d="M 0 0 A 1 0.4 0 0 0 2,0 L 2,1 L 0,1 Z"></path>
+        </svg>
+    </div>
+
+    <!--Main Content-->
+    <main class="main-content">
+        <div class="container">
+            <h1>Gestión de Incidencias</h1>
+            <p>Aquí puedes gestionar las incidencias reportadas por los usuarios.</p>
+            <!-- Tabla de incidencias -->
+            <table class="incidencias-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="incidencias-body">
+                    <!-- Las filas de la tabla se generarán dinámicamente con JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+
+
+</body>
