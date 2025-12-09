@@ -19,6 +19,7 @@ class UserSensorList(BaseModel):
 
 class Reading(BaseModel):
     associated_uuid: str
+    gasType: str
     gas: float
     temperature: float
     position: Optional[str] = None

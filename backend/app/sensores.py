@@ -139,7 +139,7 @@ def delete_sensor_records(user_id: int, erase_all: bool, uuid: str = None, conn=
 #   String: associated_uuid, float: gas_value, float: temperature_value, String|Null: posicion -> add_reading() -> 200 OK | Error
 #-----------------------------------
 
-def add_reading(associated_uuid: str, gas_value: float, temperature_value: float, position: str = None, conn=None):
+def add_reading(associated_uuid: str, gas_type: str, gas_value: float, temperature_value: float, position: str = None, conn=None):
     close_conn = False
     try:
         if conn is None:
@@ -155,9 +155,9 @@ def add_reading(associated_uuid: str, gas_value: float, temperature_value: float
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         cursor.execute(
-            "INSERT INTO MEDICIONES (ASSOCIATED_UUID, DATE, GAS_VALUE, TEMPERATURE_VALUE, POSITION) "
-            "VALUES (%s, %s, %s, %s, %s)",
-            (associated_uuid, now, gas_value, temperature_value, position)
+            "INSERT INTO MEDICIONES (ASSOCIATED_UUID, DATE, GAS_TYPE, GAS_VALUE, TEMPERATURE_VALUE, POSITION) "
+            "VALUES (%s, %s, %s, %s, %s, %s)",
+            (associated_uuid, now, gas_type, gas_value, temperature_value, position)
         )
 
         cursor.execute(

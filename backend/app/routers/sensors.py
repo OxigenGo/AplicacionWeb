@@ -33,6 +33,7 @@ def attempt_get_user_sensors(data: UserSensorList):
 def attempt_register_reading(reading: Reading):
     return add_reading(
         reading.associated_uuid,
+        reading.gasType,
         reading.gas,
         reading.temperature,
         reading.position
