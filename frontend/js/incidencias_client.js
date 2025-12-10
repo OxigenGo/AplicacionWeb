@@ -10,6 +10,7 @@
 
 const form = document.getElementById("incidencias_form");
 const id_user = getUserId();
+const messageDiv = document.getElementById("message-div");
 
 async function handleIncidencias(event) {
     event.preventDefault();
