@@ -9,6 +9,7 @@
 //-----------------------------------
 
 const form = document.getElementById("incidencias_form");
+const id_user = getUserId();
 
 async function handleIncidencias(event) {
     event.preventDefault();
@@ -17,6 +18,12 @@ async function handleIncidencias(event) {
     const asunto = document.getElementById("asunto-label").value;
     const description = document.getElementById("descripcion-label").value;
 
+    if (!asunto && !description) {
+        messageDiv.textContent = "Por favor, completa todos los campos.";
+        messageDiv.style.color = "red";
+        return;
+    }
+
     try {
         // Envia POST al endpoint de login
         const response = await fetch("/incidents/create", {
@@ -24,7 +31,7 @@ async function handleIncidencias(event) {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ username_or_email, password })
+            body: JSON.stringify({ id_user,asunto, description })
         });
 
         const data = await response.json();
@@ -55,3 +62,4 @@ async function handleIncidencias(event) {
 
 // Asocia la función al submit del login
 form.addEventListener("submit", handleIncidencias);
+
