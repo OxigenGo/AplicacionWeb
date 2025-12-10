@@ -275,7 +275,16 @@ def get_all_sensors(conn=None):
 #   String: datetime_str -> get_all_readings_for_datetime() -> 200 OK | Error
 #-----------------------------------
 
-def get_all_readings_for_datetime(datetime_str: str, conn=None):
+def get_all_readings_for_datetime(datetime_str: str, gasType: str, conn=None):
+    """
+    Obtiene todas las mediciones de una fecha específica y tipo de gas.
+
+    :param datetime_str: Fecha en formato 'YYYY-MM-DD' o 'YYYY-MM-DD HH:MM:SS'.
+    :param gasType: Tipo de gas a filtrar ('O3', 'CO', 'NO2', 'SO2', etc.).
+    :param conn: Conexión a la base de datos (opcional).
+    :return: Diccionario con status, consulta, total de mediciones y lista de mediciones.
+    :raises HTTPException: Si la fecha o gas son inválidos, o falla la consulta.
+    """
     close_conn = False
     cursor = None
     try:
@@ -291,17 +300,26 @@ def get_all_readings_for_datetime(datetime_str: str, conn=None):
                 detail="Debe proporcionar una fecha válida en formato 'YYYY-MM-DD' o 'YYYY-MM-DD HH:MM:SS'"
             )
 
+        if not gasType or not isinstance(gasType, str):
+            raise HTTPException(
+                status_code=400,
+                detail="Debe proporcionar un tipo de gas válido"
+            )
+
+        # Consulta filtrando por fecha y tipo de gas
         query = (
             "SELECT ASSOCIATED_UUID, DATE, GAS_VALUE, TEMPERATURE_VALUE, POSITION "
-            "FROM MEDICIONES WHERE DATE LIKE %s ORDER BY DATE DESC"
+            "FROM MEDICIONES "
+            "WHERE DATE LIKE %s AND GAS_TYPE = %s "
+            "ORDER BY DATE DESC"
         )
-        cursor.execute(query, (f"{datetime_str}%",))
+        cursor.execute(query, (f"{datetime_str}%", gasType))
         mediciones = cursor.fetchall()
 
         if not mediciones:
             raise HTTPException(
                 status_code=404,
-                detail=f"No se encontraron mediciones para '{datetime_str}'"
+                detail=f"No se encontraron mediciones para '{datetime_str}' y gas '{gasType}'"
             )
 
     except HTTPException:
@@ -317,6 +335,7 @@ def get_all_readings_for_datetime(datetime_str: str, conn=None):
     return {
         "status": "ok",
         "consulta": datetime_str,
+        "gasType": gasType,
         "total_mediciones": len(mediciones),
         "mediciones": mediciones
     }

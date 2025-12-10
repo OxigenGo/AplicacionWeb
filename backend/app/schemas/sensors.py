@@ -26,3 +26,4 @@ class Reading(BaseModel):
 
 class MapReading(BaseModel):
     datetime: str
+    gasType: str

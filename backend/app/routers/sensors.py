@@ -41,5 +41,5 @@ def attempt_register_reading(reading: Reading):
     )
 
 @router.post("/map_readings")
-def attempt_get_all_readings(datetime: MapReading):
-    return get_all_readings_for_datetime(datetime.datetime)
+def attempt_get_all_readings(selection: MapReading):
+    return get_all_readings_for_datetime(selection.datetime, selection.gasType)

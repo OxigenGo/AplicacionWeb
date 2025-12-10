@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapa de contaminacion</title>
-
     <!-- CSS de Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
     <!-- JS de Leaflet -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js" defer></script>
     <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js" defer></script>
 
-    <script src="js/gen_map.js" defer></script>
+    <script src="js/contamination_map/gen_map.js"></script>
+    <script src="js/contamination_map/map_controller.js" defer></script>
 </head>
+
 <body>
+    <div>
+        <label for="date-selector">Fecha:</label>
+        <input type="date" id="date-selector">
+
+        <label for="gas-selector">Gas:</label>
+        <select id="gas-selector">
+            <option value="o3">O₃</option>
+            <option value="co">CO</option>
+            <option value="no2">NO₂</option>
+            <option value="so2">SO₂</option>
+        </select>
+    </div>
+
     <!-- Contenedor del mapa -->
     <div id="map" style="width: 100%; height: 1200px;"></div>
 </body>
+
 </html>
