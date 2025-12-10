@@ -7,6 +7,10 @@
     <title>Mapa de contaminacion</title>
     <!-- CSS de Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/reutilizable/header.css">
+    <link rel="stylesheet" href="./css/reutilizable/wave.css">
+    <link rel="stylesheet" href="./css/map.css">
     <!-- JS de Leaflet -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js" defer></script>
     <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js" defer></script>
@@ -16,6 +20,26 @@
 </head>
 
 <body>
+    <!--Header-->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo"><a href="./index.html">OxiGo</a></div>
+            <nav class="nav">
+                <a href="./index.html" class="nav-link">Inicio</a>
+                <a href="#" class="nav-link">Nosotros</a>
+                <a href="#" class="nav-link">Contacto</a>
+            </nav>
+            <button class="profile-button">User</button>
+        </div>
+    </header>
+
+    <!-- Semicirculo Backgroud -->
+    <div class="wave-background">
+        <svg class="wave wave-1" viewBox="0 0 2 1 " preserveAspectRatio="none">
+            <path d="M 0 0 A 1 0.4 0 0 0 2,0 L 2,1 L 0,1 Z"></path>
+        </svg>
+    </div>
+
     <div>
         <label for="date-selector">Fecha:</label>
         <input type="date" id="date-selector">
