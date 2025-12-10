@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="./css/incidencias.css">
     <!--Scripts-->
     <script src="js/retrieve_login_info.js"></script>
+    <script src="js/incidencias_client.js"></script>
 </head>
 <body>
     <!--Header-->
@@ -39,7 +40,7 @@
         <div class="form-container">
             <h1>Incidencias</h1>
             <p>Por favor, describanos el problema que ha tenido con nuestra página web.</p>
-            <form class="formulario-incidencias">
+            <form class="formulario-incidencias" id="incidencias_form">
                 <div class="form-group">
                     <label class="form-label" for="asunto">Asunto: </label>
                     <input 
@@ -47,29 +48,27 @@
                         id="asunto-label"
                         class="form-input"
                         name="asunto"
-                        placeholder="Asunto"
+                        placeholder="Ej: Problema con un sensor."
                         required>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="descripcion">Descripción: </label>
-                    <input 
-                        type="text"
+                    <textarea
                         id="descripcion-label"
                         class="description-input"
                         name="descripcion"
-                        placeholder="Descripcion del problema."
+                        placeholder="Descripción del problema."
                         required>
+                    </textarea>
                 </div>
                 <div class="button-form">
                     <button type="submit" class="submit-button">Enviar</button>
                 </div>
             </form>
-            
-
-            
         </div>
-
     </main>
-
+    <footer class="footer">
+        <p>&copy; 2025 OxiGo. Todos los derechos reservados.</p>
+    </footer>
 
 </body>

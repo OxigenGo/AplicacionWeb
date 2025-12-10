@@ -52,7 +52,7 @@
     min-height: 20rem;
     min-width: 10rem;
     border-radius: .5rem;
-    padding-left: .1rem;
+    padding:.5rem;
 }
 
 .button-form {
@@ -81,3 +81,9 @@
 }
 
 
+.footer {
+    position: relative;
+    text-align: center;
+    color: hsl(214, 10%, 43%);
+    margin-top: -1rem;
+}
