@@ -74,3 +74,25 @@ function getUserRole() {
 
     return null;
 }
+
+/**
+ * @brief Obtiene el ID del usuario desde la cookie `user_data`.
+ *
+ * @return {number|string|null} El ID del usuario o null si no existe.
+ */
+function getUserId() {
+    const data = getCookie("user_data");
+    if (!data || !data.id) return null;
+    return data.id;
+}
+
+/**
+ * @brief Obtiene el nombre de usuario desde la cookie `user_data`.
+ *
+ * @return {string|null} El nombre de usuario o null si no existe.
+ */
+function getUsername() {
+    const data = getCookie("user_data");
+    if (!data || !data.username) return null;
+    return data.username;
+}
