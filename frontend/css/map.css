@@ -47,3 +47,38 @@ body {
     display: flex;
     gap: 2rem;
 }
+
+/* Grupo de gases */
+
+.gas-content{
+    position: relative;
+    width: 100%;
+    padding: 5rem;
+    z-index: 10;
+}
+
+.gas-info-container{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.gas-one{
+    display: flex;
+    gap: 2rem;
+    justify-content: space-around;
+}
+
+.gas-two{
+    display: flex;
+    gap: 2rem;
+    justify-content: space-around;
+}
+
+.gas-info-card{
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    width: 40%;
+    box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+}
