@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mediciones del día</title>
+    <!-- Cargar Chart.js desde CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <!-- Scripts -->
+    <script src="js/retrieve_login_info.js"></script>
+    <script src="./js/resumen/evaluarCalidad.js"></script>
+    <script src="./js/resumen/grafica.js" defer></script>
+    <script src="./js/resumen/genValores.js" defer></script>
+    <script src="./js/resumen/main.js" defer></script>
+</head>
+<body>
+    <h1>Mediciones de hoy</h1>
+
+    <!-- Contenedor de la gráfica -->
+    <canvas id="medicionesChart" width="800" height="400">
+        Tu navegador no soporta canvas.
+    </canvas>
+
+    <!-- Botón para generar valores ficticios -->
+    <div style="margin-top:20px;">
+        <button id="generarFicticios">Generar valores ficticios</button>
+    </div>
+
+    <p id="airQualityText">Calidad del aire: -</p>
+
+    <!-- Placeholder para mensajes o logs -->
+    <div id="mensajes" style="margin-top:20px;"></div>
+</body>
+</html>
