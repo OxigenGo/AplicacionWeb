@@ -34,3 +34,9 @@ def attempt_update(user: UpdateData):
 @router.delete("/update")
 def attempt_delete(user: UserDeletionData):
     return delete_user(user.user_id, user.username, user.email)
+
+
+@router.post("/logout")
+def attempt_logout(response: Response):
+    response.delete_cookie("user_data")
+    return {"status": "ok", "mensaje": "Sesión cerrada exitosamente"}

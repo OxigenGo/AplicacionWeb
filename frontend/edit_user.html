@@ -15,6 +15,7 @@
     <script src="js/retrieve_login_info.js"></script>
     <script src="js/edit_user.js" defer></script>
 </head>
+
 <body>
     <!--Header-->
     <header class="header">
@@ -25,7 +26,9 @@
                 <a href="#" class="nav-link">Nosotros</a>
                 <a href="#" class="nav-link">Contacto</a>
             </nav>
-            <button class="profile-button">User</button>
+            <div class="sesion-buttons">
+                <!-- Se llenará dinámicamente con JS -->
+            </div>
         </div>
     </header>
 
@@ -41,12 +44,12 @@
         <div class="container">
             <div class="profile-container">
                 <div class="image-container">
-                    <img src="#" class="profile-image">
+                    <!-- <img src="#" class="profile-image"> -->
                     <h1>Usuario</h1>
                     Ultima actividad
                     <p id="registration_date">Usuario activo desde YYYY</p>
                     <!--Boton cambiar foto perfil-->
-                    <button class="image-button">Cambiar foto</button>
+                    <!-- <button class="image-button">Cambiar foto</button> -->
                 </div>
                 <div class="form-container">
                     <h1>Información Personal</h1>
@@ -54,42 +57,25 @@
                     <form id="edit_user_form" class="edit-form">
                         <div class="form-group">
                             <label for="username">Usuario:</label>
-                            <input type="text" 
-                                id="username" 
-                                name="username"
-                                class="form-input"
-                                placeholder="Usuario"
+                            <input type="text" id="username" name="username" class="form-input" placeholder="Usuario"
                                 required>
                         </div>
 
                         <div class="form-group">
                             <label for="email">Correo electrónico:</label>
-                            <input 
-                                type="email" 
-                                id="email" 
-                                name="email" 
-                                class="form-input"
-                                placeholder="example@gmail.com"
-                                required>
+                            <input type="email" id="email" name="email" class="form-input"
+                                placeholder="example@gmail.com" required>
                         </div>
 
                         <div class="form-group">
                             <label for="password">Contraseña nueva:</label>
-                            <input 
-                                type="password" 
-                                id="password" 
-                                name="password"
-                                class="form-input" 
+                            <input type="password" id="password" name="password" class="form-input"
                                 placeholder="Contraseña">
                         </div>
 
                         <div class="form-group">
                             <label for="confirm-password">Confirmar contraseña nueva:</label>
-                            <input 
-                                type="password" 
-                                id="confirm-password" 
-                                name="confirm-password"
-                                class="form-input" 
+                            <input type="password" id="confirm-password" name="confirm-password" class="form-input"
                                 placeholder="Confirma contraseña">
                         </div>
 
@@ -101,7 +87,7 @@
             </div>
         </div>
 
-        
+
     </main>
 
     <footer class="footer">
@@ -122,9 +108,10 @@
                 <button id="cancel-button">Cancelar</button>
                 <button id="confirm-button">Confirmar</button>
             </div>
-            
+
         </div>
         <div id="password-error" class="error-password-message"></div>
     </div>
 </body>
+
 </html>
