@@ -269,3 +269,73 @@ def get_all_sensors(conn=None):
         "status": "ok",
         "sensors": sensors
     }
+    
+#-----------------------------------
+#   Devuelve todas las mediciones registradas en una fecha o fecha-hora específica
+#   String: datetime_str -> get_all_readings_for_datetime() -> 200 OK | Error
+#-----------------------------------
+
+def get_all_readings_for_datetime(datetime_str: str, gasType: str, conn=None):
+    """
+    Obtiene todas las mediciones de una fecha específica y tipo de gas.
+
+    :param datetime_str: Fecha en formato 'YYYY-MM-DD' o 'YYYY-MM-DD HH:MM:SS'.
+    :param gasType: Tipo de gas a filtrar ('O3', 'CO', 'NO2', 'SO2', etc.).
+    :param conn: Conexión a la base de datos (opcional).
+    :return: Diccionario con status, consulta, total de mediciones y lista de mediciones.
+    :raises HTTPException: Si la fecha o gas son inválidos, o falla la consulta.
+    """
+    close_conn = False
+    cursor = None
+    try:
+        if conn is None:
+            conn = get_connection()
+            close_conn = True
+
+        cursor = conn.cursor(dictionary=True)
+
+        if not datetime_str or not isinstance(datetime_str, str):
+            raise HTTPException(
+                status_code=400,
+                detail="Debe proporcionar una fecha válida en formato 'YYYY-MM-DD' o 'YYYY-MM-DD HH:MM:SS'"
+            )
+
+        if not gasType or not isinstance(gasType, str):
+            raise HTTPException(
+                status_code=400,
+                detail="Debe proporcionar un tipo de gas válido"
+            )
+
+        # Consulta filtrando por fecha y tipo de gas
+        query = (
+            "SELECT ASSOCIATED_UUID, DATE, GAS_VALUE, TEMPERATURE_VALUE, POSITION "
+            "FROM MEDICIONES "
+            "WHERE DATE LIKE %s AND GAS_TYPE = %s "
+            "ORDER BY DATE DESC"
+        )
+        cursor.execute(query, (f"{datetime_str}%", gasType))
+        mediciones = cursor.fetchall()
+
+        if not mediciones:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No se encontraron mediciones para '{datetime_str}' y gas '{gasType}'"
+            )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error en la base de datos: {e}")
+    finally:
+        if cursor:
+            cursor.close()
+        if close_conn and conn:
+            conn.close()
+
+    return {
+        "status": "ok",
+        "consulta": datetime_str,
+        "gasType": gasType,
+        "total_mediciones": len(mediciones),
+        "mediciones": mediciones
+    }
