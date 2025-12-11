@@ -9,7 +9,6 @@
 //-----------------------------------
 
 const form = document.getElementById("incidencias_form");
-const id_user = getUserId();
 const messageDiv = document.getElementById("message-div");
 
 async function handleIncidencias(event) {
@@ -18,6 +17,7 @@ async function handleIncidencias(event) {
     // Obtiene datos de las entradas
     const asunto = document.getElementById("asunto-label").value;
     const description = document.getElementById("descripcion-label").value;
+    const id_user = getUserId();
 
     if (!asunto && !description) {
         messageDiv.textContent = "Por favor, completa todos los campos.";
@@ -27,12 +27,12 @@ async function handleIncidencias(event) {
 
     try {
         // Envia POST al endpoint de login
-        const response = await fetch("/incidents/create", {
+        const response = await fetch("/v1/system/incidents/create", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ id_user,asunto, description })
+            body: JSON.stringify({ user_id: id_user, subject: asunto, description })
         });
 
         const data = await response.json();
