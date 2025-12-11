@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar usuario</title>
+    <!--Estilos-->
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/reutilizable/header.css">
+    <link rel="stylesheet" href="./css/reutilizable/wave.css">
+    <link rel="stylesheet" href="./css/incidencias.css">
+    <!--Scripts-->
+    <script src="js/retrieve_login_info.js"></script>
+    
+</head>
+<body>
+    <!--Header-->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo"><a href="./index.html">OxiGo</a></div>
+            <nav class="nav">
+                <a href="./index.html" class="nav-link">Inicio</a>
+                <a href="#" class="nav-link">Nosotros</a>
+                <a href="#" class="nav-link">Contacto</a>
+            </nav>
+            <button class="profile-button">User</button>
+        </div>
+    </header>
+
+    <!-- Semicirculo Backgroud -->
+    <div class="wave-background">
+        <svg class="wave wave-1" viewBox="0 0 2 1 " preserveAspectRatio="none">
+            <path d="M 0 0 A 1 0.4 0 0 0 2,0 L 2,1 L 0,1 Z"></path>
+        </svg>
+    </div>
+
+    <!--Main Content-->
+    <main class="main-content">
+        <div class="form-container">
+            <h1>Incidencias</h1>
+            <p>Por favor, describanos el problema que ha tenido con nuestra página web.</p>
+            <form class="formulario-incidencias" id="incidencias_form">
+                <div class="form-group">
+                    <label class="form-label" for="asunto">Asunto: </label>
+                    <input 
+                        type="text"
+                        id="asunto-label"
+                        class="form-input"
+                        name="asunto"
+                        placeholder="Ej: Problema con un sensor."
+                    />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="descripcion">Descripción: </label>
+                    <textarea
+                        id="descripcion-label"
+                        class="description-input"
+                        name="descripcion"
+                        placeholder="Descripción del problema."
+                    ></textarea>
+                </div>
+                <div id="message-div"></div>
+                <div class="button-form">
+                    <button type="submit" class="submit-button">Enviar</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    <footer class="footer">
+        <p>&copy; 2025 OxiGo. Todos los derechos reservados.</p>
+    </footer>
+    <script src="js/incidencias_client.js"></script>
+</body>

@@ -1,40 +1,45 @@
 //-----------------------------------
 //   © 2025 OxiGo. Todos los derechos reservados.
 //-----------------------------------
-//   Autor: Fédor Tikhomirov
-//   Fecha: 27 de octubre de 2025
+//   Autor: Adrián Jáuregui
+//   Fecha: 10 de diciembre de 2025
 //-----------------------------------
-//   Fichero: login.js
-//   Descripción: Este fichero permite el envío de los datos de inicio de sesión a la API
+//   Fichero: incidencias_client.js
+//   Descripción: Este fichero permite el envío de los datos de incidencias a la API
 //-----------------------------------
 
-const form = document.getElementById("login_form");
-const messageDiv = document.getElementById("login_message");
+const form = document.getElementById("incidencias_form");
+const id_user = getUserId();
+const messageDiv = document.getElementById("message-div");
 
-async function handleLogin(event) {
+async function handleIncidencias(event) {
     event.preventDefault();
 
     // Obtiene datos de las entradas
-    const username_or_email = document.getElementById("username_or_email").value;
-    const password = document.getElementById("password").value;
+    const asunto = document.getElementById("asunto-label").value;
+    const description = document.getElementById("descripcion-label").value;
+
+    if (!asunto && !description) {
+        messageDiv.textContent = "Por favor, completa todos los campos.";
+        messageDiv.style.color = "red";
+        return;
+    }
 
     try {
         // Envia POST al endpoint de login
-        const response = await fetch("/v1/users/login", {
+        const response = await fetch("/incidents/create", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ username_or_email, password })
+            body: JSON.stringify({ id_user,asunto, description })
         });
 
         const data = await response.json();
 
         if (response.ok) {
-            messageDiv.textContent = `¡Bienvenido, ${data.usuario.username}!`;
+            messageDiv.textContent = `¡Incidencia enviada correctamente!`;
             messageDiv.style.color = "green";
-            window.location.href="../edit_user.html"
-            
         } else {
             // Login fallido
             if (data.detail) {
@@ -56,6 +61,6 @@ async function handleLogin(event) {
     }
 }
 
-if(isUserLoggedIn() == true) window.location.href = "../edit_user.html"
 // Asocia la función al submit del login
-form.addEventListener("submit", handleLogin);
+form.addEventListener("submit", handleIncidencias);
+
