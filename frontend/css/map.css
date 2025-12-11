@@ -11,3 +11,39 @@ body {
     position: relative;
     overflow-x: hidden;
 }
+
+.main-content {
+    position: relative;
+    z-index: 10;
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+}
+
+.map-container {
+    background: white;
+    border-radius: 1rem;
+    padding: 3rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap:2rem;
+    width: 100%;
+}
+
+.map-leaf{
+    border-radius: 1rem;
+    border: 2px solid hsl(220, 15%, 85%);
+    width: 100%;
+    height: 55vh;
+}
+
+.map-filters{
+    display: flex;
+    gap: 2rem;
+}
