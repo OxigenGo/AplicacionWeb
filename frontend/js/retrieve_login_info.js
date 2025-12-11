@@ -96,3 +96,55 @@ function getUsername() {
     if (!data || !data.username) return null;
     return data.username;
 }
+
+/**
+ * @brief Cierra la sesión del usuario.
+ *
+ * Envía una petición al backend para borrar la cookie y recarga la página.
+ */
+async function logout() {
+    try {
+        const response = await fetch("/v1/users/logout", {
+            method: "POST"
+        });
+
+        if (response.ok) {
+            window.location.href = "/index.html"; // Redirigir al inicio
+        } else {
+            console.error("Error al cerrar sesión");
+        }
+    } catch (error) {
+        console.error("Error de red al cerrar sesión:", error);
+    }
+}
+
+/**
+ * @brief Actualiza los botones del header según el estado de sesión.
+ */
+function updateHeader() {
+    const sesionButtons = document.querySelector(".sesion-buttons");
+    if (!sesionButtons) return;
+
+    if (isUserLoggedIn()) {
+        // Usuario logueado: Mostrar botón de Cerrar Sesión
+        sesionButtons.innerHTML = `
+            <button onclick="logout()" class="login-button" style="cursor: pointer;">Cerrar Sesión</button>
+        `;
+        
+        // Opcional: Si quieres mantener el botón de perfil o añadirlo
+        // const username = getUsername();
+        // if (username) {
+        //    // Añadir lógica para mostrar nombre de usuario si se desea
+        // }
+
+    } else {
+        // Usuario no logueado: Mostrar Registro e Iniciar Sesión (estado original)
+        sesionButtons.innerHTML = `
+            <a href="./registro.html" class="register-button">Registro</a>
+            <a href="./login.html" class="login-button">Iniciar Sesión</a>
+        `;
+    }
+}
+
+// Ejecutar al cargar la página
+document.addEventListener("DOMContentLoaded", updateHeader);
