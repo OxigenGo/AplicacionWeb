@@ -37,26 +37,23 @@
     <!--Main Content-->
     <main class="main-content">
         <div class="container">
-            <h1>Gestión de Incidencias</h1>
-            <p>Aquí puedes gestionar las incidencias reportadas por los usuarios.</p>
-            <!-- Tabla de incidencias -->
-            <table class="incidencias-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Usuario</th>
-                        <th>Asunto</th>
-                        <th>Descripción</th>
-                        <th>Estado</th>
-                        <th>Fecha Reporte</th>
-                        <th>Fecha Actualización</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="incidencias-body">
-                    <!-- Las filas de la tabla se generarán dinámicamente con JavaScript -->
-                </tbody>
-            </table>
+            <div class="title-container">
+                <h1>Gestión de Incidencias</h1>
+                <p>Aquí puedes gestionar las incidencias reportadas por los usuarios.</p>
+            </div>
+            <div class="incidencias-content">
+                <div id="scroll-incidencias" class="overflow-container">
+                    <div class="incident-card">
+                        <h3>Asunto de la Incidencia</h3>
+                        <p>Descripción breve de la incidencia reportada por el usuario.</p>
+                    </div>
+                </div>
+                <div id="incidencia-seleccionada" class="select-incident">
+                    <h1>Incidencia Seleccionada</h1>
+                    <p>Aquí se mostrarán los detalles de la incidencia seleccionada para su gestión.</p>
+                    <p>Acciones:</p>
+                </div>
+            </div>
         </div>
 
     </main>
