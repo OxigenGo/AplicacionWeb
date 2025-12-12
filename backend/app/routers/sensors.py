@@ -1,12 +1,13 @@
 from fastapi import APIRouter
 from ..schemas.sensors import (
     AssociationData, AssociationDeletionData,
-    UserSensorList, Reading, MapReading
+    UserSensorList, Reading, MapReading, UserToday
 )
 from ..sensores import (
     bind_sensor_to_user, add_reading,
     delete_sensor_records, get_user_sensors,
-    get_all_readings_for_datetime, get_all_sensors
+    get_all_readings_for_datetime,
+    get_today_measurements_for_user, get_all_sensors
 )
 
 router = APIRouter(prefix="/v1/data", tags=["Sensors"])
@@ -47,3 +48,7 @@ def attempt_get_all_readings(selection: MapReading):
 @router.get("/admin/sensors")
 def attempt_get_all_sensors():
     return get_all_sensors()
+    
+@router.post("/today")
+def attempt_get_today_for_user(user: UserToday):
+    return get_today_measurements_for_user(user.user_id)

@@ -11,15 +11,22 @@
 
 from datetime import datetime, timedelta
 from fastapi import HTTPException
-
 from .db import get_connection
 
 #-----------------------------------
-#   Crea un sensor y lo vincula a un usuario
-#   N: user_id, String: email -> bind_sensor_to_user() -> 200 OK | Error
+#   FUNCIONES DE GESTIÓN DE SENSORES
 #-----------------------------------
 
 def bind_sensor_to_user(user_id: int, uuid: str, conn=None):
+    """
+    @brief Vincula un sensor a un usuario en la base de datos.
+    @param user_id ID del usuario.
+    @param uuid Identificador único del sensor.
+    @param conn Conexión opcional a la base de datos.
+    @return dict Información del sensor vinculado.
+    @throws HTTPException 404 si el usuario no existe.
+    @throws HTTPException 500 si ocurre un error en la base de datos.
+    """
     close_conn = False
     try:
         if conn is None:
@@ -60,13 +67,19 @@ def bind_sensor_to_user(user_id: int, uuid: str, conn=None):
             "last_active": last_active,
         }
     }
-    
-#-----------------------------------
-#   Borra un sensor concreto o todos los sensores de un usuario
-#   N: user_id, Bool: erase_all ,String: uuid -> delete_sensor_records() -> 200 OK | Error
-#-----------------------------------
 
 def delete_sensor_records(user_id: int, erase_all: bool, uuid: str = None, conn=None):
+    """
+    @brief Borra uno o todos los sensores asociados a un usuario.
+    @param user_id ID del usuario.
+    @param erase_all Si True borra todos los sensores del usuario.
+    @param uuid UUID del sensor específico a borrar (opcional si erase_all=True).
+    @param conn Conexión opcional a la base de datos.
+    @return dict Información sobre la eliminación.
+    @throws HTTPException 404 si el usuario o sensor no existen.
+    @throws HTTPException 400 si no se proporciona UUID al borrar uno específico.
+    @throws HTTPException 500 si ocurre un error en la base de datos.
+    """
     close_conn = False
     cursor = None
     try:
@@ -83,33 +96,28 @@ def delete_sensor_records(user_id: int, erase_all: bool, uuid: str = None, conn=
 
         cursor.execute("SELECT UUID FROM SENSORES WHERE ASSOCIATED_USER = %s", (user_id,))
         sensores = cursor.fetchall()
-
         if not sensores:
             raise HTTPException(status_code=404, detail="El usuario no tiene sensores asociados")
 
         if erase_all:
             cursor.execute("DELETE FROM SENSORES WHERE ASSOCIATED_USER = %s", (user_id,))
             message = f"Todos los sensores del usuario {user_id} han sido eliminados"
-
         else:
             if uuid is None:
                 raise HTTPException(
                     status_code=400,
                     detail="Debe proporcionar un UUID para borrar un sensor específico"
                 )
-
             cursor.execute(
                 "SELECT UUID FROM SENSORES WHERE UUID = %s AND ASSOCIATED_USER = %s",
                 (uuid, user_id)
             )
             sensor = cursor.fetchone()
-
             if not sensor:
                 raise HTTPException(
                     status_code=404,
                     detail=f"El sensor '{uuid}' no está asociado al usuario {user_id}"
                 )
-
             cursor.execute("DELETE FROM SENSORES WHERE UUID = %s", (uuid,))
             message = f"El sensor '{uuid}' ha sido eliminado del usuario {user_id}"
 
@@ -132,14 +140,20 @@ def delete_sensor_records(user_id: int, erase_all: bool, uuid: str = None, conn=
         "usuario": user_id,
         "eliminado": "todos" if erase_all else uuid
     }
-    
-    
-#-----------------------------------
-#   Crea una medicion, la asocia a un sensor y actualiza su campo de última actividad
-#   String: associated_uuid, float: gas_value, float: temperature_value, String|Null: posicion -> add_reading() -> 200 OK | Error
-#-----------------------------------
 
 def add_reading(associated_uuid: str, gas_type: str, gas_value: float, temperature_value: float, position: str = None, conn=None):
+    """
+    @brief Agrega una medición a un sensor y actualiza su última actividad.
+    @param associated_uuid UUID del sensor.
+    @param gas_type Tipo de gas medido.
+    @param gas_value Valor del gas.
+    @param temperature_value Valor de temperatura.
+    @param position Posición o ubicación del sensor (opcional).
+    @param conn Conexión opcional a la base de datos.
+    @return dict Mensaje de éxito de la operación.
+    @throws HTTPException 404 si el sensor no existe.
+    @throws HTTPException 500 si ocurre un error en la base de datos.
+    """
     close_conn = False
     try:
         if conn is None:
@@ -181,13 +195,16 @@ def add_reading(associated_uuid: str, gas_type: str, gas_value: float, temperatu
         "status": "ok",
         "mensaje": f"Medición agregada exitosamente para el sensor '{associated_uuid}'"
     }
-    
-#-----------------------------------
-#   Devuelve una lista con todos los sensores de un usuario y sus 10 ultimas lecturas
-#   String: user_id -> add_reading() -> 200 OK | Error
-#-----------------------------------
 
 def get_user_sensors(user_id: int, conn=None):
+    """
+    @brief Devuelve los sensores de un usuario y sus últimas 20 mediciones.
+    @param user_id ID del usuario.
+    @param conn Conexión opcional a la base de datos.
+    @return dict Sensores y mediciones del usuario.
+    @throws HTTPException 404 si el usuario o sensores no existen.
+    @throws HTTPException 500 si ocurre un error en la base de datos.
+    """
     close_conn = False
     cursor = None
     try:
@@ -203,14 +220,13 @@ def get_user_sensors(user_id: int, conn=None):
 
         cursor.execute("SELECT UUID, LAST_ACTIVE FROM SENSORES WHERE ASSOCIATED_USER = %s", (user_id,))
         sensores = cursor.fetchall()
-
         if not sensores:
             raise HTTPException(status_code=404, detail="El usuario no tiene sensores asociados")
 
         resultado = []
         for sensor in sensores:
             cursor.execute(
-                "SELECT DATE, GAS_VALUE, TEMPERATURE_VALUE, POSITION "
+                "SELECT DATE, GAS_TYPE, GAS_VALUE, TEMPERATURE_VALUE, POSITION "
                 "FROM MEDICIONES WHERE ASSOCIATED_UUID = %s "
                 "ORDER BY DATE DESC LIMIT 20",
                 (sensor["UUID"],)
@@ -237,14 +253,13 @@ def get_user_sensors(user_id: int, conn=None):
         "usuario": user_id,
         "sensores": resultado
     }
-    
+
 def get_all_sensors(conn=None):
     """
-    @brief Devuelve una lista con todos los sensores de la base de datos
-
-    @param conn Conexión opcional a la base de datos
-    @return dict con todos los sensores y su última actividad
-    @throws HTTPException si hay error en DB
+    @brief Devuelve una lista con todos los sensores de la base de datos.
+    @param conn Conexión opcional a la base de datos.
+    @return dict Lista de sensores y su última actividad.
+    @throws HTTPException 500 si ocurre un error en la base de datos.
     """
     close_conn = False
     cursor = None
@@ -337,5 +352,67 @@ def get_all_readings_for_datetime(datetime_str: str, gasType: str, conn=None):
         "consulta": datetime_str,
         "gasType": gasType,
         "total_mediciones": len(mediciones),
+        "mediciones": mediciones
+    }
+
+
+def get_today_measurements_for_user(user_id: int, conn=None):
+    """
+    @brief Devuelve todas las mediciones del día actual de todos los sensores asociados a un usuario.
+    @param user_id ID del usuario.
+    @param conn Conexión opcional a la base de datos.
+    @return dict con un listado de mediciones de hoy.
+    @throws HTTPException 404 si el usuario no existe o no tiene sensores.
+    @throws HTTPException 500 si ocurre un error en la base de datos.
+    """
+    close_conn = False
+    cursor = None
+    try:
+        if conn is None:
+            conn = get_connection()
+            close_conn = True
+        cursor = conn.cursor(dictionary=True)
+
+        # Verificar usuario
+        cursor.execute("SELECT ID FROM USUARIOS WHERE ID = %s", (user_id,))
+        user = cursor.fetchone()
+        if not user:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+        # Obtener UUID de todos los sensores del usuario
+        cursor.execute("SELECT UUID FROM SENSORES WHERE ASSOCIATED_USER = %s", (user_id,))
+        sensores = cursor.fetchall()
+        if not sensores:
+            raise HTTPException(status_code=404, detail="El usuario no tiene sensores asociados")
+
+        # Obtener lista de UUIDs
+        uuids = [s["UUID"] for s in sensores]
+
+        today_str = datetime.now().strftime("%Y-%m-%d")
+
+        # Traer todas las mediciones del día
+        format_strings = ','.join(['%s'] * len(uuids))
+        query = f"""
+            SELECT ASSOCIATED_UUID, DATE, GAS_TYPE, GAS_VALUE, TEMPERATURE_VALUE, POSITION
+            FROM MEDICIONES
+            WHERE ASSOCIATED_UUID IN ({format_strings}) AND DATE(DATE) = %s
+            ORDER BY DATE DESC
+        """
+        cursor.execute(query, (*uuids, today_str))
+        mediciones = cursor.fetchall()
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error en la base de datos: {e}")
+    finally:
+        if cursor:
+            cursor.close()
+        if close_conn and conn:
+            conn.close()
+
+    return {
+        "status": "ok",
+        "usuario": user_id,
         "mediciones": mediciones
     }
