@@ -11,23 +11,56 @@
     <script src="./js/resumen/grafica.js" defer></script>
     <script src="./js/resumen/genValores.js" defer></script>
     <script src="./js/resumen/main.js" defer></script>
+    <!-- Estilos -->
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/reutilizable/header.css">
+    <link rel="stylesheet" href="./css/reutilizable/wave.css">
+    <link rel="stylesheet" href="./css/resumen.css">
 </head>
 <body>
-    <h1>Mediciones de hoy</h1>
+    <!--Header-->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo"><a href="./index.html">OxiGo</a></div>
+            <nav class="nav">
+                <a href="./index.html" class="nav-link">Inicio</a>
+                <a href="#" class="nav-link">Nosotros</a>
+                <a href="#" class="nav-link">Contacto</a>
+            </nav>
+            <button class="profile-button">User</button>
+        </div>
+    </header>
 
-    <!-- Contenedor de la gráfica -->
-    <canvas id="medicionesChart" width="800" height="400">
-        Tu navegador no soporta canvas.
-    </canvas>
-
-    <!-- Botón para generar valores ficticios -->
-    <div style="margin-top:20px;">
-        <button id="generarFicticios">Generar valores ficticios</button>
+    <!-- Semicirculo Background -->
+    <div class="wave-background">
+        <svg class="wave wave-1" viewBox="0 0 2 1 " preserveAspectRatio="none">
+            <path d="M 0 0 A 1 0.4 0 0 0 2,0 L 2,1 L 0,1 Z"></path>
+        </svg>
     </div>
 
-    <p id="airQualityText">Calidad del aire: -</p>
+    <main class="main-content">
+        <div class="chart-container">
+            <h1>Mediciones de hoy</h1>
 
-    <!-- Placeholder para mensajes o logs -->
-    <div id="mensajes" style="margin-top:20px;"></div>
+            <!-- Contenedor de la gráfica -->
+            <canvas id="medicionesChart" class="chart">
+                Tu navegador no soporta canvas.
+            </canvas>
+
+            <!-- Botón para generar valores ficticios -->
+            <div class="button-container">
+                <button id="generarFicticios">Generar valores ficticios</button>
+            </div>
+
+            <p id="airQualityText">Calidad del aire: -</p>
+
+            <!-- Placeholder para mensajes o logs -->
+            <div id="mensajes"></div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 OxiGo. Todos los derechos reservados.</p>
+    </footer>
 </body>
 </html>

@@ -1,0 +1,59 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+
+.main-content {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    position: relative;
+}
+
+.chart-container {
+    background: white;
+    border-radius: 1rem;
+    padding: 3rem;
+    box-shadow:  0 10px 10px rgba(0, 0, 0, 0.39);
+    width: 100%;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.chart {
+    max-height: 50vh;
+}
+
+.button-container {
+    margin-top: 1rem;
+}
+
+#generarFicticios {
+    background: hsl(214, 85%, 50%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-weight: 600;
+}
+
+#generarFicticios:hover {
+    background: hsl(214, 85%, 40%);
+}
+
+.chart-container p{
+    margin-top: 1rem;
+}
+
+.footer {
+    position: relative;
+    text-align: center;
+    color: hsl(214, 10%, 43%);
+    margin-top: -1rem;
+}
