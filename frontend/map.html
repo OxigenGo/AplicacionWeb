@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de contaminacion</title>
+        
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- JS de Leaflet -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js" defer></script>
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js" defer></script>
+
+    <script src="js/contamination_map/gen_map.js"></script>
+    <script src="js/contamination_map/map_controller.js" defer></script>
+    <!-- CSS de Leaflet (Esto debe estar despues de los scripts de Leaflet) -->
+
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/reutilizable/header.css">
+    <link rel="stylesheet" href="./css/reutilizable/wave.css">
+    <link rel="stylesheet" href="./css/map.css">
+</head>
+
+<body>
+    <!--Header-->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo"><a href="./index.html">OxiGo</a></div>
+            <nav class="nav">
+                <a href="./index.html" class="nav-link">Inicio</a>
+                <a href="#" class="nav-link">Nosotros</a>
+                <a href="#" class="nav-link">Contacto</a>
+            </nav>
+            <button class="profile-button">User</button>
+        </div>
+    </header>
+
+    <!-- Semicirculo Backgroud -->
+    <div class="wave-background">
+        <svg class="wave wave-1" viewBox="0 0 2 1 " preserveAspectRatio="none">
+            <path d="M 0 0 A 1 0.4 0 0 0 2,0 L 2,1 L 0,1 Z"></path>
+        </svg>
+    </div>
+
+    <!--Main Content-->
+    <main class="main-content"> 
+        <div class="map-container">
+            <h1>Mapa de Contaminación</h1>
+            <div class="map-filters">
+                <div class="filter-group">
+                    <label for="date-selector">Fecha:</label>
+                    <input type="date" id="date-selector">
+                </div>
+                <div class="filter-group">
+                <label for="gas-selector">Gas:</label>
+                <select id="gas-selector">
+                    <option value="o3">O₃</option>
+                    <option value="co">CO</option>
+                    <option value="no2">NO₂</option>
+                    <option value="so2">SO₂</option>
+                </select>
+                </div>
+            </div>
+
+            <!-- Contenedor del mapa -->
+            <div id="map" class="map-leaf"></div>
+        </div>
+    </main>
+    <main class="gas-content">
+        <div class="gas-info-container">
+            <div class="gas-one">
+                <div class="gas-info-card">
+                    <h1>Ozono (O₃)</h1>
+                    <p>Se forma cuando la contaminación de vehiculos e industrias se mezcla con la luz del sol. Puede causar tos, irritación en los ojos y dificultad para respirar, y también daña plantas y cultivos. Se recomienda no pasar de 0.05-0.06 ppm, y las leyes suelen permitir como máximo 0.07-0.09 ppm.</p>
+                </div>
+                <div class="gas-info-card">
+                    <h1>Oxido de Carbono (CO)</h1>
+                    <p>Sale sobre todo de vehiculos, estufas o motores que queman mal el combustible. Puede causar dolor de cabeza, mareos y, en altas cantidades, es muy peligroso porque impide que el cuerpo reciba oxígeno. En el ambiente también afecta a animales y contribuye a la contaminación del aire. Se recomienda no pasar de 9 ppm (promedio de 8 horas), y los límites legales suelen estar entre 9 y 35 ppm, según la norma.</p>
+                </div>
+            </div>
+            <div class="gas-two">
+                <div class="gas-info-card">
+                    <h1>Dioxido de Nitrogeno (NO₂)</h1>
+                    <p>Viene sobre todo de coches, camiones e industrias que queman combustible. Puede irritar los pulmones, causar tos y empeorar el asma; también daña plantas y contribuye a la contaminación del aire. Se recomienda no pasar de 0.02-0.05 ppm, y las leyes suelen permitir como máximo alrededor de 0.05-0.10 ppm.</p>
+                </div>
+                <div class="gas-info-card">
+                    <h1>Dioxido de Azufre (SO₂)</h1>
+                    <p>Sale de fábricas, centrales eléctricas y coches que queman combustibles con azufre. Puede irritar los ojos y los pulmones, causar tos y problemas respiratorios; también daña plantas y contribuye a la lluvia ácida. Se recomienda no pasar de 0.02 ppm (promedio de 24 h), y los límites legales suelen ser como máximo 0.10 ppm.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!--Footer-->
+    <footer class="footer">
+        <p>&copy; 2025 OxiGo. Todos los derechos reservados.</p>
+    </footer>
+</body>
+
+</html>

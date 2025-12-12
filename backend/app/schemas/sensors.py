@@ -24,6 +24,9 @@ class Reading(BaseModel):
     temperature: float
     position: Optional[str] = None
 
+class MapReading(BaseModel):
+    datetime: str
+    gasType: str
 
 class UserToday(BaseModel):
     user_id: int
