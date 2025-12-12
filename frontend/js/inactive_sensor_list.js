@@ -150,9 +150,32 @@ async function cargarSensores() {
         aplicarFiltros(); 
 
     } catch (error) {
-        console.error("Error al cargar sensores:", error);
+        console.log("Error al cargar sensores:", error);
     }
 }
+
+//Chapuza
+document.getElementById("day-one").addEventListener("click", function() {
+    this.classList.toggle("activo");
+});
+
+document.getElementById("week-one").addEventListener("click", function() {
+    this.classList.toggle("activo");
+});
+
+document.getElementById("month-one").addEventListener("click", function() {
+    this.classList.toggle("activo");
+});
+
+document.getElementById("month-six").addEventListener("click", function() {
+    this.classList.toggle("activo");
+});
+
+document.getElementById("show-all").addEventListener("click", function() {
+    this.classList.toggle("activo");
+});
+
+
 
 /* -------------------------------------------------------------------------- */
 /*                               Ejecución Inicial                            */
