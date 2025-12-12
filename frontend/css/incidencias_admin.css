@@ -14,21 +14,78 @@
     padding: 2rem;
 }
 
-.container {
-    background: white;
-    border-radius: 1rem;
-    padding: 3rem;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    animation: fadeIn 0.5s ease-out;
+.container{
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
-.incidencias-table {
-    width: 100%;
-    border-collapse: collapse;
+.title-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 2rem;
+}
+
+.incidencias-content{
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    height: calc(100vh - 300px);
+}
+
+.overflow-container {
+    z-index: 10;
+    position: relative;
+    overflow-y: auto;
+    width: 20%;
+    height: 100%;
+    padding-top: 1rem;
+
+     scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE y Edge antiguo */
+}
+
+.overflow-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+}
+
+.overflow-container {
+    -webkit-mask-image: 
+        linear-gradient(to bottom, 
+            transparent 0, 
+            black 20px, 
+            black calc(100% - 20px), 
+            transparent 100%);
+    mask-image: 
+        linear-gradient(to bottom, 
+            transparent 0, 
+            black 20px, 
+            black calc(100% - 20px), 
+            transparent 100%);
+}
+
+.incident-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 2px solid hsl(213, 37%, 15%);
+}
+
+
+
+.select-incident {
+    margin-left: 1rem;
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    width: 80%;
+    height: 100%;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
     margin-top: 1rem;
 }
+
+
+
+
 
