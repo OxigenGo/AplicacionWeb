@@ -12,8 +12,9 @@
     <link rel="stylesheet" href="./css/inactive_sensor_list.css">
 
     <!--Scripts-->
-    <!--<script src="js/retrieve_login_info.js"></script>-->
-    
+    <script src="js/retrieve_login_info.js"></script>
+    <script src="js/inactive_sensor_list.js" defer></script>
+
 </head>
 
 <body>
@@ -39,9 +40,23 @@
     </div>
 
     <!-- Main Content -->
-    <h1 id="sensores-title">Sensores</h1>
-    <div id="lista-sensores" class="sensor-container"></div>
-    <script src="js/inactive_sensor_list.js"></script>
+    <main class="main-content">
+        <h1 id="sensores-title">Sensores</h1>
+        <div class="filter-container">
+            <div id="filtros" class="filter-buttons">
+                <button onclick="cambiarFiltroInactividad(1)" id="day-one">+1 día</button>
+                <button onclick="cambiarFiltroInactividad(7)" id="week-one">+1 semana</button>
+                <button onclick="cambiarFiltroInactividad(30)" id="month-one">+1 mes</button>
+                <button onclick="cambiarFiltroInactividad(180)" id="month-six">+6 meses</button>
+                <button onclick="cambiarFiltroInactividad(0)" id="show-all">Mostrar todos</button>
+            </div>
+            <div id="busquedas" class="search-container">
+                <input type="text" id="busqueda-uuid" placeholder="Buscar por UUID" oninput="aplicarFiltros()">
+                <input type="text" id="busqueda-usuario" placeholder="Buscar por usuario" oninput="aplicarFiltros()">
+            </div>
+        </div>
+        <div id="lista-sensores" class="sensor-container"></div>
+    </main>
 </body>
 
 </html>

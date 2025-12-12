@@ -6,7 +6,7 @@ from ..schemas.sensors import (
 from ..sensores import (
     bind_sensor_to_user, add_reading,
     delete_sensor_records, get_user_sensors,
-    get_all_readings_for_datetime
+    get_all_readings_for_datetime, get_all_sensors
 )
 
 router = APIRouter(prefix="/v1/data", tags=["Sensors"])
@@ -43,3 +43,7 @@ def attempt_register_reading(reading: Reading):
 @router.post("/map_readings")
 def attempt_get_all_readings(selection: MapReading):
     return get_all_readings_for_datetime(selection.datetime, selection.gasType)
+
+@router.get("/admin/sensors")
+def attempt_get_all_sensors():
+    return get_all_sensors()
