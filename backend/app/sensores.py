@@ -24,8 +24,8 @@ def bind_sensor_to_user(user_id: int, uuid: str, conn=None):
     @param uuid Identificador único del sensor.
     @param conn Conexión opcional a la base de datos.
     @return dict Información del sensor vinculado.
-    @throws HTTPException 404 si el usuario no existe.
-    @throws HTTPException 500 si ocurre un error en la base de datos.
+    @exception HTTPException 404 si el usuario no existe.
+    @exception HTTPException 500 si ocurre un error en la base de datos.
     """
     close_conn = False
     try:
@@ -76,9 +76,9 @@ def delete_sensor_records(user_id: int, erase_all: bool, uuid: str = None, conn=
     @param uuid UUID del sensor específico a borrar (opcional si erase_all=True).
     @param conn Conexión opcional a la base de datos.
     @return dict Información sobre la eliminación.
-    @throws HTTPException 404 si el usuario o sensor no existen.
-    @throws HTTPException 400 si no se proporciona UUID al borrar uno específico.
-    @throws HTTPException 500 si ocurre un error en la base de datos.
+    @exception HTTPException 404 si el usuario o sensor no existen.
+    @exception HTTPException 400 si no se proporciona UUID al borrar uno específico.
+    @exception HTTPException 500 si ocurre un error en la base de datos.
     """
     close_conn = False
     cursor = None
@@ -151,8 +151,8 @@ def add_reading(associated_uuid: str, gas_type: str, gas_value: float, temperatu
     @param position Posición o ubicación del sensor (opcional).
     @param conn Conexión opcional a la base de datos.
     @return dict Mensaje de éxito de la operación.
-    @throws HTTPException 404 si el sensor no existe.
-    @throws HTTPException 500 si ocurre un error en la base de datos.
+    @exception HTTPException 404 si el sensor no existe.
+    @exception HTTPException 500 si ocurre un error en la base de datos.
     """
     close_conn = False
     try:
@@ -202,8 +202,8 @@ def get_user_sensors(user_id: int, conn=None):
     @param user_id ID del usuario.
     @param conn Conexión opcional a la base de datos.
     @return dict Sensores y mediciones del usuario.
-    @throws HTTPException 404 si el usuario o sensores no existen.
-    @throws HTTPException 500 si ocurre un error en la base de datos.
+    @exception HTTPException 404 si el usuario o sensores no existen.
+    @exception HTTPException 500 si ocurre un error en la base de datos.
     """
     close_conn = False
     cursor = None
@@ -259,7 +259,7 @@ def get_all_sensors(conn=None):
     @brief Devuelve una lista con todos los sensores de la base de datos.
     @param conn Conexión opcional a la base de datos.
     @return dict Lista de sensores y su última actividad.
-    @throws HTTPException 500 si ocurre un error en la base de datos.
+    @exception HTTPException 500 si ocurre un error en la base de datos.
     """
     close_conn = False
     cursor = None
@@ -294,11 +294,11 @@ def get_all_readings_for_datetime(datetime_str: str, gasType: str, conn=None):
     """
     Obtiene todas las mediciones de una fecha específica y tipo de gas.
 
-    :param datetime_str: Fecha en formato 'YYYY-MM-DD' o 'YYYY-MM-DD HH:MM:SS'.
-    :param gasType: Tipo de gas a filtrar ('O3', 'CO', 'NO2', 'SO2', etc.).
-    :param conn: Conexión a la base de datos (opcional).
-    :return: Diccionario con status, consulta, total de mediciones y lista de mediciones.
-    :raises HTTPException: Si la fecha o gas son inválidos, o falla la consulta.
+    @param datetime_str: Fecha en formato 'YYYY-MM-DD' o 'YYYY-MM-DD HH:MM:SS'.
+    @param gasType: Tipo de gas a filtrar ('O3', 'CO', 'NO2', 'SO2', etc.).
+    @param conn: Conexión a la base de datos (opcional).
+    @return: Diccionario con status, consulta, total de mediciones y lista de mediciones.
+    @raises HTTPException: Si la fecha o gas son inválidos, o falla la consulta.
     """
     close_conn = False
     cursor = None
@@ -362,8 +362,8 @@ def get_today_measurements_for_user(user_id: int, conn=None):
     @param user_id ID del usuario.
     @param conn Conexión opcional a la base de datos.
     @return dict con un listado de mediciones de hoy.
-    @throws HTTPException 404 si el usuario no existe o no tiene sensores.
-    @throws HTTPException 500 si ocurre un error en la base de datos.
+    @exception HTTPException 404 si el usuario no existe o no tiene sensores.
+    @exception HTTPException 500 si ocurre un error en la base de datos.
     """
     close_conn = False
     cursor = None
