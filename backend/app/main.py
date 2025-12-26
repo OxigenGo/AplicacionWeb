@@ -16,6 +16,7 @@ from .routers.users import router as users_router
 from .routers.register import router as register_router
 from .routers.sensors import router as sensors_router
 from .routers.system import router as system_router
+from .routers.tracks import router as track_router
 
 app = FastAPI()
 
@@ -24,6 +25,7 @@ app.include_router(users_router)
 app.include_router(register_router)
 app.include_router(sensors_router)
 app.include_router(system_router)
+app.include_router(track_router)
 
 # Montar frontend
 frontend_path = os.path.join(os.path.dirname(__file__), "../../frontend")
