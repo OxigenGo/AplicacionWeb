@@ -8,14 +8,6 @@ body{
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
-    background: conic-gradient(
-        from 0deg,
-        #09a0e3 0deg,
-        #1378d7 70deg,
-        #1e4fcc 110deg,
-        #00c1ec 280deg,
-        #09a0e3 310deg
-    );
 }
 
 .logo {

@@ -75,7 +75,7 @@
 }
 
 .sesion-buttons{
-    display: flex;
+    min-width: 20rem;
     flex-direction: row;
     gap: 0.8rem;
 }
