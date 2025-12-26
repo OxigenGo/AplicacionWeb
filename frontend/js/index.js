@@ -11,6 +11,7 @@
 const buttons = document.getElementById("session-buttons");
 const username = getUsername();
 
+//Algoritmo para cambiar los botones del header
 if(isUserLoggedIn()){
     buttons.innerHTML =
         `<button class="profile-button">${username}</button>`;

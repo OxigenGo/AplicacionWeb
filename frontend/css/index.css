@@ -81,3 +81,34 @@ body{
 #error-message-form{
     color: red;
 }
+
+@media(max-width: 1400px) {
+    .logo{
+        min-width: 10rem;
+    }
+}
+
+@media(max-width: 1250px) {
+    .logo{
+        min-width: 5rem;
+    }
+}
+
+
+@media(max-width: 1000px) {
+    .info-container{
+        margin-left: 0px;
+    }
+}
+
+@media(max-width: 600px) {
+    .info-container{
+        display: flex;
+        gap: 1rem;
+    }
+
+    .info-text h1{
+        gap:1rem;
+    }
+
+}
