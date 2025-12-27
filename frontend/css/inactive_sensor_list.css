@@ -97,3 +97,31 @@ body {
     border-radius: 0.5rem;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
+
+
+@media (max-width: 1400px) {
+    .filter-buttons {
+        gap: 1rem;
+    }
+
+    .search-container{
+        gap: 1rem;
+    }
+
+    .search-container input{
+        width: 10rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .filter-buttons {
+        gap: .5rem;
+    }
+
+    .search-container {
+        gap: .5rem;
+        margin-left: 1rem;
+    }
+}
+
+/*Hay que cambiar para hacer que los filtros se vean bien*/
