@@ -175,6 +175,20 @@ document.getElementById("show-all").addEventListener("click", function() {
     this.classList.toggle("activo");
 });
 
+//Función para actualizar el placeholder del input de búsqueda según el tamaño de la pantalla
+function updatePlacholder() {
+    const uuidInput = document.getElementById("busqueda-uuid");
+    const usuarioInput = document.getElementById("busqueda-usuario");
+
+    if (window.innerWidth < 650) {
+        uuidInput.placeholder = "UUID";
+        usuarioInput.placeholder = "Usuario";
+    } else {
+        uuidInput.placeholder = "Buscar por UUID";
+        usuarioInput.placeholder = "Buscar por usuario";
+    }
+}
+
 
 
 /* -------------------------------------------------------------------------- */
@@ -183,3 +197,6 @@ document.getElementById("show-all").addEventListener("click", function() {
 
 // renderSensores(sensors_prueba); // datos de prueba mientras carga
 cargarSensores();
+//Para hacer la busqueda responsive
+updatePlacholder();
+window.addEventListener("resize", updatePlacholder);

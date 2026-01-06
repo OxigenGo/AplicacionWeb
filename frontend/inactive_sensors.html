@@ -43,6 +43,15 @@
     <main class="main-content">
         <h1 id="sensores-title">Sensores</h1>
         <div class="filter-container">
+            <div class="select-filtro">
+                <select name="filtros" class="inactive-filtros">
+                    <option value="op1">+1 día</option>
+                    <option value="op2">+1 semana</option>
+                    <option value="op3">+1 mes</option>
+                    <option value="op4">+6 meses</option>
+                    <option value="op5">Mostrar todos</option>
+                </select>
+            </div>
             <div id="filtros" class="filter-buttons">
                 <button onclick="cambiarFiltroInactividad(1)" id="day-one">+1 día</button>
                 <button onclick="cambiarFiltroInactividad(7)" id="week-one">+1 semana</button>
@@ -50,6 +59,7 @@
                 <button onclick="cambiarFiltroInactividad(180)" id="month-six">+6 meses</button>
                 <button onclick="cambiarFiltroInactividad(0)" id="show-all">Mostrar todos</button>
             </div>
+            
             <div id="busquedas" class="search-container">
                 <input type="text" id="busqueda-uuid" placeholder="Buscar por UUID" oninput="aplicarFiltros()">
                 <input type="text" id="busqueda-usuario" placeholder="Buscar por usuario" oninput="aplicarFiltros()">

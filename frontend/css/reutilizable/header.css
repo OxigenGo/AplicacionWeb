@@ -129,3 +129,19 @@
 @media(max-width: 1200px) {
     
 }
+
+@media(max-width: 1400px) {
+    .logo{
+        min-width: 10rem;
+    }
+}
+
+@media(max-width: 1250px) {
+    .logo{
+        min-width: 5rem;
+    }
+
+    .profile-button{
+        margin-left: 1rem;
+    }
+}

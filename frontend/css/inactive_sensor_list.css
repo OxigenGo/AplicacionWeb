@@ -98,6 +98,11 @@ body {
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+/*Filtros responsive*/
+.select-filtro{
+    display: none;
+}
+
 
 @media (max-width: 1400px) {
     .filter-buttons {
@@ -124,4 +129,37 @@ body {
     }
 }
 
-/*Hay que cambiar para hacer que los filtros se vean bien*/
+@media (max-width: 900px) {
+    .select-filtro{
+        display: block;
+    }
+
+    .inactive-filtros{
+        padding: 0.5rem 1rem;
+        border: 2px solid hsl(220, 15%, 85%);
+        border-radius: 0.5rem;
+        font-weight: 600;
+        color: hsl(217, 11%, 45%);
+        padding-left: .5rem;
+    }
+
+    .filter-buttons{
+        display: none;
+    }
+}
+
+@media (max-width: 650px) {
+    .search-container input{
+        width: 8.5rem;
+    }
+
+    .inactive-filtros{
+        width: 7rem;
+    }
+}
+
+@media (max-width: 550px) {
+    .search-container input{
+        width: 6rem;
+    }
+}
