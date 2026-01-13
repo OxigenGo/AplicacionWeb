@@ -133,25 +133,46 @@ function addHeatmap(map, mediciones, gasType) {
     const maxValues = { o3: 300, co: 50, no2: 200, so2: 150 };
     const maxValue = maxValues[gasType] || 100;
 
-    const heatPoints = mediciones.map(med => {
-        try {
-            const geo = JSON.parse(med.POSITION);
-            if (geo.type !== "Point") return null;
-            const [lon, lat] = geo.coordinates;
-            return [lat, lon, med.GAS_VALUE / maxValue];
-        } catch (e) {
-            return null;
-        }
-    }).filter(p => p !== null);
+    const BASE_ZOOM = 7;   // the zoom where values look correct
 
+    function getZoomScale() {
+        const z = map.getZoom();
+        return Math.pow(2, 2 * (z - BASE_ZOOM));
+    }
+
+    function buildPoints() {
+        const scale = getZoomScale();
+
+        return mediciones.map(med => {
+            try {
+                const geo = JSON.parse(med.POSITION);
+                if (geo.type !== "Point") return null;
+                const [lon, lat] = geo.coordinates;
+
+                return [
+                    lat,
+                    lon,
+                    (med.GAS_VALUE / maxValue) / scale
+                ];
+            } catch {
+                return null;
+            }
+        }).filter(p => p !== null);
+    }
+
+    let heatPoints = buildPoints();
     if (heatPoints.length === 0) return null;
 
     const layer = L.heatLayer(heatPoints, {
         radius: 75,
         blur: 50,
-        maxZoom: 17,
-        gradient: { 0.0: 'green', 0.5: 'yellow', 1.0: 'red' } // solo 3 colores
+        maxZoom: 20,
+        gradient: { 0.0: 'green', 0.5: 'yellow', 1.0: 'red' }
     }).addTo(map);
+
+    map.on('zoomend', () => {
+        layer.setLatLngs(buildPoints());
+    });
 
     if (map.getZoom() === 2) {
         const latLngs = heatPoints.map(p => [p[0], p[1]]);
