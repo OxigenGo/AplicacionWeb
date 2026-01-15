@@ -69,12 +69,21 @@ function setupSelectorEvents() {
     if (gasSelect) gasSelect.addEventListener('change', updateMap);
 }
 
+function applyRoleRestrictions() {
+    const role = getUserRole();
+    const dateInput = document.getElementById('date-selector');
+
+    if (dateInput && role != "Administrador") {
+        dateInput.style.display = "none";
+    }
+}
 
 /**
  * @brief Inicializa el módulo de control del mapa.
  */
 function initMapController() {
     initializeSelectors();
+    applyRoleRestrictions();
     setupSelectorEvents();
     updateMap();
 }

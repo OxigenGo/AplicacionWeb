@@ -8,10 +8,11 @@
         
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <!-- JS de Leaflet -->
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js" defer></script>
-    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js" defer></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 
-    <script src="js/contamination_map/gen_map.js"></script>
+    <script src="js/retrieve_login_info.js"></script>
+    <script src="js/contamination_map/gen_map.js" defer></script>
     <script src="js/contamination_map/map_controller.js" defer></script>
     <!-- CSS de Leaflet (Esto debe estar despues de los scripts de Leaflet) -->
 
@@ -47,7 +48,7 @@
         <div class="map-container">
             <h1>Mapa de Contaminación</h1>
             <div class="map-filters">
-                <div class="filter-group">
+                <div id="date-selector" class="filter-group">
                     <label for="date-selector">Fecha:</label>
                     <input type="date" id="date-selector">
                 </div>
