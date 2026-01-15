@@ -16,7 +16,36 @@ let filtro = 0;
 /*                               Funciones Utils                              */
 /* -------------------------------------------------------------------------- */
 
+function isClaimed(recompensas) {
+    recompensas.forEach(recompensa => {
+        if (recompensa.STATE === "CLAIMED") {
+            return true
+        } else {
+            return false;
+        }
+    });
+}
 
+function claimReward(rewardId) {
+    try{
+        fetch("/v1/rewards/claim", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ reward_id: rewardId, user_id: getUserId() })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        aplicarFiltros();
+
+    } catch (error) {
+        console.log("Error al cargar recompensas:", error);
+    }
+}
 /* -------------------------------------------------------------------------- */
 /*                          Funciones de Renderizado                          */
 /* -------------------------------------------------------------------------- */
@@ -26,15 +55,30 @@ let filtro = 0;
  * @param recompensa Objeto recompensa (ID, ASSOCIATED_USER, STATE)
  * @return HTML con información formateada.
  */
-function tarjetaRecompensa(recompensa) {
-
-    return `
-        <p>Id de la recompensa: ${recompensa.ID}</p>
-        <p>Usuario asociado: ${recompensa.ASSOCIATED_USER}</p> 
-        <p>Estado:<br>
-            <strong>${recompensa.STATE}</strong>
-        </p>
-    `; //Hacer que en vez de que salga el id del usuario salga el nombre.
+function tarjetaRecompensa(recompensa, reward_state) {
+    if(reward_state) {
+        return `
+        <div class="reward-info" id="claimed-reward">
+            <p>Id de la recompensa: ${recompensa.ID}</p>
+            <p>Estado: <strong>${recompensa.STATE}</strong></p>
+        </div>
+        <div class="reward-description">
+            <p>Descripcion: ${recompensa.DESCRIPTION}</p>
+        </div>
+        `;
+    }else{
+        return `
+        <div class="reward-info" id="unclaimed-reward">
+            <p>Id de la recompensa: ${recompensa.ID}</p>
+            <p>Estado: <strong>${recompensa.STATE}</strong></p>
+        </div>
+        <div class="reward-description">
+            <p>Descripcion: ${recompensa.DESCRIPTION}</p>
+        </div>
+        <button class="claim-button" onclick="claimReward('${recompensa.ID}')">Reclamar</button>
+        `;
+    }
+    //Hacer que en vez de que salga el id del usuario salga el nombre.
 }
 
 /**
@@ -47,9 +91,10 @@ function renderRecompensas(recompensas) {
 
 
     recompensas.forEach(recompensa => {
+        const reward_state = isClaimed(recompensa);
         const card = document.createElement("div");
         card.className = "reward-card";
-        card.innerHTML += tarjetaRecompensa(recompensa);
+        card.innerHTML += tarjetaRecompensa(recompensa, reward_state);
         contenedor.appendChild(card);
     });
 }
@@ -111,7 +156,7 @@ async function cargarRecompensas() {
 
         recompensasCargadas = data.rewards;
 
-        aplicarFiltros(); 
+        aplicarFiltros();
 
     } catch (error) {
         console.log("Error al cargar recompensas:", error);
@@ -127,6 +172,7 @@ document.getElementById("reclamadas").addEventListener("click", function() {
 document.getElementById("no-reclamadas").addEventListener("click", function() {
     this.classList.toggle("activo");
 });
+
 
 /* -------------------------------------------------------------------------- */
 /*                               Ejecución Inicial                            */

@@ -54,7 +54,6 @@ body {
     width: 100%;
 }
 
-
 .filter-container{
     background: white;
     padding: 1rem 2rem;
@@ -102,4 +101,51 @@ body {
     border: 2px solid hsl(220, 15%, 85%);
     border-radius: 0.5rem;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reward-container{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+}
+
+.reward-card{
+    background: white;
+    border: 2px solid hsl(214, 85%, 50%);
+    display: flex;
+    flex-direction: row;
+    padding: 2rem;
+}
+
+.reward-info{
+    display: flex;
+    justify-content: space-between;
+}
+
+#claimed-reward strong {
+    color: green;
+}
+
+#unclaimed-reward strong {
+    color: red;
+}
+
+.reward-description {
+    width: 100%;
+}
+
+.claim-button {
+    background: hsl(214, 85%, 50%);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 1rem;
+}
+
+.claim-button:hover {
+    background: hsl(214, 85%, 40%);
 }
