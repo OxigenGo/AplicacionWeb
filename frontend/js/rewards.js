@@ -95,7 +95,7 @@ function aplicarFiltros() {
  */
 async function cargarRecompensas() {
     try {
-        const response = await fetch("/v1/rewards");
+        const response = await fetch("/v1/rewards/");
         const data = await response.json();
 
         recompensasCargadas = data.rewards;
