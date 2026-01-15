@@ -44,17 +44,11 @@
         <h1 id="rewards-title">Recompensas</h1>
         <div class="filtros">
             <div class="filter-container">
-            <div class="select-filtro">
-                <select name="filtros" class="inactive-filtros">
-                    <option value="op1">Reclamadas</option>
-                    <option value="op2">No Reclamadas</option>
-                </select>
+                <div id="filtros" class="filter-buttons">
+                    <button onclick="cambiarFiltroReward(1)" id="reclamadas">Reclamadas</button>
+                    <button onclick="cambiarFiltroReward(2)" id="no-reclamadas">No Reclamadas</button>
+                </div>
             </div>
-            <div id="filtros" class="filter-buttons">
-                <button onclick="cambiarFiltroReward(1)" id="reclamadas">Reclamadas</button>
-                <button onclick="cambiarFiltroReward(2)" id="no-reclamadas">No Reclamadas</button>
-            </div>
-        </div>
         </div>
         <div id="lista-reward" class="reward-container"></div>
     </main>
