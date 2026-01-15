@@ -46,6 +46,7 @@ function claimReward(rewardId) {
         console.log("Error al cargar recompensas:", error);
     }
 }
+
 /* -------------------------------------------------------------------------- */
 /*                          Funciones de Renderizado                          */
 /* -------------------------------------------------------------------------- */

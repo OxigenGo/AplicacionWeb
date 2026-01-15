@@ -106,7 +106,7 @@ body {
 .reward-container{
     width: 100%;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 2rem;
 }
 
@@ -114,7 +114,7 @@ body {
     background: white;
     border: 2px solid hsl(214, 85%, 50%);
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     padding: 2rem;
 }
 

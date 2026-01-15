@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/incidencias_admin.css">
     <!--Scripts-->
     <script src="js/retrieve_login_info.js"></script>
+    <script src="js/incidencias_admin.js" defer></script>
 </head>
 <body>
     <!--Header-->
@@ -70,9 +71,33 @@
                     
                 </div>
                 <div id="incidencia-seleccionada" class="select-incident">
-                    <h1>Incidencia Seleccionada</h1>
-                    <p>Aquí se mostrarán los detalles de la incidencia seleccionada para su gestión.</p>
-                    <p>Acciones:</p>
+                    <div class="incident-information">
+                        <div class="incident-subject">
+                            <h1>Incidencia Seleccionada</h1>
+                        </div>
+                        <div class="incident-dates">
+                            <div class="create-date">
+                                <p><strong>Fecha de Reporte:</strong> <p id="create-date">2024-06-15</p></p>
+                            </div>
+                            <div class="update-date">
+                                <p><strong>Última Actualización:</strong> <p id="update-date">2024-06-16</p></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="incident-description">
+                        <p>Aquí se mostrarán los detalles de la incidencia seleccionada para su gestión.</p>
+                    </div>
+                    <div class="incident-actions">
+                        <div class="incident-status">
+                            <!--Espacio para el estado-->
+                            <p><strong>Estado:</strong> Pendiente</p>
+                        </div>
+                        <div class="incident-buttons">
+                            <button class="solution-button" id="sol-button">Solucionar</button>
+                            <button class="rechazar-button" id="reject-button">Rechazar</button>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
