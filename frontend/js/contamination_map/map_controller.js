@@ -39,7 +39,7 @@ function initializeSelectors() {
     if (dateInput) dateInput.value = `${yyyy}-${mm}-${dd}`;
 
     const gasSelect = document.getElementById('gas-selector');
-    if (gasSelect) gasSelect.value = 'o3';
+    if (gasSelect) gasSelect.value = 'general';
 }
 
 
