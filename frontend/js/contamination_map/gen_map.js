@@ -252,6 +252,32 @@ function classifyGeneral(data) {
     return hasRegular ? "Regular" : "Bueno";
 }
 
+/* ================= Leyenda ================= */
+function showLegend(map){
+    const legend = L.control({ position: "bottomright" });
+
+    legend.onAdd = function () {
+        const div = L.DomUtil.create("div", "heatmap-legend");
+
+        div.innerHTML = `
+            <h4>Concentración:</h4>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <span class="color" style="background:#0C9567"></span> Bajo
+                </div>
+                <div class="legend-item">
+                    <span class="color" style="background:#FF9D00"></span> Medio
+                </div>
+                <div class="legend-item">
+                    <span class="color" style="background:#FF0000"></span> Alto
+                </div>
+            </div>
+        `;
+        return div;
+    };
+    legend.addTo(map);
+}
+
 
 /* ================= MAIN ================= */
 
@@ -275,5 +301,8 @@ async function generateMap({ dateStr, gasType }) {
 
         const data = await fetchReadings(dateStr, gasType);
         heatLayer = addHeatmap(mapInstance, data, gasType);
+
+        showLegend(mapInstance);
     });
 }
+
