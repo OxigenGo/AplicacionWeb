@@ -44,7 +44,7 @@
             </div>
             <div class="incidencias-content">
                 <div id="scroll-incidencias" class="overflow-container">
-                    <div class="incident-card">
+                    <div class="incident-card active">
                         <h3>Asunto de la Incidencia</h3>
                         <p>Descripción breve de la incidencia reportada por el usuario.</p>
                     </div>
@@ -73,7 +73,7 @@
                 <div id="incidencia-seleccionada" class="select-incident">
                     <div class="incident-information">
                         <div class="incident-subject">
-                            <h1>Incidencia Seleccionada</h1>
+                            <h1 id="title">Incidencia Seleccionada</h1>
                         </div>
                         <div class="incident-dates">
                             <div class="create-date">
@@ -85,16 +85,16 @@
                         </div>
                     </div>
                     <div class="incident-description">
-                        <p>Aquí se mostrarán los detalles de la incidencia seleccionada para su gestión.</p>
+                        <p id="description">Aquí se mostrarán los detalles de la incidencia seleccionada para su gestión.</p>
                     </div>
                     <div class="incident-actions">
                         <div class="incident-status">
                             <!--Espacio para el estado-->
-                            <p><strong>Estado:</strong> Pendiente</p>
+                            <p><strong>Estado:</strong> <p id="status">Pendiente</p>
                         </div>
                         <div class="incident-buttons">
-                            <button class="solution-button" id="sol-button">Solucionar</button>
-                            <button class="rechazar-button" id="reject-button">Rechazar</button>
+                            <button class="solution-button" id="sol-button" onclick="cambiarState(true)">Solucionar</button>
+                            <button class="rechazar-button" id="reject-button" onclick="cambiarState(false)">Rechazar</button>
                         </div>
                     </div>
 
