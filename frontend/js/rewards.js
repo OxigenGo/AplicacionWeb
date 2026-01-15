@@ -95,7 +95,18 @@ function aplicarFiltros() {
  */
 async function cargarRecompensas() {
     try {
-        const response = await fetch("/v1/rewards/");
+        const response = await fetch("/v1/rewards", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ user_id: getUserId() })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
 
         recompensasCargadas = data.rewards;
@@ -106,6 +117,7 @@ async function cargarRecompensas() {
         console.log("Error al cargar recompensas:", error);
     }
 }
+
 
 //Chapuza
 document.getElementById("reclamadas").addEventListener("click", function() {
