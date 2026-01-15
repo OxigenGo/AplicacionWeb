@@ -102,25 +102,26 @@ function cargarIncidenciasDetalles(incident) {
 /*                     Funcion de Cambio de estado                          */
 /* -------------------------------------------------------------------------- */
 
-async function cambiarState(state){
+async function cambiarState(state) {
     try {
-        const response = await fetch("/v1/system/incidents/update", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                INCIDENT_ID: incidenciaSeleccionada.ID,
-                STATE: state ? "Solucionada" : "Rechazada"
-            })
-        });
+        const response = await fetch(
+            `/v1/system/incidents/update?incident_id=${incidenciaSeleccionada.ID}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    state: state ? "Solucionada" : "Rechazada"
+                })
+            }
+        );
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const incidencias = await response.json();;
-
+        await response.json();
         cargarIncidenciasDetalles(incidenciaSeleccionada);
 
     } catch (error) {
@@ -130,4 +131,3 @@ async function cambiarState(state){
 
 //Inicializacion de pagina
 cargarIncidencias();
-
