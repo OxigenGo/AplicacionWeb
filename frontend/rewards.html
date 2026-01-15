@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de sensores</title>
+    <!--Styles-->
+    <link rel="stylesheet" href="./css/reutilizable/header.css">
+    <link rel="stylesheet" href="./css/reutilizable/wave.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/reward.css">
+
+    <!--Scripts-->
+    <script src="js/retrieve_login_info.js"></script>
+    <script src="js/rewards.js" defer></script>
+
+</head>
+
+<body>
+
+    <!--Header-->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo"><a href="./index.html">OxiGo</a></div>
+            <nav class="nav">
+                <a href="./index.html" class="nav-link">Inicio</a>
+                <a href="#" class="nav-link">Nosotros</a>
+                <a href="#" class="nav-link">Contacto</a>
+            </nav>
+            <div class="button-div"></div>
+        </div>
+    </header>
+
+    <!-- Wave Background -->
+    <div class="wave-background">
+        <svg class="wave wave-1" viewBox="0 0 2 1 " preserveAspectRatio="none">
+            <path d="M 0 0 A 1 0.4 0 0 0 2,0 L 2,1 L 0,1 Z"></path>
+        </svg>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 id="rewards-title">Recompensas</h1>
+        <div class="filtros">
+            <div class="filter-container">
+            <div class="select-filtro">
+                <select name="filtros" class="inactive-filtros">
+                    <option value="op1">Reclamadas</option>
+                    <option value="op2">No Reclamadas</option>
+                </select>
+            </div>
+            <div id="filtros" class="filter-buttons">
+                <button onclick="cambiarFiltroReward(1)" id="reclamadas">Reclamadas</button>
+                <button onclick="cambiarFiltroReward(2)" id="no-reclamadas">No Reclamadas</button>
+            </div>
+        </div>
+        </div>
+        <div id="lista-reward" class="reward-container"></div>
+    </main>
+</body>
+
+</html>

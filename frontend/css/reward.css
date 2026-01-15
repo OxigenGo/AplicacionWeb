@@ -1,0 +1,171 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, hsl(214, 85%, 30%) 0%, hsl(214, 85%, 50%) 50%, hsl(195, 100%, 50%) 100%);
+    min-height: 100vh;
+    color: hsl(220, 15%, 25%);
+    position: relative;
+    overflow-x: hidden;
+}
+
+.main-content {
+    padding: 2rem;
+}   
+
+#rewards-title {
+    text-align: center;
+    margin: 2rem 0;
+    font-size: 2.5rem;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.reward-container {
+    display: grid;
+    /*Columnas que se adaptan al ancho*/
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.reward-card{
+    background: white;
+    border: 0.3rem solid hsl(214, 82%, 26%);
+    border-radius: 2rem;
+    text-align: center;
+    padding: 2.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reward-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/*Filtros*/
+.filtros{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+
+.filter-container{
+    background: white;
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    max-width: 50rem;
+}
+
+.filter-container * {
+    font-weight: 600;
+}
+
+.filter-buttons{
+    display: flex;
+    justify-content: space-around;
+    gap: 2rem;
+}
+
+.search-container{
+    display: flex;
+    gap: 2rem;
+}
+
+.filter-buttons button {
+    background: hsl(214, 85%, 50%);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.filter-buttons button:hover {
+    background: hsl(214, 85%, 40%);
+}
+
+.filter-buttons button.activo{
+    background: white;
+    color: hsl(214, 85%, 50%);
+    border: 2px solid hsl(214, 85%, 50%);
+}
+
+.search-container input {
+    padding: 0.5rem 1rem;
+    border: 2px solid hsl(220, 15%, 85%);
+    border-radius: 0.5rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/*Filtros responsive*/
+.select-filtro{
+    display: none;
+}
+
+
+@media (max-width: 1400px) {
+    .filter-buttons {
+        gap: 1rem;
+    }
+
+    .search-container{
+        gap: 1rem;
+    }
+
+    .search-container input{
+        width: 10rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .filter-buttons {
+        gap: .5rem;
+    }
+
+    .search-container {
+        gap: .5rem;
+        margin-left: 1rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .select-filtro{
+        display: block;
+    }
+
+    .inactive-filtros{
+        padding: 0.5rem 1rem;
+        border: 2px solid hsl(220, 15%, 85%);
+        border-radius: 0.5rem;
+        font-weight: 600;
+        color: hsl(217, 11%, 45%);
+        padding-left: .5rem;
+    }
+
+    .filter-buttons{
+        display: none;
+    }
+}
+
+@media (max-width: 650px) {
+    .search-container input{
+        width: 8.5rem;
+    }
+
+    .inactive-filtros{
+        width: 7rem;
+    }
+}
+
+@media (max-width: 550px) {
+    .search-container input{
+        width: 6rem;
+    }
+}
