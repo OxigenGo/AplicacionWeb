@@ -146,6 +146,8 @@ async function loadOfficialStations(map, gasType) {
                 category = classifyGas(data[gasType], gasType);
             }
 
+            const color = getColorForGasCategory(category);
+
             const popup = `
                 <b>${data.name}</b><br>
                 O₃: ${classifyGas(data.o3, "o3")}<br>
